@@ -1,9 +1,10 @@
 import React from "react";
+import Button from "@mui/material/Button";
 
 const App = () => {
   return (
     <>
-      <h1 className="text-black font-black">Hello World!</h1>
+      <Button variant="contained">Hello World!</Button>
     </>
   );
 };
