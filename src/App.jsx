@@ -1,10 +1,12 @@
 import React from "react";
-import Button from "@mui/material/Button";
+import { NavigationBar } from "./Components/ComponentExporter.js";
+import CssBaseLine from "@mui/material/CssBaseline";
 
 const App = () => {
   return (
     <>
-      <Button variant="contained">Hello World!</Button>
+      <CssBaseLine />
+      <NavigationBar />
     </>
   );
 };
