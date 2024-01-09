@@ -19,7 +19,7 @@ const Recommendationbar = ({
         sx={{
           backgroundColor: "transparent",
           color: "white",
-          marginTop: "6px",
+          marginTop: "3px",
         }}
       >
         <Tabs
