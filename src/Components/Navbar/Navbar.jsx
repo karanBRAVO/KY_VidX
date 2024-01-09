@@ -14,24 +14,44 @@ import SearchIcon from "@mui/icons-material/Search";
 import VideoCallIcon from "@mui/icons-material/VideoCall";
 import KeyboardVoiceIcon from "@mui/icons-material/KeyboardVoice";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
-import { SideBar } from "../ComponentExporter.js";
+import { SideBar, RecommendationBar } from "../ComponentExporter.js";
 import { useState } from "react";
 
 const Navbar = () => {
   const [sidebarIsOpen, setSideBarIsOpen] = useState(false);
+  const [recommendationItems, setRecommendationItems] = useState([
+    { name: "All" },
+    { name: "DSA" },
+    { name: "Computer" },
+    { name: "Blender" },
+    { name: "Games" },
+    { name: "Docker" },
+    { name: "Funny" },
+    { name: "Nginx" },
+    { name: "Redis" },
+    { name: "API" },
+    { name: "ML/DL" },
+    { name: "API" },
+    { name: "Racing" },
+    { name: "Fitness" },
+    { name: "Karan Yadav" },
+    { name: "Live" },
+    { name: "Blockchain" },
+  ]);
+  const [currentRecommendation, setCurrentRecommendationState] =
+    useState("all");
+
+  console.log(currentRecommendation);
 
   return (
     <>
-      <SideBar
-        state={sidebarIsOpen}
-        setState={setSideBarIsOpen}
-      />
       <AppBar
         position="fixed"
         component={"nav"}
         enableColorOnDark
         className="bg-black px-2 md:py-3 py-2 text-white"
       >
+        <SideBar state={sidebarIsOpen} setState={setSideBarIsOpen} />
         <Stack
           display={"flex"}
           flexDirection={"row"}
@@ -139,6 +159,10 @@ const Navbar = () => {
             </Stack>
           </Box>
         </Stack>
+        <RecommendationBar
+          items={recommendationItems}
+          setCurrentRecommendationState={setCurrentRecommendationState}
+        />
       </AppBar>
     </>
   );
