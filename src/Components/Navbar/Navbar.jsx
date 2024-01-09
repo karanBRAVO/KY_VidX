@@ -14,10 +14,18 @@ import SearchIcon from "@mui/icons-material/Search";
 import VideoCallIcon from "@mui/icons-material/VideoCall";
 import KeyboardVoiceIcon from "@mui/icons-material/KeyboardVoice";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
+import { SideBar } from "../ComponentExporter.js";
+import { useState } from "react";
 
 const Navbar = () => {
+  const [sidebarIsOpen, setSideBarIsOpen] = useState(false);
+
   return (
     <>
+      <SideBar
+        state={sidebarIsOpen}
+        setState={setSideBarIsOpen}
+      />
       <AppBar
         position="fixed"
         component={"nav"}
@@ -25,7 +33,8 @@ const Navbar = () => {
         className="bg-black px-2 md:py-3 py-2 text-white"
       >
         <Stack
-          direction={"row"}
+          display={"flex"}
+          flexDirection={"row"}
           alignItems={"center"}
           justifyContent={"space-between"}
           component={"div"}
@@ -38,7 +47,10 @@ const Navbar = () => {
               spacing={2}
               component={"div"}
             >
-              <IconButton className="text-white hover:bg-gray-800">
+              <IconButton
+                onClick={() => setSideBarIsOpen((prev) => !prev)}
+                className="text-white hover:bg-gray-800"
+              >
                 <MenuIcon />
               </IconButton>
               <Box
@@ -47,21 +59,39 @@ const Navbar = () => {
                 flexDirection={"row"}
                 alignItems={"center"}
                 justifyContent={"center"}
+                className="cursor-pointer gap-1"
               >
                 <img
                   src={LOGO}
                   alt="logo"
                   width={100}
                   height={100}
-                  className="w-11 h-auto rounded-full cursor-pointer"
+                  className="w-11 h-auto rounded-sm"
                 />
                 <Typography
                   variant="h4"
                   component={"h1"}
                   noWrap
-                  className="text-white"
+                  display={"flex"}
+                  flexDirection={"row"}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                  className="text-white tracking-tight leading-tight"
                 >
-                  vidX
+                  <Typography
+                    variant="h5"
+                    component={"span"}
+                    className="font-thin"
+                  >
+                    vid
+                  </Typography>
+                  <Typography
+                    variant="h3"
+                    component={"span"}
+                    className="uppercase font-black"
+                  >
+                    X
+                  </Typography>
                 </Typography>
               </Box>
             </Stack>
