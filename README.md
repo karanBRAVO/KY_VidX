@@ -1,8 +1,26 @@
-# React + Vite
+# VidX
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![Logo](https://github.com/karanBRAVO/VidX/assets/77043443/76fb6573-ab54-4276-b8cb-df793c1454f4)
 
-Currently, two official plugins are available:
+Powered by: `React Js`, `Tailwind CSS`, `Material UI`
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Preview
+
+Available Soon...
+
+## Usage
+
+1. Clone the git repository
+   ```bash
+   git clone https://github.com/karanBRAVO/VidX/edit/main
+   ```   
+
+2. Change the directory to the cloned folder
+   ```bash
+   cd VidX
+   ```
+
+3. Run the script
+   ```bash
+   npm run dev
+   ```
