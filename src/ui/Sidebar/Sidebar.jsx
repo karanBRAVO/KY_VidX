@@ -1,4 +1,5 @@
-import { LOGO } from "../../assets/AssetExporter.js";
+"use client";
+
 import {
   Drawer,
   List,
@@ -20,6 +21,7 @@ import HistoryIcon from "@mui/icons-material/History";
 import VideoCameraFrontIcon from "@mui/icons-material/VideoCameraFront";
 import WatchLaterIcon from "@mui/icons-material/WatchLater";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import Image from "next/image";
 
 const mainItems = [
   { name: "Home", iconname: HouseIcon, linkto: "" },
@@ -79,8 +81,8 @@ const Sidebar = ({ state, setState }) => {
             >
               <MenuIcon />
             </IconButton>
-            <img
-              src={LOGO}
+            <Image
+              src="/Logo.png"
               alt="logo"
               width={100}
               height={100}

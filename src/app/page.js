@@ -1,11 +1,7 @@
-import React from "react";
-import {
-  NavigationBar,
-  VideoContainer,
-} from "./Components/ComponentExporter.js";
+import { NavigationBar, VideoContainer } from "@/ui/ComponentExporter.js";
 import CssBaseLine from "@mui/material/CssBaseline";
 
-const App = () => {
+const page = () => {
   return (
     <>
       <CssBaseLine />
@@ -15,4 +11,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default page;

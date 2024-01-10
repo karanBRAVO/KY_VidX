@@ -1,4 +1,5 @@
-import { LOGO } from "../../assets/AssetExporter.js";
+"use client";
+
 import {
   AppBar,
   Box,
@@ -16,6 +17,7 @@ import KeyboardVoiceIcon from "@mui/icons-material/KeyboardVoice";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import { SideBar, RecommendationBar } from "../ComponentExporter.js";
 import { useState } from "react";
+import Image from "next/image";
 
 const Navbar = () => {
   const [sidebarIsOpen, setSideBarIsOpen] = useState(false);
@@ -81,8 +83,8 @@ const Navbar = () => {
                 justifyContent={"center"}
                 className="cursor-pointer gap-1"
               >
-                <img
-                  src={LOGO}
+                <Image
+                  src="/Logo.png"
                   alt="logo"
                   width={100}
                   height={100}
