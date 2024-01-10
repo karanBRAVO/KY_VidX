@@ -1,5 +1,8 @@
 import React from "react";
-import { NavigationBar } from "./Components/ComponentExporter.js";
+import {
+  NavigationBar,
+  VideoContainer,
+} from "./Components/ComponentExporter.js";
 import CssBaseLine from "@mui/material/CssBaseline";
 
 const App = () => {
@@ -7,6 +10,7 @@ const App = () => {
     <>
       <CssBaseLine />
       <NavigationBar />
+      <VideoContainer />
     </>
   );
 };
