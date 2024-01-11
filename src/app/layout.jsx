@@ -5,6 +5,7 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import { StyledEngineProvider } from "@mui/material/styles";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/build/v14-appRouter";
+import CssBaseLine from "@mui/material/CssBaseline";
 
 export const metadata = {
   title: "VidX",
@@ -16,7 +17,10 @@ const RootLayout = ({ children }) => {
     <html lang="en">
       <body>
         <AppRouterCacheProvider>
-          <StyledEngineProvider injectFirst>{children}</StyledEngineProvider>
+          <StyledEngineProvider injectFirst>
+            <CssBaseLine />
+            {children}
+          </StyledEngineProvider>
         </AppRouterCacheProvider>
       </body>
     </html>

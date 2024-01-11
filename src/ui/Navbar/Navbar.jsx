@@ -43,8 +43,6 @@ const Navbar = () => {
   const [currentRecommendation, setCurrentRecommendationState] =
     useState("all");
 
-  console.log(currentRecommendation);
-
   return (
     <>
       <AppBar
