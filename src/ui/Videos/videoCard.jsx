@@ -37,7 +37,7 @@ const VideoCard = ({
 
   return (
     <>
-      <Card className="w-1/2 rounded-lg border-[0.51px] border-solid border-gray-800 text-white bg-black hover:shadow-md hover:shadow-gray-800 hover:rounded-sm hover:border-0 hover:scale-105 transition-all ease-linear duration-150">
+      <Card className="w-full rounded-lg border-[0.51px] border-solid border-gray-800 text-white bg-black hover:shadow-md hover:shadow-gray-800 hover:rounded-sm hover:border-0 hover:scale-105 transition-all ease-linear duration-150">
         <CardActionArea>
           <Box
             component={"div"}

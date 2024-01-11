@@ -3,6 +3,7 @@ module.exports = {
   corePlugins: {
     preflight: false,
   },
+  important: true,
   content: [
     "./src/ui/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
