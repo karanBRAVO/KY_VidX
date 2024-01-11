@@ -16,7 +16,7 @@ export const metadata = {
 const RootLayout = ({ children }) => {
   return (
     <html lang="en">
-      <body>
+      <body className="bg-black">
         <AppRouterCacheProvider>
           <StyledEngineProvider injectFirst>
             <CssBaseLine />
