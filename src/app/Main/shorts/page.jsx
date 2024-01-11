@@ -1,5 +1,11 @@
+import { Shorts } from "@/ui/ComponentExporter";
+
 const page = () => {
-  return <div>Shorts</div>;
+  return (
+    <>
+      <Shorts />
+    </>
+  );
 };
 
 export default page;

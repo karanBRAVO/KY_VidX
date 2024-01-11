@@ -132,12 +132,12 @@ const Navbar = () => {
                   <SearchIcon />
                 </IconButton>
               </Tooltip>
-              <Tooltip title={"Search with Voice"}>
+              <Tooltip title={"Search with Voice"} className="hidden sm:block">
                 <IconButton className="text-white hover:bg-gray-800">
                   <KeyboardVoiceIcon />
                 </IconButton>
               </Tooltip>
-              <Tooltip title={"Create"}>
+              <Tooltip title={"Create"} className="hidden sm:block">
                 <IconButton className="text-white hover:bg-gray-800">
                   <VideoCallIcon />
                 </IconButton>
