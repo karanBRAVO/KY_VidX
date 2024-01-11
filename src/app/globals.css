@@ -6,6 +6,8 @@
   scrollbar-width: thin;
   scrollbar-color: white black;
   scroll-behavior: smooth;
+  text-decoration: none;
+  list-style-type: none;
 }
 
 *::-webkit-scrollbar {

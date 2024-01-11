@@ -18,6 +18,7 @@ import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNone
 import { SideBar, RecommendationBar } from "../ComponentExporter.js";
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 const Navbar = () => {
   const [sidebarIsOpen, setSideBarIsOpen] = useState(false);
@@ -73,47 +74,49 @@ const Navbar = () => {
               >
                 <MenuIcon />
               </IconButton>
-              <Box
-                component={"div"}
-                display={"flex"}
-                flexDirection={"row"}
-                alignItems={"center"}
-                justifyContent={"center"}
-                className="cursor-pointer gap-1"
-              >
-                <Image
-                  src="/Logo.png"
-                  alt="logo"
-                  width={100}
-                  height={100}
-                  className="w-11 h-auto rounded-sm"
-                />
-                <Typography
-                  variant="h4"
-                  component={"h1"}
-                  noWrap
+              <Link href={"/"}>
+                <Box
+                  component={"div"}
                   display={"flex"}
                   flexDirection={"row"}
-                  justifyContent={"center"}
                   alignItems={"center"}
-                  className="text-white tracking-tight leading-tight"
+                  justifyContent={"center"}
+                  className="cursor-pointer gap-1"
                 >
+                  <Image
+                    src="/Logo.png"
+                    alt="logo"
+                    width={100}
+                    height={100}
+                    className="w-11 h-auto rounded-sm"
+                  />
                   <Typography
-                    variant="h5"
-                    component={"span"}
-                    className="font-thin"
+                    variant="h4"
+                    component={"h1"}
+                    noWrap
+                    display={"flex"}
+                    flexDirection={"row"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                    className="text-white tracking-tight leading-tight"
                   >
-                    vid
+                    <Typography
+                      variant="h5"
+                      component={"span"}
+                      className="font-thin"
+                    >
+                      vid
+                    </Typography>
+                    <Typography
+                      variant="h3"
+                      component={"span"}
+                      className="uppercase font-black"
+                    >
+                      X
+                    </Typography>
                   </Typography>
-                  <Typography
-                    variant="h3"
-                    component={"span"}
-                    className="uppercase font-black"
-                  >
-                    X
-                  </Typography>
-                </Typography>
-              </Box>
+                </Box>
+              </Link>
             </Stack>
           </Box>
           <Box component={"div"}>

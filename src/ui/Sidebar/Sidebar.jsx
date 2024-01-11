@@ -22,19 +22,40 @@ import VideoCameraFrontIcon from "@mui/icons-material/VideoCameraFront";
 import WatchLaterIcon from "@mui/icons-material/WatchLater";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import Image from "next/image";
+import Link from "next/link";
 
 const mainItems = [
-  { name: "Home", iconname: HouseIcon, linkto: "" },
-  { name: "Shorts", iconname: BurstModeIcon, linkto: "" },
-  { name: "Subscriptions", iconname: SubscriptionsIcon, linkto: "" },
+  { name: "Home", iconname: HouseIcon, linkto: "/" },
+  { name: "Shorts", iconname: BurstModeIcon, linkto: "/Main/shorts" },
+  {
+    name: "Subscriptions",
+    iconname: SubscriptionsIcon,
+    linkto: "/Main/subscriptions",
+  },
 ];
 
 const personalItems = [
-  { name: "Your Channel", iconname: PortraitIcon, linkto: "" },
-  { name: "History", iconname: HistoryIcon, linkto: "" },
-  { name: "Your Videos", iconname: VideoCameraFrontIcon, linkto: "" },
-  { name: "Watch Later", iconname: WatchLaterIcon, linkto: "" },
-  { name: "Liked Videos", iconname: ThumbUpIcon, linkto: "" },
+  {
+    name: "Your Channel",
+    iconname: PortraitIcon,
+    linkto: "/you/profile/your-channel",
+  },
+  { name: "History", iconname: HistoryIcon, linkto: "/you/profile/history" },
+  {
+    name: "Your Videos",
+    iconname: VideoCameraFrontIcon,
+    linkto: "/you/profile/your-videos",
+  },
+  {
+    name: "Watch Later",
+    iconname: WatchLaterIcon,
+    linkto: "/you/profile/watch-later",
+  },
+  {
+    name: "Liked Videos",
+    iconname: ThumbUpIcon,
+    linkto: "/you/profile/liked-videos",
+  },
 ];
 
 const Sidebar = ({ state, setState }) => {
@@ -46,8 +67,8 @@ const Sidebar = ({ state, setState }) => {
         onClose={() => setState((prev) => !prev)}
         variant="temporary"
         component={"div"}
-        hideBackdrop={true}
-        elevation={0}
+        hideBackdrop={false}
+        elevation={16}
         ModalProps={{
           sx: {
             backgroundColor: "transparent",
@@ -81,54 +102,59 @@ const Sidebar = ({ state, setState }) => {
             >
               <MenuIcon />
             </IconButton>
-            <Image
-              src="/Logo.png"
-              alt="logo"
-              width={100}
-              height={100}
-              style={{
-                width: "2.75rem",
-                height: "auto",
-                borderRadius: ".125rem",
-                marginLeft: "17px",
-                marginRight: "5px",
-                flexShrink: "0",
-              }}
-            />
-            <Typography
-              variant="h4"
-              component={"h1"}
-              noWrap
-              display={"flex"}
-              flexDirection={"row"}
-              justifyContent={"center"}
-              alignItems={"center"}
-              sx={{
-                color: "white",
-                lineHeight: "1.25",
-                letterSpacing: "1.25rem",
-              }}
+            <Link
+              href={"/"}
+              className="flex flex-row items-center justify-between"
             >
+              <Image
+                src="/Logo.png"
+                alt="logo"
+                width={100}
+                height={100}
+                style={{
+                  width: "2.75rem",
+                  height: "auto",
+                  borderRadius: ".125rem",
+                  marginLeft: "17px",
+                  marginRight: "5px",
+                  flexShrink: "0",
+                }}
+              />
               <Typography
-                variant="h5"
-                component={"span"}
+                variant="h4"
+                component={"h1"}
+                noWrap
+                display={"flex"}
+                flexDirection={"row"}
+                justifyContent={"center"}
+                alignItems={"center"}
                 sx={{
-                  fontWeight: "100",
+                  color: "white",
+                  lineHeight: "1.25",
+                  letterSpacing: "1.25rem",
                 }}
               >
-                vid
+                <Typography
+                  variant="h5"
+                  component={"span"}
+                  sx={{
+                    fontWeight: "100",
+                  }}
+                >
+                  vid
+                </Typography>
+                <Typography
+                  variant="h3"
+                  component={"span"}
+                  sx={{
+                    fontWeight: "900",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  X
+                </Typography>
               </Typography>
-              <Typography
-                variant="h3"
-                component={"span"}
-                sx={{
-                  fontWeight: "900",
-                  textTransform: "uppercase",
-                }}
-              >
-                X
-              </Typography>
-            </Typography>
+            </Link>
           </Box>
           <Divider sx={{ color: "white", bgcolor: "gray" }} />
           <Typography
@@ -143,21 +169,23 @@ const Sidebar = ({ state, setState }) => {
           </Typography>
           <Divider sx={{ color: "white", bgcolor: "gray" }} />
           {mainItems.map((item, index) => (
-            <ListItem disablePadding key={index}>
-              <ListItemButton
-                sx={{
-                  color: "white",
-                  ":hover": {
-                    backgroundColor: "#bdbdbd40",
-                  },
-                }}
-              >
-                <ListItemIcon sx={{ color: "white" }}>
-                  <item.iconname />
-                </ListItemIcon>
-                <ListItemText primary={item.name} />
-              </ListItemButton>
-            </ListItem>
+            <Link href={item.linkto} key={index}>
+              <ListItem disablePadding>
+                <ListItemButton
+                  sx={{
+                    color: "white",
+                    ":hover": {
+                      backgroundColor: "#bdbdbd40",
+                    },
+                  }}
+                >
+                  <ListItemIcon sx={{ color: "white" }}>
+                    <item.iconname />
+                  </ListItemIcon>
+                  <ListItemText primary={item.name} />
+                </ListItemButton>
+              </ListItem>
+            </Link>
           ))}
           <Divider sx={{ color: "white", bgcolor: "gray" }} />
           <Typography
@@ -172,21 +200,23 @@ const Sidebar = ({ state, setState }) => {
           </Typography>
           <Divider sx={{ color: "white", bgcolor: "gray" }} />
           {personalItems.map((item, index) => (
-            <ListItem disablePadding key={index}>
-              <ListItemButton
-                sx={{
-                  color: "white",
-                  ":hover": {
-                    backgroundColor: "#bdbdbd40",
-                  },
-                }}
-              >
-                <ListItemIcon sx={{ color: "white" }}>
-                  <item.iconname />
-                </ListItemIcon>
-                <ListItemText primary={item.name} />
-              </ListItemButton>
-            </ListItem>
+            <Link href={item.linkto} key={index}>
+              <ListItem disablePadding>
+                <ListItemButton
+                  sx={{
+                    color: "white",
+                    ":hover": {
+                      backgroundColor: "#bdbdbd40",
+                    },
+                  }}
+                >
+                  <ListItemIcon sx={{ color: "white" }}>
+                    <item.iconname />
+                  </ListItemIcon>
+                  <ListItemText primary={item.name} />
+                </ListItemButton>
+              </ListItem>
+            </Link>
           ))}
           <Divider sx={{ color: "white", bgcolor: "gray" }} />
         </List>
