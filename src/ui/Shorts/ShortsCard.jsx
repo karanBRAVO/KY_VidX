@@ -22,7 +22,7 @@ const ShortsCard = ({
 }) => {
   return (
     <>
-      <Card className="w-full rounded-none border-[0.51px] border-solid border-gray-800 text-white bg-black">
+      <Card className="w-full rounded-none border-[0.51px] border-solid border-gray-800 text-white bg-black snap-start snap-always">
         <CardActionArea>
           <Box
             component={"div"}

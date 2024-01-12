@@ -34,7 +34,11 @@ const Video = () => {
 
   return (
     <>
-      <Container disableGutters={false} maxWidth={false} className="bg-black">
+      <Container
+        disableGutters={false}
+        maxWidth={false}
+        className="bg-black scroll-smooth"
+      >
         <Box
           component={"div"}
           display={"flex"}
