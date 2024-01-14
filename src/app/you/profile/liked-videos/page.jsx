@@ -1,5 +1,11 @@
+import { LikedVideos } from "@/ui/ComponentExporter";
+
 const page = () => {
-  return <div>Liked Videos</div>;
+  return (
+    <>
+      <LikedVideos />
+    </>
+  );
 };
 
 export default page;
