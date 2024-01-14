@@ -1,5 +1,11 @@
+import { YourChannel } from "@/ui/ComponentExporter";
+
 const page = () => {
-  return <div>Your Channel</div>;
+  return (
+    <>
+      <YourChannel />
+    </>
+  );
 };
 
 export default page;
