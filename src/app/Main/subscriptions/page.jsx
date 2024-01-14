@@ -1,5 +1,11 @@
+import { Subscriptions } from "@/ui/ComponentExporter";
+
 const page = () => {
-  return <div>Subscriptions</div>;
+  return (
+    <>
+      <Subscriptions />
+    </>
+  );
 };
 
 export default page;

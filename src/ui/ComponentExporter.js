@@ -4,3 +4,4 @@ export { default as RecommendationBar } from "./Recommendationbar/Recommendation
 export { default as VideoContainer } from "./Videos/Video";
 export { default as Shorts } from "./Shorts/Shorts";
 export { default as YourChannel } from "./you/yourChannel/YourChannel";
+export { default as Subscriptions } from "./Subscriptions/Subscriptions";
