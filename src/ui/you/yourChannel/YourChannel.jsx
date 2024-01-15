@@ -138,6 +138,8 @@ const YourChannel = () => {
               onChange={handleTabChange}
               indicatorColor="secondary"
               aria-label="tabs"
+              variant="scrollable"
+              scrollButtons="auto"
               className="text-white"
             >
               <Tab value="one" label="Home" className="text-slate-400" />
