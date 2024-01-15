@@ -1,5 +1,11 @@
+import { History } from "@/ui/ComponentExporter";
+
 const page = () => {
-  return <div>History</div>;
+  return (
+    <>
+      <History />
+    </>
+  );
 };
 
 export default page;

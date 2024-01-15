@@ -6,3 +6,4 @@ export { default as Shorts } from "./Shorts/Shorts";
 export { default as YourChannel } from "./you/yourChannel/YourChannel";
 export { default as Subscriptions } from "./Subscriptions/Subscriptions";
 export { default as LikedVideos } from "./LikedVideos/LikedVideos";
+export { default as History } from "./History/History";
