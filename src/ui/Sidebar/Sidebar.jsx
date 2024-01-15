@@ -58,6 +58,12 @@ const personalItems = [
   },
 ];
 
+const myItems = [
+  { name: "About me", linkto: "/about" },
+  { name: "Privacy policy", linkto: "/privacy-policy" },
+  { name: "terms and conditions", linkto: "/terms-and-conditions" },
+];
+
 const Sidebar = ({ state, setState }) => {
   return (
     <>
@@ -220,6 +226,35 @@ const Sidebar = ({ state, setState }) => {
           ))}
           <Divider sx={{ color: "white", bgcolor: "gray" }} />
         </List>
+        <Box
+          padding={"3px"}
+          margin={"1px"}
+          gap={"1px"}
+          display={"flex"}
+          flexDirection={"column"}
+        >
+          <Box>
+            {myItems.map((item, index) => (
+              <Link href={item.linkto}>
+                <Typography
+                  key={index}
+                  className="capitalize cursor-pointer text-white hover:underline"
+                  variant="caption"
+                  component={"blockquote"}
+                >
+                  {item.name}
+                </Typography>
+              </Link>
+            ))}
+          </Box>
+          <Typography
+            className="text-white my-3"
+            variant="caption"
+            component={"blockquote"}
+          >
+            &copy; Karan Yadav 2024
+          </Typography>
+        </Box>
       </Drawer>
     </>
   );
