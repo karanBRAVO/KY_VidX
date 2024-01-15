@@ -21,8 +21,23 @@ import Image from "next/image";
 import Link from "next/link";
 import VideoCameraMenu from "./VideoCameraMenu.jsx";
 import NotificationMenu from "./NotificationMenu.jsx";
+import SearchBox from "./SearchBox.jsx";
 
 const Navbar = () => {
+  const [searchBoxValue, setSearchBoxValue] = useState("");
+  const [searchBoxOpen, setSearchBoxOpen] = useState(false);
+  const handleSearchBoxOpen = () => {
+    setSearchBoxOpen(true);
+  };
+  const handleSearchBoxClose = () => {
+    setSearchBoxOpen(false);
+  };
+  const handleSearch = (e) => {
+    e.preventDefault();
+    console.log(searchBoxValue);
+    handleSearchBoxClose();
+  };
+
   const [isVideoCameraOpen, setisVideoCameraOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const handleVideoCameraOpen = (e) => {
@@ -77,6 +92,13 @@ const Navbar = () => {
         className="bg-black px-2 md:py-3 py-2 text-white"
       >
         <SideBar state={sidebarIsOpen} setState={setSideBarIsOpen} />
+        <SearchBox
+          isOpen={searchBoxOpen}
+          handleClose={handleSearchBoxClose}
+          value={searchBoxValue}
+          setValue={setSearchBoxValue}
+          onformsubmit={handleSearch}
+        />
         <VideoCameraMenu
           isMenuOpen={isVideoCameraOpen}
           handleMenuClose={handleVideoCameraClose}
@@ -162,7 +184,10 @@ const Navbar = () => {
               component={"div"}
             >
               <Tooltip title={"Search"}>
-                <IconButton className="text-white hover:bg-gray-800">
+                <IconButton
+                  className="text-white hover:bg-gray-800"
+                  onClick={handleSearchBoxOpen}
+                >
                   <SearchIcon />
                 </IconButton>
               </Tooltip>
