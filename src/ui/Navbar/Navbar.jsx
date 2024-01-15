@@ -19,8 +19,32 @@ import { SideBar, RecommendationBar } from "../ComponentExporter.js";
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import VideoCameraMenu from "./VideoCameraMenu.jsx";
+import NotificationMenu from "./NotificationMenu.jsx";
 
 const Navbar = () => {
+  const [isVideoCameraOpen, setisVideoCameraOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const handleVideoCameraOpen = (e) => {
+    setisVideoCameraOpen(true);
+    setAnchorEl(e.currentTarget);
+  };
+  const handleVideoCameraClose = () => {
+    setisVideoCameraOpen(false);
+    setAnchorEl(null);
+  };
+
+  const [isNotificationOpen, setisNotificationOpen] = useState(false);
+  const [notification_anchorEl, setNotification_AnchorEl] = useState(null);
+  const handleNotificationMenuOpen = (e) => {
+    setisNotificationOpen(true);
+    setNotification_AnchorEl(e.currentTarget);
+  };
+  const handleNotificationMenuClose = () => {
+    setisNotificationOpen(false);
+    setNotification_AnchorEl(null);
+  };
+
   const [sidebarIsOpen, setSideBarIsOpen] = useState(false);
   const [recommendationItems, setRecommendationItems] = useState([
     { name: "All" },
@@ -53,6 +77,16 @@ const Navbar = () => {
         className="bg-black px-2 md:py-3 py-2 text-white"
       >
         <SideBar state={sidebarIsOpen} setState={setSideBarIsOpen} />
+        <VideoCameraMenu
+          isMenuOpen={isVideoCameraOpen}
+          handleMenuClose={handleVideoCameraClose}
+          anchorEl={anchorEl}
+        />
+        <NotificationMenu
+          isMenuOpen={isNotificationOpen}
+          handleMenuClose={handleNotificationMenuClose}
+          anchorEl={notification_anchorEl}
+        />
         <Stack
           display={"flex"}
           flexDirection={"row"}
@@ -138,12 +172,18 @@ const Navbar = () => {
                 </IconButton>
               </Tooltip>
               <Tooltip title={"Create"} className="hidden sm:block">
-                <IconButton className="text-white hover:bg-gray-800">
+                <IconButton
+                  className="text-white hover:bg-gray-800"
+                  onClick={handleVideoCameraOpen}
+                >
                   <VideoCallIcon />
                 </IconButton>
               </Tooltip>
               <Tooltip title={"Notifications"}>
-                <IconButton className="text-white hover:bg-gray-800">
+                <IconButton
+                  className="text-white hover:bg-gray-800"
+                  onClick={handleNotificationMenuOpen}
+                >
                   <Badge
                     badgeContent={3}
                     anchorOrigin={{
