@@ -6,7 +6,7 @@ const Subscriptions = () => {
   return (
     <>
       <Container className="min-h-screen mt-[130px]" maxWidth={false}>
-        <h1 className="font-black text-white capitalize m-1 tracking-tight leading-none">
+        <h1 className="font-black text-white capitalize m-1 tracking-tight leading-1">
           Subscriptions
         </h1>
         <div className="flex flex-col items-start text-white w-full">

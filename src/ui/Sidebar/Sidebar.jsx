@@ -235,9 +235,8 @@ const Sidebar = ({ state, setState }) => {
         >
           <Box>
             {myItems.map((item, index) => (
-              <Link href={item.linkto}>
+              <Link key={index} href={item.linkto}>
                 <Typography
-                  key={index}
                   className="capitalize cursor-pointer text-white hover:underline"
                   variant="caption"
                   component={"blockquote"}
