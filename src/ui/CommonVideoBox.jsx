@@ -21,7 +21,7 @@ const CommonVideoBox = ({
 }) => {
   return (
     <>
-      <Card className="w-full m-2 bg-black text-white flex flex-row">
+      <Card className="w-full m-2 bg-black text-white flex flex-col sm:flex-row">
         <CardActionArea className="w-fit">
           <Box component={"div"} bgcolor={"black"} width={"fit-content"}>
             <CardMedia
@@ -29,7 +29,7 @@ const CommonVideoBox = ({
               height="250"
               image={thumbnail}
               alt="thumnail"
-              className="w-[400px] h-[200px] object-cover rounded-lg bg-black border-[0.51px] border-solid border-gray-800"
+              className="w-full sm:w-[400px] h-[200px] object-cover rounded-lg bg-black border-[0.51px] border-solid border-gray-800"
             />
             <Box
               component={"div"}

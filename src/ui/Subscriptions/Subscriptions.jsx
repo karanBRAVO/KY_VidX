@@ -1,4 +1,8 @@
+"use client";
+
 import { Container } from "@mui/material";
+import { _SUBSCRIBED_ } from "./fakedata";
+import CommonVideoBox from "../CommonVideoBox";
 
 const Subscriptions = () => {
   const subscribedTo = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
@@ -28,7 +32,20 @@ const Subscriptions = () => {
             <h2 className="text-slate-300 hover:underline cursor-pointer">
               Karan Yadav
             </h2>
-            <div className="m-3">Videos</div>
+            <div className="w-full gap-3 flex flex-col items-start">
+              {_SUBSCRIBED_.map((item, index) => (
+                <CommonVideoBox
+                  key={index}
+                  uploader={item.uploader}
+                  thumbnail={`/${item.thumbnail}`}
+                  name={item.name}
+                  desc={item.desc}
+                  duration={item.duration}
+                  views={item.views}
+                  lastWatchTime={item.uploadTime}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </Container>

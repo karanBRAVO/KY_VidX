@@ -1,4 +1,8 @@
+"use client";
+
 import { Container } from "@mui/material";
+import CommonVideoBox from "../CommonVideoBox";
+import { _LIKED_ } from "./fakeData";
 
 const LikedVideos = () => {
   return (
@@ -26,8 +30,21 @@ const LikedVideos = () => {
               Play All
             </button>
           </div>
-          <div className={"md:w-[70%] text-white p-2"}>
-            <div>Videos</div>
+          <div className={"md:w-[70%] text-white p-2 overflow-auto"}>
+            <div className="w-full gap-3 flex flex-col items-start">
+              {_LIKED_.map((item, index) => (
+                <CommonVideoBox
+                  key={index}
+                  uploader={item.uploader}
+                  thumbnail={`/${item.thumbnail}`}
+                  name={item.name}
+                  desc={item.desc}
+                  duration={item.duration}
+                  views={item.views}
+                  lastWatchTime={item.lastWatchTime}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </Container>
