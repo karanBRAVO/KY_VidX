@@ -1,9 +1,9 @@
+import { Player } from "@/ui/ComponentExporter";
+
 const page = ({ params }) => {
   return (
     <>
-      <div className="text-white mt-[130px]">
-        Playing Video: {params.videoId}
-      </div>
+      <Player videoId={params.videoId} />
     </>
   );
 };
