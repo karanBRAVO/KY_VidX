@@ -85,7 +85,7 @@ const YourChannel = () => {
                 <Box>
                   <Avatar
                     alt="Avatar"
-                    src="/defaultThumbnail.jpg"
+                    src={session?.user?.image}
                     className="cursor-pointer w-20 h-20 lg:w-32 lg:h-32 sm:w-24 sm:h-24 md:w-28 md:h-28 border-4 border-solid border-black"
                   />
                 </Box>
@@ -101,7 +101,7 @@ const YourChannel = () => {
                       component={"h1"}
                       className="capitalize font-black text-white text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-tight tracking-tight"
                     >
-                      Karan Yadav
+                      {session?.user?.name}
                     </Typography>
                   </Box>
                   <Box marginLeft={"15px"}>
