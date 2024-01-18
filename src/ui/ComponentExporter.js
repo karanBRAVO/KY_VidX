@@ -10,3 +10,5 @@ export { default as History } from "./History/History";
 export { default as Player } from "./Player/Player";
 export { default as AuthProvider } from "./Auth/AuthProvider";
 export { default as OAuth } from "./Auth/OAuth";
+export { default as Wait } from "./Wait/Wait";
+export { default as NotAuthenticated } from "./Wait/NotAuthenticated";
