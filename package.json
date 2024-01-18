@@ -16,8 +16,11 @@
     "@mui/icons-material": "^5.15.4",
     "@mui/material": "^5.15.4",
     "@mui/material-nextjs": "^5.15.4",
+    "bcrypt": "^5.1.1",
     "framer-motion": "^10.18.0",
+    "mongoose": "^8.1.0",
     "next": "14.0.4",
+    "next-auth": "^4.24.5",
     "react": "^18",
     "react-dom": "^18",
     "react-intersection-observer": "^9.5.3"

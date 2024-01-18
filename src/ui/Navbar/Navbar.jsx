@@ -9,21 +9,35 @@ import {
   Badge,
   Tooltip,
   Typography,
+  Button,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import VideoCallIcon from "@mui/icons-material/VideoCall";
 import KeyboardVoiceIcon from "@mui/icons-material/KeyboardVoice";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
-import { SideBar, RecommendationBar } from "../ComponentExporter.js";
+import { SideBar, RecommendationBar, OAuth } from "../ComponentExporter.js";
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import VideoCameraMenu from "./VideoCameraMenu.jsx";
 import NotificationMenu from "./NotificationMenu.jsx";
 import SearchBox from "./SearchBox.jsx";
+import { useSession } from "next-auth/react";
+import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
+import LoginIcon from "@mui/icons-material/Login";
 
 const Navbar = () => {
+  const { data: session, status } = useSession();
+
+  const [oauthScreenIsOpen, setOauthScreenIsOpen] = useState(false);
+  const handleOauthScreenOpen = () => {
+    setOauthScreenIsOpen(true);
+  };
+  const handleOauthScreenClose = () => {
+    setOauthScreenIsOpen(false);
+  };
+
   const [searchBoxValue, setSearchBoxValue] = useState("");
   const [searchBoxOpen, setSearchBoxOpen] = useState(false);
   const handleSearchBoxOpen = () => {
@@ -92,6 +106,10 @@ const Navbar = () => {
         className="bg-black px-2 md:py-3 py-2 text-white"
       >
         <SideBar state={sidebarIsOpen} setState={setSideBarIsOpen} />
+        <OAuth
+          isOpen={oauthScreenIsOpen}
+          handleClose={handleOauthScreenClose}
+        />
         <SearchBox
           isOpen={searchBoxOpen}
           handleClose={handleSearchBoxClose}
@@ -196,34 +214,68 @@ const Navbar = () => {
                   <KeyboardVoiceIcon />
                 </IconButton>
               </Tooltip>
-              <Tooltip title={"Create"} className="hidden sm:block">
-                <IconButton
-                  className="text-white hover:bg-gray-800"
-                  onClick={handleVideoCameraOpen}
-                >
-                  <VideoCallIcon />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title={"Notifications"}>
-                <IconButton
-                  className="text-white hover:bg-gray-800"
-                  onClick={handleNotificationMenuOpen}
-                >
-                  <Badge
-                    badgeContent={3}
-                    anchorOrigin={{
-                      vertical: "top",
-                      horizontal: "right",
-                    }}
-                    color="info"
+              {status === "loading" ? (
+                <>
+                  <HourglassBottomIcon className="text-white animate-spin" />
+                </>
+              ) : status === "authenticated" ? (
+                <>
+                  <Tooltip title={"Create"} className="hidden sm:block">
+                    <IconButton
+                      className="text-white hover:bg-gray-800"
+                      onClick={handleVideoCameraOpen}
+                    >
+                      <VideoCallIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title={"Notifications"}>
+                    <IconButton
+                      className="text-white hover:bg-gray-800"
+                      onClick={handleNotificationMenuOpen}
+                    >
+                      <Badge
+                        badgeContent={3}
+                        anchorOrigin={{
+                          vertical: "top",
+                          horizontal: "right",
+                        }}
+                        color="info"
+                      >
+                        <NotificationsNoneOutlinedIcon />
+                      </Badge>
+                    </IconButton>
+                  </Tooltip>
+                  {session?.user?.image ? (
+                    <>
+                      <Avatar
+                        src={session?.user?.image}
+                        alt="/"
+                        className="border-2 border-solid border-white w-11 h-11"
+                      />
+                    </>
+                  ) : (
+                    <Avatar className="bg-yellow-500 text-black cursor-pointer">
+                      {session?.user?.name[0]}
+                    </Avatar>
+                  )}
+                </>
+              ) : (
+                <>
+                  <Button
+                    className="flex flex-row items-center justify-evenly gap-2 text-white bg-black mx-1 rounded-lg sm:rounded-full sm:border-2 border-solid border-white"
+                    onClick={handleOauthScreenOpen}
                   >
-                    <NotificationsNoneOutlinedIcon />
-                  </Badge>
-                </IconButton>
-              </Tooltip>
-              <Avatar className="bg-yellow-500 text-black cursor-pointer">
-                KY
-              </Avatar>
+                    <LoginIcon className="text-white font-black" />
+                    <Typography
+                      variant="button"
+                      component={"span"}
+                      className="text-xs hidden sm:block font-black text-white"
+                    >
+                      Sign In
+                    </Typography>
+                  </Button>
+                </>
+              )}
             </Stack>
           </Box>
         </Stack>
