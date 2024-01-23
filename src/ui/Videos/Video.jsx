@@ -67,6 +67,7 @@ const Video = () => {
                 className="w-full sm:w-[80%] bg-black md:w-[40%] lg:w-[30%] mt-5"
               >
                 <VideoCard
+                  uid={index + 1}
                   uploader={item.uploader}
                   thumbnail={item.thumbnail}
                   name={item.name}

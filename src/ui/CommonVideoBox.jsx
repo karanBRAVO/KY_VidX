@@ -9,8 +9,10 @@ import {
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
+import Link from "next/link";
 
 const CommonVideoBox = ({
+  uid,
   uploader,
   thumbnail,
   name,
@@ -22,36 +24,38 @@ const CommonVideoBox = ({
   return (
     <>
       <Card className="w-full m-2 bg-black text-white flex flex-col sm:flex-row">
-        <CardActionArea className="w-fit">
-          <Box component={"div"} bgcolor={"black"} width={"fit-content"}>
-            <CardMedia
-              component="img"
-              height="250"
-              image={thumbnail}
-              alt="thumnail"
-              className="w-full sm:w-[400px] h-[200px] object-cover rounded-lg bg-black border-[0.51px] border-solid border-gray-800"
-            />
-            <Box
-              component={"div"}
-              bgcolor={"black"}
-              display={"flex"}
-              flexDirection={"column"}
-              alignItems={"center"}
-              justifyContent={"center"}
-              padding={"2px 4px"}
-              borderRadius={"5px"}
-              border={"2px solid gray"}
-              width={"fit-content"}
-              position={"absolute"}
-              top={"5px"}
-              left={"5px"}
-            >
-              <Typography className="text-white font-light text-xs">
-                {duration}
-              </Typography>
+        <Link href={`/player/${uid}`}>
+          <CardActionArea className="w-fit">
+            <Box component={"div"} bgcolor={"black"} width={"fit-content"}>
+              <CardMedia
+                component="img"
+                height="250"
+                image={thumbnail}
+                alt="thumnail"
+                className="w-full sm:w-[400px] h-[200px] object-cover rounded-lg bg-black border-[0.51px] border-solid border-gray-800"
+              />
+              <Box
+                component={"div"}
+                bgcolor={"black"}
+                display={"flex"}
+                flexDirection={"column"}
+                alignItems={"center"}
+                justifyContent={"center"}
+                padding={"2px 4px"}
+                borderRadius={"5px"}
+                border={"2px solid gray"}
+                width={"fit-content"}
+                position={"absolute"}
+                top={"5px"}
+                left={"5px"}
+              >
+                <Typography className="text-white font-light text-xs">
+                  {duration}
+                </Typography>
+              </Box>
             </Box>
-          </Box>
-        </CardActionArea>
+          </CardActionArea>
+        </Link>
 
         <CardContent className="bg-black flex flex-col items-start justify-between">
           <Box>

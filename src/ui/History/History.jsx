@@ -29,6 +29,7 @@ const History = () => {
               {_HISTORY_.map((item, index) => (
                 <CommonVideoBox
                   key={index}
+                  uid={index + 1}
                   uploader={item.uploader}
                   thumbnail={`/${item.thumbnail}`}
                   name={item.name}

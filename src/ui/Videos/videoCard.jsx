@@ -16,8 +16,10 @@ import FileCopyIcon from "@mui/icons-material/FileCopyOutlined";
 import SaveIcon from "@mui/icons-material/Save";
 import DownloadIcon from "@mui/icons-material/Download";
 import ShareIcon from "@mui/icons-material/Share";
+import Link from "next/link";
 
 const VideoCard = ({
+  uid,
   uploader,
   thumbnail,
   name,
@@ -36,41 +38,43 @@ const VideoCard = ({
   return (
     <>
       <Card className="w-full rounded-lg border-[0.51px] border-solid border-gray-800 text-white bg-black hover:shadow-md hover:shadow-gray-800 hover:rounded-sm hover:border-0 hover:scale-105 transition-all ease-linear duration-150">
-        <CardActionArea>
-          <Box
-            component={"div"}
-            position={"relative"}
-            bgcolor={"black"}
-            marginBottom={"1px"}
-          >
-            <CardMedia
-              component="img"
-              height="160"
-              image={thumbnail}
-              alt="thumnail"
-              className="relative object-cover"
-            />
+        <Link href={`/player/${uid}`}>
+          <CardActionArea>
             <Box
               component={"div"}
+              position={"relative"}
               bgcolor={"black"}
-              display={"flex"}
-              flexDirection={"column"}
-              alignItems={"center"}
-              justifyContent={"center"}
-              padding={"2px 4px"}
-              borderRadius={"5px"}
-              border={"2px solid gray"}
-              width={"fit-content"}
-              position={"absolute"}
-              top={"5px"}
-              left={"5px"}
+              marginBottom={"1px"}
             >
-              <Typography className="text-white font-light text-xs">
-                {duration}
-              </Typography>
+              <CardMedia
+                component="img"
+                height="160"
+                image={thumbnail}
+                alt="thumnail"
+                className="relative object-cover"
+              />
+              <Box
+                component={"div"}
+                bgcolor={"black"}
+                display={"flex"}
+                flexDirection={"column"}
+                alignItems={"center"}
+                justifyContent={"center"}
+                padding={"2px 4px"}
+                borderRadius={"5px"}
+                border={"2px solid gray"}
+                width={"fit-content"}
+                position={"absolute"}
+                top={"5px"}
+                left={"5px"}
+              >
+                <Typography className="text-white font-light text-xs">
+                  {duration}
+                </Typography>
+              </Box>
             </Box>
-          </Box>
-        </CardActionArea>
+          </CardActionArea>
+        </Link>
 
         <CardContent className="bg-black flex flex-col items-start justify-between">
           <Box display={"flex"} flexDirection={"row"} alignItems={"start"}>

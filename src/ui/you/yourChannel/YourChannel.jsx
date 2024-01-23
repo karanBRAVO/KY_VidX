@@ -26,12 +26,14 @@ import { NotAuthenticated, Wait } from "@/ui/ComponentExporter.js";
 import Info from "./Info";
 
 import { useState } from "react";
+import VideoTab from "./VideoTab";
+import AnnouncementTab from "./AnnouncementTab";
 
 const YourChannel = () => {
   const { data: session, status } = useSession();
 
   const [showInfo, setShowInfo] = useState(false);
-  const [currentTab, setCurrentTab] = useState("one");
+  const [currentTab, setCurrentTab] = useState("home");
 
   const contents = [
     { desc: "www.vidx.com/@K.Y_KaranYadav98", icon: LanguageIcon },
@@ -81,8 +83,13 @@ const YourChannel = () => {
                   className="w-full h-full rounded-xl cursor-pointer border-2 border-solid border-black shadow-sm shadow-slate-900"
                 />
               </Box>
-              <div className="flex flex-col md:flex-row items-center gap-5">
-                <Box>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
+                <Box
+                  display={"flex"}
+                  flexDirection={"column"}
+                  alignItems={"center"}
+                  justifyContent={"center"}
+                >
                   <Avatar
                     alt="Avatar"
                     src={session?.user?.image}
@@ -154,15 +161,19 @@ const YourChannel = () => {
                   scrollButtons="auto"
                   className="text-white"
                 >
-                  <Tab value="one" label="Home" className="text-slate-400" />
-                  <Tab value="two" label="Videos" className="text-slate-400" />
+                  <Tab value="home" label="Home" className="text-slate-400" />
                   <Tab
-                    value="three"
+                    value="videos"
+                    label="Videos"
+                    className="text-slate-400"
+                  />
+                  <Tab
+                    value="playlists"
                     label="Playlists"
                     className="text-slate-400"
                   />
                   <Tab
-                    value="four"
+                    value="announcements"
                     label="Announcements"
                     className="text-slate-400"
                   />
@@ -186,7 +197,10 @@ const YourChannel = () => {
               </Box>
             </Box>
             <Divider className="bg-slate-400 my-4" />
-            <Box></Box>
+            <Box>
+              {currentTab === "videos" && <VideoTab />}
+              {currentTab === "announcements" && <AnnouncementTab />}
+            </Box>
           </Box>
         ) : (
           <>
