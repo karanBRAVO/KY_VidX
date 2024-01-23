@@ -14,15 +14,26 @@ import CreateIcon from "@mui/icons-material/Create";
 import UploadIcon from "@mui/icons-material/Upload";
 import CloudCircleIcon from "@mui/icons-material/CloudCircle";
 import { useRef, useState } from "react";
+import axios from "axios";
 
 const VideoUploadWindow = ({ isOpen, handleClose }) => {
   const fileUploadInputRef = useRef(null);
   const [file, setFile] = useState();
+  const [uploading, setUploading] = useState(false);
 
-  const handleUpload = () => {
-    if (!file) {
-      alert("Choose a file to upload.");
+  const handleUpload = async () => {
+    if (!file || uploading) {
       return;
+    }
+
+    setUploading(true);
+    try {
+      const res = await axios.post(`/api/video/upload`, { file });
+      console.log(res);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -78,27 +89,25 @@ const VideoUploadWindow = ({ isOpen, handleClose }) => {
               <Typography
                 variant="caption"
                 component={"span"}
-                className="text-white text-lg sm:text-5xl leading-snug tracking-tight font-mono"
+                className="flex flex-col text-white text-lg sm:text-5xl leading-snug tracking-tight font-mono"
               >
-                Upload your videos or shorts
+                <span className="text-xs text-zinc-500">{`(Click me to choose a video)`}</span>
+                Upload your videos or shorts{" "}
               </Typography>
             </Box>
-            <Box
-              display={"flex"}
-              flexDirection={"row"}
-              alignItems={"center"}
-              gap={"4px"}
-              bgcolor={"black"}
-              padding={"5px"}
-              margin={"3px"}
-              border={"2px solid black"}
-              borderRadius={"6px"}
-              component={"span"}
+          </Button>
+          {file && (
+            <Button
+              disabled={uploading}
+              className="flex flex-row items-center gap-3 bg-black p-2 m-1 border-2 border-solid border-black rounded-md disabled:cursor-wait"
+              onClick={() => handleUpload()}
             >
               <UploadIcon className="text-white text-5xl" />
-              <Typography className="text-white font-sans">Upload</Typography>
-            </Box>
-          </Button>
+              <Typography className="text-white font-sans">
+                {uploading ? <>Uploading...</> : <>Upload</>}
+              </Typography>
+            </Button>
+          )}
         </Paper>
       </Dialog>
     </>

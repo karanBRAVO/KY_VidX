@@ -16,6 +16,7 @@
     "@mui/icons-material": "^5.15.4",
     "@mui/material": "^5.15.4",
     "@mui/material-nextjs": "^5.15.4",
+    "axios": "^1.6.5",
     "bcrypt": "^5.1.1",
     "framer-motion": "^10.18.0",
     "mongoose": "^8.1.0",
