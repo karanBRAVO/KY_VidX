@@ -1,0 +1,24 @@
+{
+  "name": "video-server",
+  "version": "1.0.0",
+  "description": "This will handle video related tasks while uploading and streaming.",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "video",
+    "server",
+    "node"
+  ],
+  "author": "karan yadav",
+  "license": "MIT",
+  "dependencies": {
+    "busboy": "^1.6.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.1",
+    "express": "^4.18.2"
+  }
+}
