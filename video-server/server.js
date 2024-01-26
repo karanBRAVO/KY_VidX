@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import UploadRouter from "./routes/upload.route.js";
+import { videoProcessorWorker } from "./utils/task_manager/videoProcessor.task.js";
 
 const app = express();
 dotenv.config();
@@ -11,6 +12,7 @@ app.use(
   })
 );
 const port = process.env.PORT || 5590;
+videoProcessorWorker.run();
 
 app.use("/video-server", UploadRouter);
 
