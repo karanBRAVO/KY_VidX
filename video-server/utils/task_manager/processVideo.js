@@ -116,9 +116,7 @@ export const createMasterFile = (workdir) => {
     const playlistContent = variants
       .map(
         (variant) =>
-          `#EXT-X-STREAM-INF:BANDWIDTH=${variant.bandwidth},RESOLUTION=${
-            variant.resolution
-          }\n${join(workdir, variant.playlist)}`
+          `#EXT-X-STREAM-INF:BANDWIDTH=${variant.bandwidth},RESOLUTION=${variant.resolution}\n${variant.playlist}`
       )
       .join("\n");
 
