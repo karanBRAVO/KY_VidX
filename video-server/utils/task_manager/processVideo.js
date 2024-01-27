@@ -1,6 +1,6 @@
 import { spawn } from "child_process";
 import { writeFileSync } from "fs";
-import { basename, extname } from "path";
+import { basename, extname, join } from "path";
 import { listFilesInDirectory } from "../listFilesInDir.js";
 import { deleteFilesAndDirsIfExists } from "../rmFilesDirs.js";
 
@@ -116,7 +116,9 @@ export const createMasterFile = (workdir) => {
     const playlistContent = variants
       .map(
         (variant) =>
-          `#EXT-X-STREAM-INF:BANDWIDTH=${variant.bandwidth},RESOLUTION=${variant.resolution}\n${workdir}/${variant.playlist}`
+          `#EXT-X-STREAM-INF:BANDWIDTH=${variant.bandwidth},RESOLUTION=${
+            variant.resolution
+          }\n${join(workdir, variant.playlist)}`
       )
       .join("\n");
 

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Http Live Streaming</title>
+  </head>
+  <body>
+    <div>
+      <video width="512" id="video" controls autoplay muted></video>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
+    <script>
+      const video = document.getElementById("video");
+      var videoSrc =
+        "./videos/output-1920x1080-fd43391273fe76f221e02adeeb3faea8/hls/master.m3u8";
+      if (Hls.isSupported()) {
+        var hls = new Hls();
+        hls.loadSource(videoSrc);
+        hls.attachMedia(video);
+      } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+        video.src = videoSrc;
+      }
+    </script>
+  </body>
+</html>
