@@ -1,5 +1,12 @@
 import { Queue, Worker } from "bullmq";
 import dotenv from "dotenv";
+import path from "path";
+import { createNewDirIfNotExists } from "../createNewDir.js";
+import {
+  createMultipleResolutions,
+  createThumbnails,
+  createHLSfiles,
+} from "./processVideo.js";
 
 dotenv.config();
 
@@ -16,15 +23,38 @@ export const videoProcessorQueue = new Queue(queueName, {
   },
 });
 
-export const videoProcessorWorker = new Worker(queueName, async (job) => {}, {
-  connection: {
-    host: process.env.Q_HOST || "localhost",
-    port: process.env.Q_PORT || 6379,
+export const videoProcessorWorker = new Worker(
+  queueName,
+  async (job) => {
+    try {
+      const filepath = job.data.filePath;
+
+      const mainDir = path.join(
+        path.dirname(filepath),
+        path.basename(filepath, path.extname(filepath))
+      );
+      const multipleResolutionsDir = path.join(mainDir, "multiple_resolutions");
+      const thumbnailDir = path.join(mainDir, "thumbnail");
+
+      createNewDirIfNotExists(mainDir, thumbnailDir, multipleResolutionsDir);
+
+      await createThumbnails(filepath, thumbnailDir);
+      await createMultipleResolutions(filepath, multipleResolutionsDir);
+      // await createHLSfiles(multipleResolutionsDir);
+    } catch (err) {
+      return err;
+    }
   },
-  autorun: false,
-  removeOnComplete: true,
-  removeOnFailure: true,
-});
+  {
+    connection: {
+      host: process.env.Q_HOST || "localhost",
+      port: process.env.Q_PORT || 6379,
+    },
+    autorun: false,
+    removeOnComplete: true,
+    removeOnFailure: true,
+  }
+);
 
 videoProcessorWorker.on("completed", (job, result, prev) => {
   console.log(`Job [${job.name}] completed`);

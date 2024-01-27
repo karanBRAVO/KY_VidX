@@ -7,18 +7,34 @@ import { videoProcessorQueue } from "../utils/task_manager/videoProcessor.task.j
 export const uploadNewVideo = async (req, res) => {
   try {
     const bb = busboy({ headers: req.headers });
-    let fileName;
+    let filePath;
 
     bb.on("file", (name, file, info) => {
-      fileName = path.join(`${path.win32.basename(info.filename)}-${random()}`);
-      const filePath = `videos/${fileName}${path.extname(info.filename)}`;
+      const fileName = path.join(
+        `${path.win32.basename(
+          info.filename,
+          path.extname(info.filename)
+        )}-${random()}`
+      );
+      const fileFolderPath = path.resolve(
+        process.cwd(),
+        "../video-server",
+        "videos"
+      );
+      filePath = path.join(
+        fileFolderPath,
+        fileName + path.extname(info.filename)
+      );
       file.pipe(fs.createWriteStream(filePath));
     });
 
     bb.on("close", async () => {
-      await videoProcessorQueue.add(`process-video-${fileName}`, {
-        filename: fileName,
-      });
+      await videoProcessorQueue.add(
+        `process-video-${path.basename(filePath, path.extname(filePath))}`,
+        {
+          filePath: filePath,
+        }
+      );
       res.json({ success: true, message: "Video successfully uploaded" });
     });
 
