@@ -6,6 +6,8 @@ import {
   createMultipleResolutions,
   createThumbnails,
   createHLSfiles,
+  createMasterFile,
+  removeTempFiles,
 } from "./processVideo.js";
 
 dotenv.config();
@@ -35,12 +37,20 @@ export const videoProcessorWorker = new Worker(
       );
       const multipleResolutionsDir = path.join(mainDir, "multiple_resolutions");
       const thumbnailDir = path.join(mainDir, "thumbnail");
+      const hlsDir = path.join(mainDir, "hls");
 
-      createNewDirIfNotExists(mainDir, thumbnailDir, multipleResolutionsDir);
+      createNewDirIfNotExists(
+        mainDir,
+        thumbnailDir,
+        multipleResolutionsDir,
+        hlsDir
+      );
 
       await createThumbnails(filepath, thumbnailDir);
       await createMultipleResolutions(filepath, multipleResolutionsDir);
-      // await createHLSfiles(multipleResolutionsDir);
+      await createHLSfiles(multipleResolutionsDir, hlsDir);
+      createMasterFile(hlsDir);
+      removeTempFiles(multipleResolutionsDir, filepath);
     } catch (err) {
       return err;
     }
