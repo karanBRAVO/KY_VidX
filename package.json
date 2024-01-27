@@ -19,6 +19,7 @@
     "axios": "^1.6.5",
     "bcrypt": "^5.1.1",
     "framer-motion": "^10.18.0",
+    "hls.js": "^1.5.2",
     "mongoose": "^8.1.0",
     "next": "14.0.4",
     "next-auth": "^4.24.5",

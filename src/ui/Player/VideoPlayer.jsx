@@ -3,16 +3,41 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import ShareIcon from "@mui/icons-material/Share";
 import DownloadIcon from "@mui/icons-material/Download";
+import Hls from "hls.js";
+import { useRef, useEffect } from "react";
 
-const VideoPlayer = () => {
+const VideoPlayer = ({ src }) => {
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+
+    if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(src);
+      hls.attachMedia(video);
+    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+      video.src = src;
+    } else {
+      console.error("HLS is not supported in this browser.");
+    }
+
+    return () => {
+      if (video && video.hls) {
+        video.hls.destroy();
+      }
+    };
+  }, [src]);
+
   return (
     <>
       <Container maxWidth={false} className="py-2 my-2">
         <Box>
           <video
+            ref={videoRef}
             controls
-            src="/defaultVideo.mkv"
             poster="/Logo.png"
+            autoPlay
             className="w-full md:h-[80vh] rounded-lg bg-black"
           >
             Sorry, your browser doesn't support embedded videos.
