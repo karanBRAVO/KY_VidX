@@ -35,14 +35,22 @@ const VideoUploadWindow = ({ isOpen, handleClose }) => {
 
     setUploading(true);
     try {
+      const userData = await axios.get(
+        `/api/user/get-user-details/get-user-id`
+      );
+      if (!userData.data.success) return;
+
       const res = await axios.post(
-        `http://localhost:5599/video-server/upload-new-video`,
+        `http://localhost:5599/video-server/upload-new-video/${userData.data.uid}`,
         { file },
         {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
       if (res.data.success) {
+        const { videoId, url } = res.data;
+        console.log(videoId, url);
+        
         setSnackMsg("File uploaded successfully.");
       } else {
         setSnackMsg("Error uploading video.");

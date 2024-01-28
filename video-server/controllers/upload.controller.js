@@ -6,16 +6,17 @@ import { videoProcessorQueue } from "../utils/task_manager/videoProcessor.task.j
 
 export const uploadNewVideo = async (req, res) => {
   try {
+    const { userId } = req.params;
+    if (!userId) throw new Error(`User id not provided`);
+
+    const videoId = random();
+
     const bb = busboy({ headers: req.headers });
     let filePath;
 
     bb.on("file", (name, file, info) => {
-      const fileName = path.join(
-        `${path.win32.basename(
-          info.filename,
-          path.extname(info.filename)
-        )}-${random()}`
-      );
+      const fileName = path.join(`${userId}-${videoId}`);
+
       const fileFolderPath = path.resolve(
         process.cwd(),
         "../video-server",
@@ -35,7 +36,14 @@ export const uploadNewVideo = async (req, res) => {
           filePath: filePath,
         }
       );
-      res.json({ success: true, message: "Video successfully uploaded" });
+      res.json({
+        success: true,
+        message: "Video successfully uploaded",
+        videoId,
+        url:
+          `${req.protocol}://${req.get("host")}` +
+          `/${userId}-${videoId}/hls/master.m3u8`,
+      });
     });
 
     bb.on("error", (err) => {
