@@ -14,6 +14,14 @@ const channelSchema = new mongoose.Schema(
       unique: true,
       trim: true,
     },
+    tagLine: {
+      type: String,
+      required: [true, "Tag Line is required"],
+    },
+    bgImgUrl: {
+      type: String,
+      required: [true, "Background image URL is required"],
+    },
     subscribers: {
       type: [
         {

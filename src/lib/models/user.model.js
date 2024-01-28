@@ -24,6 +24,14 @@ const authSchema = new mongoose.Schema(
       default:
         "https://upload.wikimedia.org/wikipedia/commons/5/50/User_icon-cp.svg",
     },
+    hasChannel: {
+      type: Boolean,
+      default: false,
+      required: [true, "Channel is required."],
+    },
+    dob: {
+      type: String,
+    },
     method: {
       type: String,
       lowercase: true,
