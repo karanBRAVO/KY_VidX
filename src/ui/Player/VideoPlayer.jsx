@@ -5,12 +5,14 @@ import ShareIcon from "@mui/icons-material/Share";
 import DownloadIcon from "@mui/icons-material/Download";
 import Hls from "hls.js";
 import { useRef, useEffect } from "react";
+import CustomPlayer from "./CustomPlayer";
 
 const VideoPlayer = ({ src }) => {
   const videoRef = useRef(null);
 
   useEffect(() => {
     const video = videoRef.current;
+    if (!video) return;
 
     if (Hls.isSupported()) {
       const hls = new Hls();
@@ -33,15 +35,7 @@ const VideoPlayer = ({ src }) => {
     <>
       <Container maxWidth={false} className="py-2 my-2">
         <Box>
-          <video
-            ref={videoRef}
-            controls
-            poster="/Logo.png"
-            autoPlay
-            className="w-full md:h-[80vh] rounded-lg bg-black"
-          >
-            Sorry, your browser doesn't support embedded videos.
-          </video>
+          <CustomPlayer videoRef={videoRef} />
         </Box>
         <Box margin={"2px"}>
           <Typography
