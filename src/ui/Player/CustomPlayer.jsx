@@ -26,11 +26,20 @@ import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
 const CustomPlayer = ({ videoRef }) => {
   // states
   const [currentVideoTime, setCurrentVideoTime] = useState(0);
+  const [currentVolumeLevel, setCurrentVolumeLevel] = useState(1); // Range=[0, 1]
 
   // refs
   const videoWrapperRef = useRef(null);
   const playBtn = useRef(null);
   const pauseBtn = useRef(null);
+  const volumeBtn = useRef(null);
+  const muteBtn = useRef(null);
+  const lowVolumeBtn = useRef(null);
+  const highVolumeBtn = useRef(null);
+  const volumeSlider = useRef(null);
+  const settingsBtn = useRef(null);
+  const settingActions = useRef(null);
+  const settingIcon = useRef(null);
 
   // Play/Pause the video
   const togglePlay = () => {
@@ -47,41 +56,135 @@ const CustomPlayer = ({ videoRef }) => {
     }
   };
 
+  // use keys to perform actions
+  const handleKeyDownEvents = (e) => {
+    e.preventDefault();
+
+    switch (e.key) {
+      case " ":
+      case "k":
+        togglePlay();
+        break;
+      case "m":
+        if (videoRef.current.volume === 0) {
+          unMuteVideo(e);
+        } else {
+          muteVideo(e);
+        }
+        break;
+      default:
+        break;
+    }
+  };
+
+  // update the state with current video time
+  const updateCurrentVideoTime = () => {
+    setCurrentVideoTime(videoRef.current.currentTime);
+  };
+
+  // show video slider
+  const showVolumeSlider = () => {
+    volumeSlider.current.classList.remove("hidden");
+  };
+
+  // hide video slider
+  const hideVolumeSlider = () => {
+    volumeSlider.current.classList.add("hidden");
+  };
+
+  // handle volume change
+  const handleVolumeChange = (e, newValue) => {
+    if (
+      isNaN(newValue) ||
+      newValue === undefined ||
+      newValue === null ||
+      newValue < 0 ||
+      newValue > 1
+    )
+      return;
+    setCurrentVolumeLevel(Number(newValue));
+    videoRef.current.volume = newValue;
+    handleVolumeIconChange(newValue);
+  };
+
+  // handle volume icon change
+  const handleVolumeIconChange = (newValue) => {
+    if (newValue > 0.5 && newValue <= 1) {
+      muteBtn.current.classList.add("w-0");
+      lowVolumeBtn.current.classList.add("w-0");
+      highVolumeBtn.current.classList.remove("w-0");
+    } else if (newValue > 0 && newValue <= 0.5) {
+      muteBtn.current.classList.add("w-0");
+      lowVolumeBtn.current.classList.remove("w-0");
+      highVolumeBtn.current.classList.add("w-0");
+    } else {
+      muteBtn.current.classList.remove("w-0");
+      lowVolumeBtn.current.classList.add("w-0");
+      highVolumeBtn.current.classList.add("w-0");
+    }
+  };
+
+  // mute video
+  let volumeB4mute;
+  const muteVideo = (e) => {
+    volumeB4mute = videoRef.current.volume;
+    handleVolumeChange(e, 0);
+  };
+
+  // unmute video
+  const unMuteVideo = (e) => {
+    handleVolumeChange(e, volumeB4mute || 1);
+  };
+
+  // helpers
+  const volumeChangeHandler = (e) => {
+    handleVolumeChange(e, videoRef.current.volume);
+  };
+
   useEffect(() => {
-    if (!videoWrapperRef.current || !videoRef) return;
+    if (
+      !videoWrapperRef.current ||
+      !videoRef ||
+      !volumeBtn ||
+      !lowVolumeBtn ||
+      !highVolumeBtn ||
+      !muteBtn ||
+      !volumeSlider ||
+      !settingsBtn
+    )
+      return;
 
     // initially focus the video player
     videoWrapperRef.current.focus();
 
-    // use keys to perform actions
-    const handleKeyDownEvents = (e) => {
-      e.preventDefault();
+    // initial volume level
+    videoRef.current.volume = currentVolumeLevel;
 
-      switch (e.key) {
-        case " ":
-        case "k":
-          togglePlay();
-          break;
-        default:
-          break;
-      }
-    };
-
-    // update the state with current video time
-    const updateCurrentVideoTime = () => {
-      setCurrentVideoTime(videoRef.current.currentTime);
-    };
-
+    // keyboard events
     videoWrapperRef.current.addEventListener("keydown", handleKeyDownEvents);
+
+    // duration
     videoRef.current.addEventListener("timeupdate", updateCurrentVideoTime);
+
+    // volume
+    volumeBtn.current.addEventListener("mouseenter", showVolumeSlider);
+    volumeBtn.current.addEventListener("mouseleave", hideVolumeSlider);
+    lowVolumeBtn.current.addEventListener("click", muteVideo);
+    highVolumeBtn.current.addEventListener("click", muteVideo);
+    muteBtn.current.addEventListener("click", unMuteVideo);
+    videoRef.current.addEventListener("volumechange", volumeChangeHandler);
+
+    // settings
 
     // cleanup
     return () => {
+      // keyboard events
       videoWrapperRef.current.removeEventListener(
         "keydown",
         handleKeyDownEvents
       );
 
+      // duration
       videoRef.current.removeEventListener(
         "timeupdate",
         updateCurrentVideoTime
@@ -206,30 +309,54 @@ const CustomPlayer = ({ videoRef }) => {
                   disableTouchRipple
                   disableFocusRipple
                   className="text-white font-black p-0 ml-1"
+                  ref={volumeBtn}
                 >
-                  <Tooltip arrow title="Unmute (m)" placement="top">
+                  <Tooltip
+                    ref={muteBtn}
+                    arrow
+                    title="Unmute (m)"
+                    placement="top"
+                    className="block w-0"
+                  >
                     <VolumeOffIcon className="opacity-70 hover:opacity-100 md:text-4xl text-2xl" />
                   </Tooltip>
-                  <Tooltip arrow title="Mute (m)" placement="top">
-                    <VolumeDownIcon className="opacity-70 hover:opacity-100 hidden md:text-4xl text-2xl" />
+                  <Tooltip
+                    ref={lowVolumeBtn}
+                    arrow
+                    title="Mute (m)"
+                    placement="top"
+                    className="block w-0"
+                  >
+                    <VolumeDownIcon className="opacity-70 hover:opacity-100 md:text-4xl text-2xl" />
                   </Tooltip>
-                  <Tooltip arrow title="Mute (m)" placement="top">
-                    <VolumeUpIcon className="opacity-70 hover:opacity-100 hidden md:text-4xl text-2xl" />
+                  <Tooltip
+                    ref={highVolumeBtn}
+                    arrow
+                    title="Mute (m)"
+                    placement="top"
+                    className="block"
+                  >
+                    <VolumeUpIcon className="opacity-70 hover:opacity-100 md:text-4xl text-2xl" />
                   </Tooltip>
+                  <Slider
+                    component={"div"}
+                    tabIndex={0}
+                    ref={volumeSlider}
+                    value={currentVolumeLevel}
+                    onChange={handleVolumeChange}
+                    min={0}
+                    step={0.0005}
+                    max={1}
+                    size="medium"
+                    sx={{
+                      ".MuiSlider-thumb": {
+                        width: "15px",
+                        height: "15px",
+                      },
+                    }}
+                    className="text-white ml-3 mr-1 w-[50px] hidden"
+                  />
                 </IconButton>
-                <Slider
-                  min={0}
-                  step={0.0005}
-                  max={1}
-                  size="medium"
-                  sx={{
-                    ".MuiSlider-thumb": {
-                      width: "15px",
-                      height: "15px",
-                    },
-                  }}
-                  className="text-white w-[50px] mx-1 hidden transition-all duration-150 ease-linear"
-                />
                 <Typography className="text-white mx-1 p-2">
                   <Typography variant="caption" component={"span"}>
                     {videoRef.current ? (
@@ -262,7 +389,10 @@ const CustomPlayer = ({ videoRef }) => {
                   </Tooltip>
                 </IconButton>
                 <div>
-                  <div className="absolute right-[20%] bottom-[20%] sm:bottom-[15%] w-fit h-fit bg-zinc-700 hidden flex-col items-start rounded-lg overflow-hidden py-2">
+                  <div
+                    ref={settingActions}
+                    className="absolute right-[20%] bottom-[20%] sm:bottom-[15%] w-fit h-fit bg-zinc-700 hidden flex-col items-start rounded-lg overflow-hidden py-2"
+                  >
                     <div className="flex flex-row items-center justify-between hover:bg-gray-600 cursor-pointer p-2 w-full">
                       <div className="flex flex-row items-center gap-1">
                         <SlowMotionVideoIcon />
@@ -309,9 +439,14 @@ const CustomPlayer = ({ videoRef }) => {
                     disableTouchRipple
                     disableFocusRipple
                     className="text-white font-black p-0 ml-1"
+                    ref={settingsBtn}
                   >
                     <Tooltip arrow title="Settings" placement="top">
-                      <SettingsIcon className="opacity-70 hover:opacity-100 md:text-4xl text-2xl" />
+                      <SettingsIcon
+                        component={"i"}
+                        ref={settingIcon}
+                        className="opacity-70 hover:opacity-100 md:text-4xl text-2xl"
+                      />
                     </Tooltip>
                   </IconButton>
                 </div>
