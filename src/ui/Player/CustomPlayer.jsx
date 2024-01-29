@@ -141,6 +141,19 @@ const CustomPlayer = ({ videoRef }) => {
     handleVolumeChange(e, videoRef.current.volume);
   };
 
+  // show/hide settings
+  const toggleSettings = (e) => {
+    if (settingActions.current.classList.contains("hidden")) {
+      settingIcon.current.style.transform = `rotateZ(45deg)`;
+      settingActions.current.classList.remove("hidden");
+      settingActions.current.classList.add("flex");
+    } else {
+      settingIcon.current.style.transform = `rotateZ(-45deg)`;
+      settingActions.current.classList.add("hidden");
+      settingActions.current.classList.remove("flex");
+    }
+  };
+
   useEffect(() => {
     if (
       !videoWrapperRef.current ||
@@ -175,6 +188,7 @@ const CustomPlayer = ({ videoRef }) => {
     videoRef.current.addEventListener("volumechange", volumeChangeHandler);
 
     // settings
+    settingsBtn.current.addEventListener("click", toggleSettings);
 
     // cleanup
     return () => {
@@ -441,12 +455,14 @@ const CustomPlayer = ({ videoRef }) => {
                     className="text-white font-black p-0 ml-1"
                     ref={settingsBtn}
                   >
-                    <Tooltip arrow title="Settings" placement="top">
-                      <SettingsIcon
-                        component={"i"}
-                        ref={settingIcon}
-                        className="opacity-70 hover:opacity-100 md:text-4xl text-2xl"
-                      />
+                    <Tooltip
+                      ref={settingIcon}
+                      arrow
+                      title="Settings"
+                      placement="top"
+                      className="transition-transform origin-center"
+                    >
+                      <SettingsIcon className="opacity-70 hover:opacity-100 md:text-4xl text-2xl text-white" />
                     </Tooltip>
                   </IconButton>
                 </div>
