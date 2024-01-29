@@ -40,6 +40,8 @@ const CustomPlayer = ({ videoRef }) => {
   const settingsBtn = useRef(null);
   const settingActions = useRef(null);
   const settingIcon = useRef(null);
+  const enterFullScreenBtn = useRef(null);
+  const exitFullScreenBtn = useRef(null);
 
   // Play/Pause the video
   const togglePlay = () => {
@@ -60,7 +62,7 @@ const CustomPlayer = ({ videoRef }) => {
   const handleKeyDownEvents = (e) => {
     e.preventDefault();
 
-    switch (e.key) {
+    switch (String(e.key).toLowerCase()) {
       case " ":
       case "k":
         togglePlay();
@@ -71,6 +73,9 @@ const CustomPlayer = ({ videoRef }) => {
         } else {
           muteVideo(e);
         }
+        break;
+      case "f":
+        toggleFullScreen();
         break;
       default:
         break;
@@ -154,6 +159,39 @@ const CustomPlayer = ({ videoRef }) => {
     }
   };
 
+  // full screen mode
+  const toggleFullScreen = () => {
+    if (!document.fullscreenEnabled) {
+      console.log("Full screen not enabled");
+      return;
+    }
+
+    if (!document.fullscreenElement) {
+      videoWrapperRef.current
+        .requestFullscreen()
+        .then(() => {})
+        .catch((err) => {
+          console.error(err);
+        });
+    } else {
+      document
+        .exitFullscreen()
+        .then(() => {})
+        .catch((err) => console.error(err));
+    }
+  };
+
+  // change full screen icon
+  const changeFullScreenIcon = () => {
+    if (document.fullscreenElement) {
+      enterFullScreenBtn.current.classList.add("w-0");
+      exitFullScreenBtn.current.classList.remove("w-0");
+    } else {
+      enterFullScreenBtn.current.classList.remove("w-0");
+      exitFullScreenBtn.current.classList.add("w-0");
+    }
+  };
+
   useEffect(() => {
     if (
       !videoWrapperRef.current ||
@@ -163,7 +201,9 @@ const CustomPlayer = ({ videoRef }) => {
       !highVolumeBtn ||
       !muteBtn ||
       !volumeSlider ||
-      !settingsBtn
+      !settingsBtn ||
+      !enterFullScreenBtn ||
+      !exitFullScreenBtn
     )
       return;
 
@@ -189,6 +229,11 @@ const CustomPlayer = ({ videoRef }) => {
 
     // settings
     settingsBtn.current.addEventListener("click", toggleSettings);
+
+    // full screen mode
+    enterFullScreenBtn.current.addEventListener("click", toggleFullScreen);
+    exitFullScreenBtn.current.addEventListener("click", toggleFullScreen);
+    document.addEventListener("fullscreenchange", changeFullScreenIcon);
 
     // cleanup
     return () => {
@@ -495,11 +540,22 @@ const CustomPlayer = ({ videoRef }) => {
                   disableFocusRipple
                   className="text-white font-black p-0 ml-1 mr-1"
                 >
-                  <Tooltip arrow title="Full screen (f)" placement="top">
-                    <FullscreenIcon className="opacity-70 hover:opacity-100 md:text-4xl text-2xl" />
+                  <Tooltip
+                    ref={enterFullScreenBtn}
+                    arrow
+                    title="Full screen (f)"
+                    placement="top"
+                  >
+                    <FullscreenIcon className="opacity-70 hover:opacity-100 hover:scale-125 transition-all md:text-4xl text-2xl" />
                   </Tooltip>
-                  <Tooltip arrow title="Full screen (f)" placement="top">
-                    <FullscreenExitIcon className="opacity-70 hover:opacity-100 hidden md:text-4xl text-2xl" />
+                  <Tooltip
+                    ref={exitFullScreenBtn}
+                    className="w-0"
+                    arrow
+                    title="Full screen (f)"
+                    placement="top"
+                  >
+                    <FullscreenExitIcon className="opacity-70 hover:opacity-100 hover:scale-75 transition-all md:text-4xl text-2xl" />
                   </Tooltip>
                 </IconButton>
               </div>
