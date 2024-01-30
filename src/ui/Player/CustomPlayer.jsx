@@ -48,6 +48,8 @@ const CustomPlayer = ({ videoRef, videoId }) => {
   const videoPreviewImage = useRef(null);
   const videoPreviewTime = useRef(null);
   const videoControlsWrapper = useRef(null);
+  const replayBtn = useRef(null);
+  const replayIcon = useRef(null);
 
   // show/hide video controls
   const showVideoControls = (e) => {
@@ -121,7 +123,24 @@ const CustomPlayer = ({ videoRef, videoId }) => {
         pauseBtn.current.classList.add("w-0");
         playBtn.current.classList.remove("w-0");
       }
+      if (!replayIcon.current.classList.contains("w-0")) {
+        replayIcon.current.classList.add("w-0");
+      }
     }
+  };
+
+  // show replay video button
+  const showReplayVideoBtn = (e) => {
+    if (replayIcon.current.classList.contains("w-0")) {
+      pauseBtn.current.classList.add("w-0");
+      playBtn.current.classList.add("w-0");
+      replayIcon.current.classList.remove("w-0");
+    }
+  };
+
+  // replay video
+  const replayVideo = () => {
+    togglePlay();
   };
 
   // use keys to perform actions
@@ -142,6 +161,37 @@ const CustomPlayer = ({ videoRef, videoId }) => {
         break;
       case "f":
         toggleFullScreen();
+        break;
+      case "arrowright":
+        if (videoRef.current.currentTime + 5 > videoRef.current.duration) {
+          videoRef.current.currentTime = videoRef.current.duration;
+        } else {
+          videoRef.current.currentTime += 5;
+        }
+        break;
+      case "arrowleft":
+        if (videoRef.current.currentTime - 5 < 0) {
+          videoRef.current.currentTime = 0;
+        } else {
+          videoRef.current.currentTime -= 5;
+        }
+        break;
+      case "arrowup":
+        if (videoRef.current.volume + 0.1 > 1) {
+          videoRef.current.volume = 1;
+        } else {
+          videoRef.current.volume += 0.1;
+        }
+        break;
+      case "arrowdown":
+        if (videoRef.current.volume - 0.1 < 0) {
+          videoRef.current.volume = 0;
+        } else {
+          videoRef.current.volume -= 0.1;
+        }
+        break;
+      case "r":
+        replayVideo();
         break;
       default:
         break;
@@ -308,6 +358,13 @@ const CustomPlayer = ({ videoRef, videoId }) => {
     videoPreviewSlider.current.addEventListener("mousemove", showVideoPreview);
     videoPreviewSlider.current.addEventListener("mouseleave", hideVideoPreview);
 
+    // video ended
+    videoRef.current.addEventListener("ended", showReplayVideoBtn);
+
+    // show controls
+    videoWrapperRef.current.addEventListener("mousemove", showVideoControls);
+    videoWrapperRef.current.addEventListener("mouseleave", hideVideoControls);
+
     // cleanup
     return () => {
       // keyboard events
@@ -434,9 +491,17 @@ const CustomPlayer = ({ videoRef, videoId }) => {
                   disableTouchRipple
                   disableFocusRipple
                   className="text-white font-black p-0 ml-1"
+                  ref={replayBtn}
+                  onClick={replayVideo}
                 >
-                  <Tooltip arrow title="Replay (r)" placement="top">
-                    <ReplayIcon className="opacity-70 hover:opacity-100 hidden md:text-4xl text-2xl" />
+                  <Tooltip
+                    ref={replayIcon}
+                    className="w-0"
+                    arrow
+                    title="Replay (r)"
+                    placement="top"
+                  >
+                    <ReplayIcon className="opacity-70 hover:opacity-100 md:text-4xl text-2xl" />
                   </Tooltip>
                 </IconButton>
                 <IconButton
@@ -611,13 +676,18 @@ const CustomPlayer = ({ videoRef, videoId }) => {
                   disableRipple
                   disableTouchRipple
                   disableFocusRipple
-                  className="text-white font-black p-0 ml-1"
+                  className="text-white font-black p-0 ml-1 hidden lg:block"
                 >
                   <Tooltip arrow title="Theater mode (t)" placement="top">
                     <Crop32Icon className="opacity-70 hover:opacity-100 md:text-4xl text-2xl" />
                   </Tooltip>
-                  <Tooltip arrow title="Theater mode (t)" placement="top">
-                    <Crop169Icon className="opacity-70 hover:opacity-100 hidden md:text-4xl text-2xl" />
+                  <Tooltip
+                    className="w-0"
+                    arrow
+                    title="Theater mode (t)"
+                    placement="top"
+                  >
+                    <Crop169Icon className="opacity-70 hover:opacity-100 md:text-4xl text-2xl" />
                   </Tooltip>
                 </IconButton>
                 <IconButton
