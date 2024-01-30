@@ -9,16 +9,16 @@ import Grid3x3Icon from "@mui/icons-material/Grid3x3";
 
 const Player = ({ videoId }) => {
   videoId = "output-1920x1080-fd43391273fe76f221e02adeeb3faea8";
-  const videoSrc = `http://localhost:5599/${videoId}/hls/master.m3u8`;
+  const videoSrc = `${process.env.NEXT_PUBLIC_VIDEO_SERVER_URL}/${videoId}/hls/master.m3u8`;
 
   return (
     <>
       <section className="mt-[130px] text-white w-full min-h-screen flex flex-col">
-        <h1 className="flex flex-row items-center gap-1 text-xl font-light text-slate-400 m-1 p-1 lowercase">
+        <h1 className="flex flex-row items-center gap-1 text-xl font-light text-slate-400 m-1 p-1 lowercase truncate">
           <Grid3x3Icon />
           VideoID: {videoId}
         </h1>
-        <VideoPlayer src={videoSrc} />
+        <VideoPlayer src={videoSrc} videoId={videoId} />
         <Comments commentId={1} />
         <Divider className="bg-zinc-400 m-1" />
         <Container

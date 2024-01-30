@@ -7,7 +7,7 @@ import Hls from "hls.js";
 import { useRef, useEffect } from "react";
 import CustomPlayer from "./CustomPlayer";
 
-const VideoPlayer = ({ src }) => {
+const VideoPlayer = ({ src, videoId }) => {
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -35,7 +35,7 @@ const VideoPlayer = ({ src }) => {
     <>
       <Container maxWidth={false} className="py-2 my-2">
         <Box>
-          <CustomPlayer videoRef={videoRef} />
+          <CustomPlayer videoRef={videoRef} videoId={videoId} />
         </Box>
         <Box margin={"2px"}>
           <Typography

@@ -23,10 +23,11 @@ import Crop32Icon from "@mui/icons-material/Crop32";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
 
-const CustomPlayer = ({ videoRef }) => {
+const CustomPlayer = ({ videoRef, videoId }) => {
   // states
   const [currentVideoTime, setCurrentVideoTime] = useState(0);
   const [currentVolumeLevel, setCurrentVolumeLevel] = useState(1); // Range=[0, 1]
+  const [currentVideoSliderLevel, setCurrentVideoSliderLevel] = useState(0);
 
   // refs
   const videoWrapperRef = useRef(null);
@@ -42,6 +43,66 @@ const CustomPlayer = ({ videoRef }) => {
   const settingIcon = useRef(null);
   const enterFullScreenBtn = useRef(null);
   const exitFullScreenBtn = useRef(null);
+  const videoPreviewSlider = useRef(null);
+  const videoPreviewContainer = useRef(null);
+  const videoPreviewImage = useRef(null);
+  const videoPreviewTime = useRef(null);
+  const videoControlsWrapper = useRef(null);
+
+  // show/hide video controls
+  const showVideoControls = (e) => {
+    if (
+      videoControlsWrapper.current &&
+      videoControlsWrapper.current.classList.contains("hidden")
+    ) {
+      videoControlsWrapper.current.classList.remove("hidden");
+      videoControlsWrapper.current.classList.add("flex");
+    }
+  };
+  const hideVideoControls = (e) => {
+    if (
+      videoControlsWrapper.current &&
+      videoControlsWrapper.current.classList.contains("flex")
+    ) {
+      videoControlsWrapper.current.classList.remove("flex");
+      videoControlsWrapper.current.classList.add("hidden");
+    }
+  };
+
+  // video slider
+  const handleVideoSliderValueChange = (e, newValue) => {
+    if (isNaN(newValue) || newValue === undefined || newValue === null) return;
+    setCurrentVideoSliderLevel(newValue);
+    videoRef.current.currentTime = newValue;
+  };
+
+  // show/hide video preview
+  let x;
+  let videoSrc;
+  const showVideoPreview = (e) => {
+    const previewWidth = 160;
+    const widthOffset = 70;
+    let offset = 0;
+    if (e.layerX > previewWidth + widthOffset) {
+      offset =
+        window.innerWidth > 640 ? previewWidth + widthOffset : previewWidth;
+    }
+    x = e.layerX - offset;
+    videoSrc = `${
+      process.env.NEXT_PUBLIC_VIDEO_SERVER_URL
+    }/${videoId}/thumbnail/image${String(1).padStart(3, 0)}.png`;
+
+    videoPreviewContainer.current.style.left = `${x}px`;
+    videoPreviewContainer.current.classList.remove("hidden");
+    videoPreviewContainer.current.classList.add("flex");
+    videoPreviewImage.current.src = videoSrc;
+  };
+  const hideVideoPreview = (e) => {
+    videoPreviewContainer.current.style.left = `${x}px`;
+    videoPreviewContainer.current.classList.remove("flex");
+    videoPreviewContainer.current.classList.add("hidden");
+    videoPreviewImage.current.src = videoSrc;
+  };
 
   // Play/Pause the video
   const togglePlay = () => {
@@ -83,8 +144,10 @@ const CustomPlayer = ({ videoRef }) => {
   };
 
   // update the state with current video time
-  const updateCurrentVideoTime = () => {
-    setCurrentVideoTime(videoRef.current.currentTime);
+  const updateCurrentVideoTime = (e) => {
+    const t = videoRef.current.currentTime;
+    setCurrentVideoTime(t);
+    setCurrentVideoSliderLevel(t);
   };
 
   // show video slider
@@ -203,7 +266,8 @@ const CustomPlayer = ({ videoRef }) => {
       !volumeSlider ||
       !settingsBtn ||
       !enterFullScreenBtn ||
-      !exitFullScreenBtn
+      !exitFullScreenBtn ||
+      !videoPreviewSlider
     )
       return;
 
@@ -234,6 +298,10 @@ const CustomPlayer = ({ videoRef }) => {
     enterFullScreenBtn.current.addEventListener("click", toggleFullScreen);
     exitFullScreenBtn.current.addEventListener("click", toggleFullScreen);
     document.addEventListener("fullscreenchange", changeFullScreenIcon);
+
+    // preview slider
+    videoPreviewSlider.current.addEventListener("mousemove", showVideoPreview);
+    videoPreviewSlider.current.addEventListener("mouseleave", hideVideoPreview);
 
     // cleanup
     return () => {
@@ -278,23 +346,36 @@ const CustomPlayer = ({ videoRef }) => {
         className="w-full max-w-[1024px] flex justify-center items-center mx-auto bg-black rounded-lg overflow-hidden mb-5 relative"
         ref={videoWrapperRef}
       >
-        <div className="absolute bottom-0 left-0 right-0 top-0 text-white flex items-end flex-row justify-between">
-          <div className="flex flex-col items-start justify-between w-full bg-[#0000008b] pt-2 pb-[4px] md:px-1">
-            <div className="w-full px-3">
-              <div className="w-40 sm:w-60 aspect-video flex items-start flex-col">
+        <div className="absolute z-0 bottom-0 left-0 right-0 top-0 text-white flex items-end flex-row justify-between">
+          <div
+            ref={videoControlsWrapper}
+            className="flex transition-all flex-col items-start justify-between w-full bg-[#0000008b] pt-2 pb-[4px] md:px-1"
+          >
+            <div className="w-full px-3 relative">
+              <div
+                ref={videoPreviewContainer}
+                className="w-40 sm:w-60 aspect-video absolute z-10 top-[-85px] sm:top-[-130px] hidden items-start flex-col"
+                style={{ transition: "left 100ms linear" }}
+              >
                 <img
-                  src="/defaultThumbnail.jpg"
+                  ref={videoPreviewImage}
                   alt="/"
                   className="w-full h-full border-2 border-solid border-white rounded-lg overflow-hidden"
                   draggable={false}
                 />
-                <span className="text-white font-normal text-sm mx-1">
-                  2:03
-                </span>
+                <span
+                  ref={videoPreviewTime}
+                  className="text-white font-normal text-sm mx-1"
+                ></span>
               </div>
               <Slider
+                component={"div"}
+                ref={videoPreviewSlider}
                 min={0}
-                step={1}
+                step={0.001}
+                max={videoRef.current && videoRef.current.duration}
+                value={currentVideoSliderLevel}
+                onChange={handleVideoSliderValueChange}
                 size="medium"
                 sx={{
                   ".MuiSlider-thumb": {
@@ -450,7 +531,7 @@ const CustomPlayer = ({ videoRef }) => {
                 <div>
                   <div
                     ref={settingActions}
-                    className="absolute right-[20%] bottom-[20%] sm:bottom-[15%] w-fit h-fit bg-zinc-700 hidden flex-col items-start rounded-lg overflow-hidden py-2"
+                    className="absolute z-20 right-[20%] bottom-[20%] sm:bottom-[15%] w-fit h-fit bg-zinc-700 hidden flex-col items-start rounded-lg overflow-hidden py-2"
                   >
                     <div className="flex flex-row items-center justify-between hover:bg-gray-600 cursor-pointer p-2 w-full">
                       <div className="flex flex-row items-center gap-1">
