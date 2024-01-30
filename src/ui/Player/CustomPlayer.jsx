@@ -88,9 +88,14 @@ const CustomPlayer = ({ videoRef, videoId }) => {
         window.innerWidth > 640 ? previewWidth + widthOffset : previewWidth;
     }
     x = e.layerX - offset;
+
+    const sliderRect = videoPreviewSlider.current.getBoundingClientRect();
+    const percentage = (e.clientX - sliderRect.left) / sliderRect.width;
+    const maxValue = videoRef.current ? videoRef.current.duration : 100;
+    const hoverValue = Math.floor(percentage * maxValue);
     videoSrc = `${
       process.env.NEXT_PUBLIC_VIDEO_SERVER_URL
-    }/${videoId}/thumbnail/image${String(1).padStart(3, 0)}.png`;
+    }/${videoId}/thumbnail/image${String(hoverValue).padStart(3, "0")}.png`;
 
     videoPreviewContainer.current.style.left = `${x}px`;
     videoPreviewContainer.current.classList.remove("hidden");
@@ -531,7 +536,7 @@ const CustomPlayer = ({ videoRef, videoId }) => {
                 <div>
                   <div
                     ref={settingActions}
-                    className="absolute z-20 right-[20%] bottom-[20%] sm:bottom-[15%] w-fit h-fit bg-zinc-700 hidden flex-col items-start rounded-lg overflow-hidden py-2"
+                    className="absolute z-20 right-[20%] bottom-[20%] sm:bottom-[15%] md:bottom-[12.5%] lg:bottom-[10%] w-fit h-fit bg-zinc-700 hidden flex-col items-start rounded-lg overflow-hidden py-2"
                   >
                     <div className="flex flex-row items-center justify-between hover:bg-gray-600 cursor-pointer p-2 w-full">
                       <div className="flex flex-row items-center gap-1">
