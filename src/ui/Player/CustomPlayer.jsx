@@ -31,6 +31,7 @@ const CustomPlayer = ({ videoRef, videoId }) => {
 
   // refs
   const videoWrapperRef = useRef(null);
+  const videoOverlay = useRef(null);
   const playBtn = useRef(null);
   const pauseBtn = useRef(null);
   const volumeBtn = useRef(null);
@@ -76,6 +77,7 @@ const CustomPlayer = ({ videoRef, videoId }) => {
     if (isNaN(newValue) || newValue === undefined || newValue === null) return;
     setCurrentVideoSliderLevel(newValue);
     videoRef.current.currentTime = newValue;
+    e.stopPropagation();
   };
 
   // show/hide video preview
@@ -112,7 +114,7 @@ const CustomPlayer = ({ videoRef, videoId }) => {
   };
 
   // Play/Pause the video
-  const togglePlay = () => {
+  const togglePlay = (e) => {
     if (videoRef.current) {
       if (videoRef.current.paused) {
         videoRef.current.play();
@@ -127,6 +129,7 @@ const CustomPlayer = ({ videoRef, videoId }) => {
         replayIcon.current.classList.add("w-0");
       }
     }
+    e.stopPropagation();
   };
 
   // show replay video button
@@ -139,8 +142,8 @@ const CustomPlayer = ({ videoRef, videoId }) => {
   };
 
   // replay video
-  const replayVideo = () => {
-    togglePlay();
+  const replayVideo = (e) => {
+    togglePlay(e);
   };
 
   // use keys to perform actions
@@ -228,6 +231,7 @@ const CustomPlayer = ({ videoRef, videoId }) => {
     setCurrentVolumeLevel(Number(newValue));
     videoRef.current.volume = newValue;
     handleVolumeIconChange(newValue);
+    e.stopPropagation();
   };
 
   // handle volume icon change
@@ -252,11 +256,13 @@ const CustomPlayer = ({ videoRef, videoId }) => {
   const muteVideo = (e) => {
     volumeB4mute = videoRef.current.volume;
     handleVolumeChange(e, 0);
+    e.stopPropagation();
   };
 
   // unmute video
   const unMuteVideo = (e) => {
     handleVolumeChange(e, volumeB4mute || 1);
+    e.stopPropagation();
   };
 
   // helpers
@@ -275,10 +281,11 @@ const CustomPlayer = ({ videoRef, videoId }) => {
       settingActions.current.classList.add("hidden");
       settingActions.current.classList.remove("flex");
     }
+    e.stopPropagation();
   };
 
   // full screen mode
-  const toggleFullScreen = () => {
+  const toggleFullScreen = (e) => {
     if (!document.fullscreenEnabled) {
       console.log("Full screen not enabled");
       return;
@@ -297,10 +304,11 @@ const CustomPlayer = ({ videoRef, videoId }) => {
         .then(() => {})
         .catch((err) => console.error(err));
     }
+    e.stopPropagation();
   };
 
   // change full screen icon
-  const changeFullScreenIcon = () => {
+  const changeFullScreenIcon = (e) => {
     if (document.fullscreenElement) {
       enterFullScreenBtn.current.classList.add("w-0");
       exitFullScreenBtn.current.classList.remove("w-0");
@@ -308,11 +316,13 @@ const CustomPlayer = ({ videoRef, videoId }) => {
       enterFullScreenBtn.current.classList.remove("w-0");
       exitFullScreenBtn.current.classList.add("w-0");
     }
+    e.stopPropagation();
   };
 
   useEffect(() => {
     if (
       !videoWrapperRef.current ||
+      !videoOverlay ||
       !videoRef ||
       !volumeBtn ||
       !lowVolumeBtn ||
@@ -365,6 +375,9 @@ const CustomPlayer = ({ videoRef, videoId }) => {
     videoWrapperRef.current.addEventListener("mousemove", showVideoControls);
     videoWrapperRef.current.addEventListener("mouseleave", hideVideoControls);
 
+    // play/pause video
+    videoOverlay.current.addEventListener("click", togglePlay);
+
     // cleanup
     return () => {
       // keyboard events
@@ -408,7 +421,10 @@ const CustomPlayer = ({ videoRef, videoId }) => {
         className="w-full max-w-[1024px] flex justify-center items-center mx-auto bg-black rounded-lg overflow-hidden mb-5 relative"
         ref={videoWrapperRef}
       >
-        <div className="absolute z-0 bottom-0 left-0 right-0 top-0 text-white flex items-end flex-row justify-between">
+        <div
+          className="absolute z-0 bottom-0 left-0 right-0 top-0 text-white flex items-end flex-row justify-between w-full"
+          ref={videoOverlay}
+        >
           <div
             ref={videoControlsWrapper}
             className="flex transition-all flex-col items-start justify-between w-full bg-[#0000008b] pt-2 pb-[4px] md:px-1"

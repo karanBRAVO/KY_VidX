@@ -1,3 +1,5 @@
+"use client";
+
 import { Avatar, Typography, Button, Container, Box } from "@mui/material";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
