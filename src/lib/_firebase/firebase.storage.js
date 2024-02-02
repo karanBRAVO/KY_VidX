@@ -8,6 +8,7 @@ export const uploadUserImagesToFirebaseStorage = async (
   image
 ) => {
   if (!userId) throw new Error("No user ID has been provided.");
+  if (!dirname) throw new Error("No directory has been provided.");
 
   if (!image || !image.name)
     throw new Error("A valid image has not been provided.");

@@ -10,14 +10,18 @@ const commentReplySchema = new mongoose.Schema(
     reply: {
       type: [
         {
-          userIDs: {
+          userId: {
             type: mongoose.Types.ObjectId,
             ref: "user",
             required: [true, "Who is writing this comment?"],
           },
-          comments: {
+          comment: {
             type: String,
             required: [true, "Comment is required"],
+          },
+          dated: {
+            type: Date,
+            default: new Date(),
           },
         },
       ],
@@ -28,5 +32,5 @@ const commentReplySchema = new mongoose.Schema(
 );
 
 export const CommentReplyModel =
-  mongoose.models["comment"] ||
-  new mongoose.model("comment", commentReplySchema);
+  mongoose.models["commentreply"] ||
+  new mongoose.model("commentreply", commentReplySchema);

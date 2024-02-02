@@ -5,6 +5,7 @@ const subscriptionSchema = new mongoose.Schema(
     userId: {
       type: mongoose.Types.ObjectId,
       required: true,
+      unique: true,
       ref: "user",
     },
     subscriptions: {

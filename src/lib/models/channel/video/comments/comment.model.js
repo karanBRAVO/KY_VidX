@@ -7,7 +7,7 @@ const commentSchema = new mongoose.Schema(
       ref: "video",
       required: [true, "To which video this comment belongs to?"],
     },
-    userID: {
+    userId: {
       type: mongoose.Types.ObjectId,
       ref: "user",
       required: [true, "Who is writing this comment?"],

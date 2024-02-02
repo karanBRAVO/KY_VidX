@@ -5,6 +5,7 @@ const likedVideoSchema = new mongoose.Schema(
     userId: {
       type: mongoose.Types.ObjectId,
       ref: "user",
+      unique: true,
       required: true,
     },
     videoIds: {

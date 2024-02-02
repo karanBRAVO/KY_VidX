@@ -1,10 +1,11 @@
 import mongoose from "mongoose";
 
-const likedVideoSchema = new mongoose.Schema(
+const historySchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Types.ObjectId,
       ref: "user",
+      unique: true,
       required: true,
     },
     details: {
@@ -31,6 +32,5 @@ const likedVideoSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export const LikedVideoModel =
-  mongoose.models["subscription"] ||
-  new mongoose.model("subscription", likedVideoSchema);
+export const HistoryModel =
+  mongoose.models["history"] || new mongoose.model("history", historySchema);

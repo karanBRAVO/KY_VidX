@@ -38,9 +38,11 @@ Available Soon...
 5. Start the Redis server (I'm using docker)
 
    use the bash
+
    ```bash
    docker run --name my_redis -p 6379:6379 -d redis
    ```
+
    or run directly using docker gui
 
 6. Move to the server dir `note that you should be in VidX dir`
