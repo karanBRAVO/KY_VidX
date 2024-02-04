@@ -32,33 +32,30 @@ export const POST = async (req, res) => {
     const video = await VideoModel.findOne({ videoId });
     if (!video) throw new Error(`Video not found`);
 
-    // saving
+    // checking for the history
     const history = await HistoryModel.findOne({ userId: user._id });
-    if (!history) {
-      const newHistory = new HistoryModel({
-        userId: user._id,
-        details: {
-          videoId,
-        },
-      });
-      await newHistory.save();
-    } else {
-      await HistoryModel.updateOne(
-        {
-          userId: user._id,
-        },
-        { $push: { details: videoId } }
-      );
-    }
+    if (!history) throw new Error(`History not found`);
 
-    // updating the views of the video
+    // removing from the history
+    await Promise.all(
+      history.details.map(async (historyItem) => {
+        if (historyItem.videoId == videoId) {
+          await HistoryModel.updateOne(
+            { _id: history._id },
+            { $pull: { details: { videoId } } }
+          );
+        }
+      })
+    );
+
+    // removing from the views of the video
     if (!video.views.includes(user._id)) {
-      await VideoModel.updateOne({ videoId }, { $push: { views: user._id } });
+      await VideoModel.updateOne({ videoId }, { $pull: { views: user._id } });
     }
 
     return NextResponse.json({
       success: true,
-      message: "history saved successfully",
+      message: "history/views removed successfully",
     });
   } catch (err) {
     return NextResponse.json({
