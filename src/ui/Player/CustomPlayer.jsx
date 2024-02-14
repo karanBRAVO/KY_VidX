@@ -22,6 +22,8 @@ import Crop169Icon from "@mui/icons-material/Crop169";
 import Crop32Icon from "@mui/icons-material/Crop32";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
+import CloseIcon from "@mui/icons-material/Close";
+import AspectRatioIcon from "@mui/icons-material/AspectRatio";
 
 const CustomPlayer = ({ videoRef, videoId }) => {
   // states
@@ -153,7 +155,7 @@ const CustomPlayer = ({ videoRef, videoId }) => {
     switch (String(e.key).toLowerCase()) {
       case " ":
       case "k":
-        togglePlay();
+        togglePlay(e);
         break;
       case "m":
         if (videoRef.current.volume === 0) {
@@ -163,7 +165,7 @@ const CustomPlayer = ({ videoRef, videoId }) => {
         }
         break;
       case "f":
-        toggleFullScreen();
+        toggleFullScreen(e);
         break;
       case "arrowright":
         if (videoRef.current.currentTime + 5 > videoRef.current.duration) {
@@ -194,7 +196,7 @@ const CustomPlayer = ({ videoRef, videoId }) => {
         }
         break;
       case "r":
-        replayVideo();
+        replayVideo(e);
         break;
       default:
         break;
@@ -203,9 +205,12 @@ const CustomPlayer = ({ videoRef, videoId }) => {
 
   // update the state with current video time
   const updateCurrentVideoTime = (e) => {
+    e.preventDefault();
+    if (!videoRef.current) return;
     const t = videoRef.current.currentTime;
     setCurrentVideoTime(t);
     setCurrentVideoSliderLevel(t);
+    e.stopPropagation();
   };
 
   // show video slider
@@ -322,17 +327,17 @@ const CustomPlayer = ({ videoRef, videoId }) => {
   useEffect(() => {
     if (
       !videoWrapperRef.current ||
-      !videoOverlay ||
-      !videoRef ||
-      !volumeBtn ||
-      !lowVolumeBtn ||
-      !highVolumeBtn ||
-      !muteBtn ||
-      !volumeSlider ||
-      !settingsBtn ||
-      !enterFullScreenBtn ||
-      !exitFullScreenBtn ||
-      !videoPreviewSlider
+      !videoOverlay.current ||
+      !videoRef.current ||
+      !volumeBtn.current ||
+      !lowVolumeBtn.current ||
+      !highVolumeBtn.current ||
+      !muteBtn.current ||
+      !volumeSlider.current ||
+      !settingsBtn.current ||
+      !enterFullScreenBtn.current ||
+      !exitFullScreenBtn.current ||
+      !videoPreviewSlider.current
     )
       return;
 
@@ -377,21 +382,6 @@ const CustomPlayer = ({ videoRef, videoId }) => {
 
     // play/pause video
     videoOverlay.current.addEventListener("click", togglePlay);
-
-    // cleanup
-    return () => {
-      // keyboard events
-      videoWrapperRef.current.removeEventListener(
-        "keydown",
-        handleKeyDownEvents
-      );
-
-      // duration
-      videoRef.current.removeEventListener(
-        "timeupdate",
-        updateCurrentVideoTime
-      );
-    };
   }, []);
 
   // helper functions
@@ -416,6 +406,7 @@ const CustomPlayer = ({ videoRef, videoId }) => {
 
   return (
     <>
+      <CustomMiniPlayer videoRef={videoRef} />
       <div
         tabIndex={0}
         className="w-full max-w-[1024px] flex justify-center items-center mx-auto bg-black rounded-lg overflow-hidden mb-5 relative"
@@ -734,10 +725,87 @@ const CustomPlayer = ({ videoRef, videoId }) => {
             </div>
           </div>
         </div>
-        <video ref={videoRef} playsInline className="w-full h-full"></video>
+        <video playsInline className="w-full h-full"></video>
       </div>
     </>
   );
 };
 
 export default CustomPlayer;
+
+export const CustomMiniPlayer = ({ videoRef }) => {
+  return (
+    <>
+      <div className="fixed sm:right-5 bottom-0 z-10 hidden sm:block sm:w-96 sm:h-auto aspect-video sm:rounded-t-lg overflow-hidden shadow-md shadow-white border-[1px] border-solid border-b-0 border-white">
+        <div className="absolute top-0 left-0 right-0 bottom-0 w-full h-full flex flex-col items-start bg-[#0000007d]">
+          <div className="w-full p-2 flex flex-row items-center justify-between">
+            <IconButton
+              disableRipple
+              disableTouchRipple
+              disableFocusRipple
+              className="text-white font-black p-0 ml-1"
+            >
+              <Tooltip arrow title="Expand" placement="top">
+                <AspectRatioIcon className="opacity-70 hover:opacity-100 md:text-4xl text-2xl" />
+              </Tooltip>
+            </IconButton>
+            <IconButton
+              disableRipple
+              disableTouchRipple
+              disableFocusRipple
+              className="text-white font-black p-0 ml-1"
+            >
+              <Tooltip arrow title="Close" placement="top">
+                <CloseIcon className="opacity-70 hover:opacity-100 md:text-4xl text-2xl" />
+              </Tooltip>
+            </IconButton>
+          </div>
+          <div className="w-full p-2 h-full flex flex-row items-center justify-center">
+            <IconButton
+              disableRipple
+              disableTouchRipple
+              disableFocusRipple
+              className="text-white font-black p-0 ml-1"
+            >
+              <Tooltip arrow title="Previous" placement="top">
+                <SkipPreviousIcon className="opacity-70 hover:opacity-100 md:text-4xl text-2xl" />
+              </Tooltip>
+            </IconButton>
+            <IconButton
+              disableRipple
+              disableTouchRipple
+              disableFocusRipple
+              className="text-white font-black p-0 ml-1"
+            >
+              <Tooltip arrow title="Play" placement="top">
+                <PlayArrowIcon className="opacity-70 hover:opacity-100 md:text-4xl text-2xl" />
+              </Tooltip>
+              <Tooltip className="w-0" arrow title="Pause" placement="top">
+                <PauseIcon className="opacity-70 hover:opacity-100 md:text-4xl text-2xl" />
+              </Tooltip>
+              <Tooltip className="w-0" arrow title="Replay" placement="top">
+                <ReplayIcon className="opacity-70 hover:opacity-100 md:text-4xl text-2xl" />
+              </Tooltip>
+            </IconButton>
+            <IconButton
+              disableRipple
+              disableTouchRipple
+              disableFocusRipple
+              className="text-white font-black p-0 ml-1"
+            >
+              <Tooltip arrow title="Next" placement="top">
+                <SkipNextIcon className="opacity-70 hover:opacity-100 md:text-4xl text-2xl" />
+              </Tooltip>
+            </IconButton>
+          </div>
+        </div>
+        <video
+          ref={videoRef}
+          playsInline
+          className="w-full h-full"
+          disablePictureInPicture
+        ></video>
+      </div>
+    </>
+  );
+};
