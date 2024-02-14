@@ -734,10 +734,62 @@ const CustomPlayer = ({ videoRef, videoId }) => {
 export default CustomPlayer;
 
 export const CustomMiniPlayer = ({ videoRef }) => {
+  const videoOverlay = useRef(null);
+  const closeBtn = useRef(null);
+  const expandBtn = useRef(null);
+  const playBtn = useRef(null);
+  const pauseBtn = useRef(null);
+  const replayIcon = useRef(null);
+  const skipPrevBtn = useRef(null);
+  const skipNextBtn = useRef(null);
+
+  const togglePlay = (e) => {
+    if (videoRef.current) {
+      if (videoRef.current.paused) {
+        videoRef.current.play();
+        playBtn.current.classList.add("w-0");
+        pauseBtn.current.classList.remove("w-0");
+      } else {
+        videoRef.current.pause();
+        pauseBtn.current.classList.add("w-0");
+        playBtn.current.classList.remove("w-0");
+      }
+      if (!replayIcon.current.classList.contains("w-0")) {
+        replayIcon.current.classList.add("w-0");
+      }
+    }
+  };
+
+  const showVideoOverlay = (e) => {
+    if (videoOverlay.current) {
+      if (videoOverlay.current.classList.contains("hidden")) {
+        videoOverlay.current.classList.remove("hidden");
+        videoOverlay.current.classList.add("flex");
+        // setTimeout(hideVideoOverlay, 3000);
+      }
+    }
+  };
+
+  const hideVideoOverlay = (e) => {
+    if (videoOverlay.current) {
+      if (videoOverlay.current.classList.contains("flex")) {
+        videoOverlay.current.classList.remove("flex");
+        videoOverlay.current.classList.add("hidden");
+      }
+    }
+  };
+
   return (
     <>
-      <div className="fixed sm:right-5 bottom-0 z-10 hidden sm:block sm:w-96 sm:h-auto aspect-video sm:rounded-t-lg overflow-hidden shadow-md shadow-white border-[1px] border-solid border-b-0 border-white">
-        <div className="absolute top-0 left-0 right-0 bottom-0 w-full h-full flex flex-col items-start bg-[#0000007d]">
+      <div
+        onMouseMove={showVideoOverlay}
+        onMouseLeave={hideVideoOverlay}
+        className="fixed sm:right-5 bottom-0 z-10 hidden sm:block sm:w-96 sm:h-auto aspect-video sm:rounded-t-lg overflow-hidden shadow-md shadow-white border-[1px] border-solid border-b-0 border-white"
+      >
+        <div
+          ref={videoOverlay}
+          className="absolute top-0 left-0 right-0 bottom-0 w-full h-full hidden transition-all flex-col items-start bg-[#0000007d]"
+        >
           <div className="w-full p-2 flex flex-row items-center justify-between">
             <IconButton
               disableRipple
@@ -745,7 +797,7 @@ export const CustomMiniPlayer = ({ videoRef }) => {
               disableFocusRipple
               className="text-white font-black p-0 ml-1"
             >
-              <Tooltip arrow title="Expand" placement="top">
+              <Tooltip ref={expandBtn} arrow title="Expand" placement="top">
                 <AspectRatioIcon className="opacity-70 hover:opacity-100 md:text-4xl text-2xl" />
               </Tooltip>
             </IconButton>
@@ -755,7 +807,7 @@ export const CustomMiniPlayer = ({ videoRef }) => {
               disableFocusRipple
               className="text-white font-black p-0 ml-1"
             >
-              <Tooltip arrow title="Close" placement="top">
+              <Tooltip ref={closeBtn} arrow title="Close" placement="top">
                 <CloseIcon className="opacity-70 hover:opacity-100 md:text-4xl text-2xl" />
               </Tooltip>
             </IconButton>
@@ -767,7 +819,7 @@ export const CustomMiniPlayer = ({ videoRef }) => {
               disableFocusRipple
               className="text-white font-black p-0 ml-1"
             >
-              <Tooltip arrow title="Previous" placement="top">
+              <Tooltip ref={skipPrevBtn} arrow title="Previous" placement="top">
                 <SkipPreviousIcon className="opacity-70 hover:opacity-100 md:text-4xl text-2xl" />
               </Tooltip>
             </IconButton>
@@ -776,14 +828,27 @@ export const CustomMiniPlayer = ({ videoRef }) => {
               disableTouchRipple
               disableFocusRipple
               className="text-white font-black p-0 ml-1"
+              onClick={togglePlay}
             >
-              <Tooltip arrow title="Play" placement="top">
+              <Tooltip ref={playBtn} arrow title="Play" placement="top">
                 <PlayArrowIcon className="opacity-70 hover:opacity-100 md:text-4xl text-2xl" />
               </Tooltip>
-              <Tooltip className="w-0" arrow title="Pause" placement="top">
+              <Tooltip
+                ref={pauseBtn}
+                className="w-0"
+                arrow
+                title="Pause"
+                placement="top"
+              >
                 <PauseIcon className="opacity-70 hover:opacity-100 md:text-4xl text-2xl" />
               </Tooltip>
-              <Tooltip className="w-0" arrow title="Replay" placement="top">
+              <Tooltip
+                ref={replayIcon}
+                className="w-0"
+                arrow
+                title="Replay"
+                placement="top"
+              >
                 <ReplayIcon className="opacity-70 hover:opacity-100 md:text-4xl text-2xl" />
               </Tooltip>
             </IconButton>
@@ -793,7 +858,7 @@ export const CustomMiniPlayer = ({ videoRef }) => {
               disableFocusRipple
               className="text-white font-black p-0 ml-1"
             >
-              <Tooltip arrow title="Next" placement="top">
+              <Tooltip ref={skipNextBtn} arrow title="Next" placement="top">
                 <SkipNextIcon className="opacity-70 hover:opacity-100 md:text-4xl text-2xl" />
               </Tooltip>
             </IconButton>
