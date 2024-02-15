@@ -22,6 +22,8 @@ import Crop169Icon from "@mui/icons-material/Crop169";
 import Crop32Icon from "@mui/icons-material/Crop32";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
 
 const CustomPlayer = ({ videoRef, videoId, setVideoQuality }) => {
   const QUALITIES = [
@@ -33,11 +35,14 @@ const CustomPlayer = ({ videoRef, videoId, setVideoQuality }) => {
     { name: "144p", res: "256x144" },
     { name: "Auto", res: "master" },
   ];
+  const PLAYBACK_SPEEDS = [0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0];
 
   // states
   const [currentVideoTime, setCurrentVideoTime] = useState(0);
   const [currentVolumeLevel, setCurrentVolumeLevel] = useState(1); // Range=[0, 1]
   const [currentVideoSliderLevel, setCurrentVideoSliderLevel] = useState(0);
+  const [videoResolution, setVideoResolution] = useState("Auto");
+  const [customPlayBackSpeed, setCustomPlayBackSpeed] = useState(1);
 
   // refs
   const videoWrapperRef = useRef(null);
@@ -64,6 +69,8 @@ const CustomPlayer = ({ videoRef, videoId, setVideoQuality }) => {
   const miniPlayerBtn = useRef(null);
   const showAvailableVideoQualitiesBtn = useRef(null);
   const qualitySelector = useRef(null);
+  const showPlaybackSpeedsBtn = useRef(null);
+  const playbackSpeedsContainer = useRef(null);
 
   // show/hide video controls
   const showVideoControls = (e) => {
@@ -248,6 +255,51 @@ const CustomPlayer = ({ videoRef, videoId, setVideoQuality }) => {
     }
   };
 
+  // playback speed
+  const showPlayBackSpeedOptions = (e) => {
+    if (playbackSpeedsContainer.current) {
+      if (playbackSpeedsContainer.current.classList.contains("hidden")) {
+        playbackSpeedsContainer.current.classList.remove("hidden");
+        playbackSpeedsContainer.current.classList.add("flex");
+      }
+    }
+    e.stopPropagation();
+  };
+
+  // hide the play back speed options
+  const hidePlaybackSpeedOptions = () => {
+    if (playbackSpeedsContainer.current) {
+      if (playbackSpeedsContainer.current.classList.contains("flex")) {
+        playbackSpeedsContainer.current.classList.remove("flex");
+        playbackSpeedsContainer.current.classList.add("hidden");
+      }
+    }
+  };
+
+  // change the playback speed
+  const changePlaybackSpeed = (speed) => {
+    setCustomPlayBackSpeed(speed);
+  };
+
+  // custom(input) playback speed
+  const increasePlaybackSpeed = (e) => {
+    setCustomPlayBackSpeed((prevSpeed) => prevSpeed + 0.25);
+    e.stopPropagation();
+  };
+  const decreasePlaybackSpeed = (e) => {
+    if (customPlayBackSpeed > 0.25) {
+      setCustomPlayBackSpeed((prevSpeed) => prevSpeed - 0.25);
+    }
+    e.stopPropagation();
+  };
+
+  useEffect(() => {
+    if (videoRef.current && customPlayBackSpeed > 0.25) {
+      videoRef.current.playbackRate = customPlayBackSpeed;
+      hidePlaybackSpeedOptions();
+    }
+  }, [customPlayBackSpeed]);
+
   // update the state with current video time
   const updateCurrentVideoTime = (e) => {
     e.preventDefault();
@@ -390,7 +442,8 @@ const CustomPlayer = ({ videoRef, videoId, setVideoQuality }) => {
       !enterFullScreenBtn.current ||
       !exitFullScreenBtn.current ||
       !videoPreviewSlider.current ||
-      !showAvailableVideoQualitiesBtn.current
+      !showAvailableVideoQualitiesBtn.current ||
+      !showPlaybackSpeedsBtn
     )
       return;
 
@@ -454,6 +507,16 @@ const CustomPlayer = ({ videoRef, videoId, setVideoQuality }) => {
       showAvailableQualities,
       false
     );
+
+    // play back speed
+    showPlaybackSpeedsBtn.current.addEventListener(
+      "click",
+      showPlayBackSpeedOptions,
+      false
+    );
+    videoRef.current.addEventListener("ratechange", (e) => {
+      changePlaybackSpeed(videoRef.current.playbackRate);
+    });
   }, []);
 
   // helper functions
@@ -690,6 +753,7 @@ const CustomPlayer = ({ videoRef, videoId, setVideoQuality }) => {
                           key={idx}
                           onMouseDown={(e) => {
                             chooseVideoQuality(quality.res);
+                            setVideoResolution(quality.name);
                             e.stopPropagation();
                           }}
                           className="py-2 px-3 hover:bg-gray-600 text-white text-xl font-normal w-full"
@@ -698,8 +762,52 @@ const CustomPlayer = ({ videoRef, videoId, setVideoQuality }) => {
                         </div>
                       ))}
                     </div>
+                    <div
+                      ref={playbackSpeedsContainer}
+                      className="absolute z-[5] w-full h-full cursor-pointer top-0 left-0 hidden flex-col items-start bg-zinc-700 rounded-lg overflow-auto"
+                    >
+                      {PLAYBACK_SPEEDS.map((speed, idx) => (
+                        <div
+                          key={idx}
+                          onMouseDown={(e) => {
+                            changePlaybackSpeed(speed);
+                            e.stopPropagation();
+                          }}
+                          className="py-2 px-3 hover:bg-gray-600 text-white text-xl font-normal w-full"
+                        >
+                          <span>{speed}x</span>
+                        </div>
+                      ))}
+                      <Typography
+                        variant="caption"
+                        component={"span"}
+                        className="text-white capitalize p-1 bg-zinc-800 w-full"
+                      >
+                        Custom
+                      </Typography>
+                      <div className="flex flex-row items-center justify-between text-white w-full bg-zinc-800">
+                        <IconButton
+                          className="hover:bg-gray-600"
+                          onMouseDown={increasePlaybackSpeed}
+                        >
+                          <AddIcon className="text-white" />
+                        </IconButton>
+                        <Typography variant="button" component={"span"}>
+                          {customPlayBackSpeed}
+                        </Typography>
+                        <IconButton
+                          className="hover:bg-gray-600"
+                          onMouseDown={decreasePlaybackSpeed}
+                        >
+                          <RemoveIcon className="text-white" />
+                        </IconButton>
+                      </div>
+                    </div>
                     <div className="flex flex-row items-center justify-between hover:bg-gray-600 cursor-pointer p-2 w-full">
-                      <div className="flex flex-row items-center gap-1">
+                      <div
+                        ref={showPlaybackSpeedsBtn}
+                        className="flex flex-row items-center gap-1"
+                      >
                         <SlowMotionVideoIcon />
                         <Typography
                           variant="subtitle1"
@@ -714,7 +822,7 @@ const CustomPlayer = ({ videoRef, videoId, setVideoQuality }) => {
                         component={"span"}
                         className="ml-4"
                       >
-                        1x
+                        {customPlayBackSpeed}x
                       </Typography>
                       <KeyboardArrowRightIcon />
                     </div>
@@ -737,7 +845,7 @@ const CustomPlayer = ({ videoRef, videoId, setVideoQuality }) => {
                         component={"span"}
                         className="ml-4"
                       >
-                        Auto
+                        {videoResolution}
                       </Typography>
                       <KeyboardArrowRightIcon />
                     </div>
