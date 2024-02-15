@@ -47,7 +47,7 @@ const VideoPlayer = ({ src, videoId, videoQuality, setVideoQuality }) => {
           <Typography
             variant="h3"
             component={"h1"}
-            className="text-lg sm:text-2xl md:text-6xl"
+            className="text-lg sm:text-3xl md:text-5xl lg:text-7xl"
           >
             My Project Intro VIDX | Material UI | Tailwind CSS | Next JS
           </Typography>

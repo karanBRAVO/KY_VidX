@@ -20,7 +20,12 @@ const Player = ({ videoId }) => {
           <Grid3x3Icon />
           VideoID: {videoId}
         </h1>
-        <VideoPlayer src={videoSrc} videoId={videoId} />
+        <VideoPlayer
+          src={videoSrc}
+          videoId={videoId}
+          videoQuality={videoQuality}
+          setVideoQuality={setVideoQuality}
+        />
         <Comments commentId={1} />
         <Divider className="bg-zinc-400 m-1" />
         <Container

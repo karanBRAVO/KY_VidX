@@ -24,7 +24,15 @@ import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
 
 const CustomPlayer = ({ videoRef, videoId, setVideoQuality }) => {
-  const QUALITIES = ["1080p", "720p", "480p", "360p", "240p", "144p", "Auto"];
+  const QUALITIES = [
+    { name: "1080p", res: "1920x1080" },
+    { name: "720p", res: "1280x720" },
+    { name: "480p", res: "854x480" },
+    { name: "360p", res: "640x360" },
+    { name: "240p", res: "426x240" },
+    { name: "144p", res: "256x144" },
+    { name: "Auto", res: "master" },
+  ];
 
   // states
   const [currentVideoTime, setCurrentVideoTime] = useState(0);
@@ -208,17 +216,16 @@ const CustomPlayer = ({ videoRef, videoId, setVideoQuality }) => {
 
   // choose the quality of the video
   const chooseVideoQuality = (quality) => {
-    console.log(quality);
-    if (quality.toLowerCase() === "auto") {
-      quality = "master";
+    let _res_ = "";
+    if (quality.toLowerCase() === "master") {
+      _res_ = quality;
     } else {
-      quality = `video-output-${quality}`;
+      _res_ = `video-output-${quality}`;
     }
-    setVideoQuality(quality);
-
-    if (qualitySelector.current) {
-      qualitySelector.current.classList.remove("flex");
-      qualitySelector.current.classList.add("hidden");
+    setVideoQuality(_res_);
+    hideAvailableVideoQualities();
+    if (settingsBtn.current) {
+      settingsBtn.current.click();
     }
   };
 
@@ -229,6 +236,16 @@ const CustomPlayer = ({ videoRef, videoId, setVideoQuality }) => {
       qualitySelector.current.classList.remove("hidden");
     }
     e.stopPropagation();
+  };
+
+  // hide available video quality selectors
+  const hideAvailableVideoQualities = () => {
+    if (qualitySelector.current) {
+      if (qualitySelector.current.classList.contains("flex")) {
+        qualitySelector.current.classList.remove("flex");
+        qualitySelector.current.classList.add("hidden");
+      }
+    }
   };
 
   // update the state with current video time
@@ -314,6 +331,7 @@ const CustomPlayer = ({ videoRef, videoId, setVideoQuality }) => {
       settingActions.current.classList.add("hidden");
       settingActions.current.classList.remove("flex");
     }
+    hideAvailableVideoQualities();
     e.stopPropagation();
   };
 
@@ -391,17 +409,25 @@ const CustomPlayer = ({ videoRef, videoId, setVideoQuality }) => {
     // volume
     volumeBtn.current.addEventListener("mouseenter", showVolumeSlider);
     volumeBtn.current.addEventListener("mouseleave", hideVolumeSlider);
-    lowVolumeBtn.current.addEventListener("click", muteVideo);
-    highVolumeBtn.current.addEventListener("click", muteVideo);
-    muteBtn.current.addEventListener("click", unMuteVideo);
+    lowVolumeBtn.current.addEventListener("click", muteVideo, false);
+    highVolumeBtn.current.addEventListener("click", muteVideo, false);
+    muteBtn.current.addEventListener("click", unMuteVideo, false);
     videoRef.current.addEventListener("volumechange", volumeChangeHandler);
 
     // settings
-    settingsBtn.current.addEventListener("click", toggleSettings);
+    settingsBtn.current.addEventListener("click", toggleSettings, false);
 
     // full screen mode
-    enterFullScreenBtn.current.addEventListener("click", toggleFullScreen);
-    exitFullScreenBtn.current.addEventListener("click", toggleFullScreen);
+    enterFullScreenBtn.current.addEventListener(
+      "click",
+      toggleFullScreen,
+      false
+    );
+    exitFullScreenBtn.current.addEventListener(
+      "click",
+      toggleFullScreen,
+      false
+    );
     document.addEventListener("fullscreenchange", changeFullScreenIcon);
 
     // preview slider
@@ -414,9 +440,10 @@ const CustomPlayer = ({ videoRef, videoId, setVideoQuality }) => {
     // show controls
     videoWrapperRef.current.addEventListener("mousemove", showVideoControls);
     videoWrapperRef.current.addEventListener("mouseleave", hideVideoControls);
+    videoWrapperRef.current.addEventListener("touchmove", showVideoControls);
 
     // play/pause video
-    videoOverlay.current.addEventListener("click", togglePlay);
+    videoOverlay.current.addEventListener("click", togglePlay, false);
 
     // mini-player
     miniPlayerBtn.current.addEventListener("click", showMiniPlayer, false);
@@ -457,7 +484,7 @@ const CustomPlayer = ({ videoRef, videoId, setVideoQuality }) => {
         ref={videoWrapperRef}
       >
         <div
-          className="absolute z-0 bottom-0 left-0 right-0 top-0 text-white flex items-end flex-row justify-between w-full"
+          className="absolute z-[1] bottom-0 left-0 right-0 top-0 text-white flex items-end flex-row justify-between w-full"
           ref={videoOverlay}
         >
           <div
@@ -467,7 +494,7 @@ const CustomPlayer = ({ videoRef, videoId, setVideoQuality }) => {
             <div className="w-full px-3 relative">
               <div
                 ref={videoPreviewContainer}
-                className="w-40 sm:w-60 aspect-video absolute z-10 top-[-85px] sm:top-[-130px] hidden items-start flex-col"
+                className="w-40 sm:w-60 aspect-video absolute z-[2] top-[-85px] sm:top-[-130px] hidden items-start flex-col"
                 style={{ transition: "left 100ms linear" }}
               >
                 <img
@@ -651,26 +678,26 @@ const CustomPlayer = ({ videoRef, videoId, setVideoQuality }) => {
                 </IconButton>
                 <div>
                   <div
-                    ref={qualitySelector}
-                    className="absolute w-full h-full md:w-fit md:h-auto md:top-1 md:left-1 z-[50] cursor-pointer top-0 left-0 hidden flex-col items-start bg-zinc-700 rounded-lg overflow-auto"
-                  >
-                    {QUALITIES.map((quality, idx) => (
-                      <div
-                        key={idx}
-                        onClick={(e) => {
-                          chooseVideoQuality(quality);
-                          e.stopPropagation();
-                        }}
-                        className="py-2 px-3 hover:bg-gray-800 text-white text-xl font-normal w-full"
-                      >
-                        <span>{quality}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <div
                     ref={settingActions}
-                    className="absolute z-20 right-[20%] bottom-[20%] sm:bottom-[15%] md:bottom-[12.5%] lg:bottom-[10%] w-fit h-fit bg-zinc-700 hidden flex-col items-start rounded-lg overflow-hidden py-2"
+                    className="absolute z-[3] right-[20%] bottom-[20%] sm:bottom-[15%] md:bottom-[12.5%] lg:bottom-[10%] w-fit h-fit bg-zinc-700 hidden flex-col items-start rounded-lg overflow-hidden py-2"
                   >
+                    <div
+                      ref={qualitySelector}
+                      className="absolute z-[4] w-full h-full cursor-pointer top-0 left-0 hidden flex-col items-start bg-zinc-700 rounded-lg overflow-auto"
+                    >
+                      {QUALITIES.map((quality, idx) => (
+                        <div
+                          key={idx}
+                          onMouseDown={(e) => {
+                            chooseVideoQuality(quality.res);
+                            e.stopPropagation();
+                          }}
+                          className="py-2 px-3 hover:bg-gray-600 text-white text-xl font-normal w-full"
+                        >
+                          <span>{quality.name}</span>
+                        </div>
+                      ))}
+                    </div>
                     <div className="flex flex-row items-center justify-between hover:bg-gray-600 cursor-pointer p-2 w-full">
                       <div className="flex flex-row items-center gap-1">
                         <SlowMotionVideoIcon />

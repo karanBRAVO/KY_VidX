@@ -37,7 +37,8 @@ const CustomMiniPlayer = () => {
 
   useEffect(() => {
     const showMiniPlayer = localStorage.getItem("showMiniPlayer");
-    if (!showMiniPlayer || !Boolean(showMiniPlayer)) {
+
+    if (!showMiniPlayer || showMiniPlayer == "false") {
       if (videoContainer.current.classList.contains("sm:block")) {
         videoContainer.current.classList.remove("sm:block");
       }
@@ -119,7 +120,7 @@ const CustomMiniPlayer = () => {
       >
         <div
           ref={videoOverlay}
-          className="absolute top-0 left-0 right-0 bottom-0 w-full h-full hidden transition-all flex-col items-start bg-[#0000007d]"
+          className="absolute z-[1] top-0 left-0 right-0 bottom-0 w-full h-full hidden transition-all flex-col items-start bg-[#0000007d]"
         >
           <div className="w-full p-2 flex flex-row items-center justify-between">
             <IconButton
