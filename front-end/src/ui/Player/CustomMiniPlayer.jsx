@@ -37,12 +37,16 @@ const CustomMiniPlayer = () => {
 
   useEffect(() => {
     const showMiniPlayer = localStorage.getItem("showMiniPlayer");
-    if (!showMiniPlayer) {
-      videoContainer.current.classList.remove("sm:block");
+    if (!showMiniPlayer || !Boolean(showMiniPlayer)) {
+      if (videoContainer.current.classList.contains("sm:block")) {
+        videoContainer.current.classList.remove("sm:block");
+      }
       videoContainer.current.classList.add("sm:hidden");
       return;
     } else {
-      videoContainer.current.classList.remove("sm:hidden");
+      if (videoContainer.current.classList.contains("sm:hidden")) {
+        videoContainer.current.classList.remove("sm:hidden");
+      }
       videoContainer.current.classList.add("sm:block");
     }
 
@@ -111,7 +115,7 @@ const CustomMiniPlayer = () => {
         onMouseMove={showVideoOverlay}
         onMouseLeave={hideVideoOverlay}
         ref={videoContainer}
-        className="fixed sm:right-5 bottom-0 z-10 hidden sm:block sm:w-96 sm:h-auto aspect-video sm:rounded-t-lg overflow-hidden shadow-md shadow-white border-[1px] border-solid border-b-0 border-white"
+        className="fixed sm:right-5 bottom-0 z-10 hidden sm:hidden sm:w-96 sm:h-auto aspect-video sm:rounded-t-lg overflow-hidden shadow-md shadow-white border-[1px] border-solid border-b-0 border-white"
       >
         <div
           ref={videoOverlay}

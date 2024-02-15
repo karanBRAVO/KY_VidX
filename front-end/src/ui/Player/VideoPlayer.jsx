@@ -9,7 +9,7 @@ import Hls from "hls.js";
 import { useRef, useEffect } from "react";
 import CustomPlayer from "./CustomPlayer";
 
-const VideoPlayer = ({ src, videoId }) => {
+const VideoPlayer = ({ src, videoId, videoQuality, setVideoQuality }) => {
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -31,13 +31,17 @@ const VideoPlayer = ({ src, videoId }) => {
         video.hls.destroy();
       }
     };
-  }, [src]);
+  }, [src, videoQuality]);
 
   return (
     <>
       <Container maxWidth={false} className="py-2 my-2">
         <Box>
-          <CustomPlayer videoRef={videoRef} videoId={videoId} />
+          <CustomPlayer
+            videoRef={videoRef}
+            videoId={videoId}
+            setVideoQuality={setVideoQuality}
+          />
         </Box>
         <Box margin={"2px"}>
           <Typography

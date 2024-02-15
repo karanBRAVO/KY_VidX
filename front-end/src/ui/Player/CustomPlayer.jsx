@@ -23,7 +23,9 @@ import Crop32Icon from "@mui/icons-material/Crop32";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
 
-const CustomPlayer = ({ videoRef, videoId }) => {
+const CustomPlayer = ({ videoRef, videoId, setVideoQuality }) => {
+  const QUALITIES = ["1080p", "720p", "480p", "360p", "240p", "144p", "Auto"];
+
   // states
   const [currentVideoTime, setCurrentVideoTime] = useState(0);
   const [currentVolumeLevel, setCurrentVolumeLevel] = useState(1); // Range=[0, 1]
@@ -52,6 +54,8 @@ const CustomPlayer = ({ videoRef, videoId }) => {
   const replayBtn = useRef(null);
   const replayIcon = useRef(null);
   const miniPlayerBtn = useRef(null);
+  const showAvailableVideoQualitiesBtn = useRef(null);
+  const qualitySelector = useRef(null);
 
   // show/hide video controls
   const showVideoControls = (e) => {
@@ -202,6 +206,31 @@ const CustomPlayer = ({ videoRef, videoId }) => {
     }
   };
 
+  // choose the quality of the video
+  const chooseVideoQuality = (quality) => {
+    console.log(quality);
+    if (quality.toLowerCase() === "auto") {
+      quality = "master";
+    } else {
+      quality = `video-output-${quality}`;
+    }
+    setVideoQuality(quality);
+
+    if (qualitySelector.current) {
+      qualitySelector.current.classList.remove("flex");
+      qualitySelector.current.classList.add("hidden");
+    }
+  };
+
+  // show the available video quality
+  const showAvailableQualities = (e) => {
+    if (qualitySelector.current) {
+      qualitySelector.current.classList.add("flex");
+      qualitySelector.current.classList.remove("hidden");
+    }
+    e.stopPropagation();
+  };
+
   // update the state with current video time
   const updateCurrentVideoTime = (e) => {
     e.preventDefault();
@@ -342,7 +371,8 @@ const CustomPlayer = ({ videoRef, videoId }) => {
       !settingsBtn.current ||
       !enterFullScreenBtn.current ||
       !exitFullScreenBtn.current ||
-      !videoPreviewSlider.current
+      !videoPreviewSlider.current ||
+      !showAvailableVideoQualitiesBtn.current
     )
       return;
 
@@ -390,6 +420,13 @@ const CustomPlayer = ({ videoRef, videoId }) => {
 
     // mini-player
     miniPlayerBtn.current.addEventListener("click", showMiniPlayer, false);
+
+    // video quality change
+    showAvailableVideoQualitiesBtn.current.addEventListener(
+      "click",
+      showAvailableQualities,
+      false
+    );
   }, []);
 
   // helper functions
@@ -614,6 +651,23 @@ const CustomPlayer = ({ videoRef, videoId }) => {
                 </IconButton>
                 <div>
                   <div
+                    ref={qualitySelector}
+                    className="absolute w-full h-full md:w-fit md:h-auto md:top-1 md:left-1 z-[50] cursor-pointer top-0 left-0 hidden flex-col items-start bg-zinc-700 rounded-lg overflow-auto"
+                  >
+                    {QUALITIES.map((quality, idx) => (
+                      <div
+                        key={idx}
+                        onClick={(e) => {
+                          chooseVideoQuality(quality);
+                          e.stopPropagation();
+                        }}
+                        className="py-2 px-3 hover:bg-gray-800 text-white text-xl font-normal w-full"
+                      >
+                        <span>{quality}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div
                     ref={settingActions}
                     className="absolute z-20 right-[20%] bottom-[20%] sm:bottom-[15%] md:bottom-[12.5%] lg:bottom-[10%] w-fit h-fit bg-zinc-700 hidden flex-col items-start rounded-lg overflow-hidden py-2"
                   >
@@ -637,7 +691,10 @@ const CustomPlayer = ({ videoRef, videoId }) => {
                       </Typography>
                       <KeyboardArrowRightIcon />
                     </div>
-                    <div className="flex flex-row items-center justify-between hover:bg-gray-600 cursor-pointer p-2  w-full">
+                    <div
+                      ref={showAvailableVideoQualitiesBtn}
+                      className="flex flex-row items-center justify-between hover:bg-gray-600 cursor-pointer p-2  w-full"
+                    >
                       <div className="flex flex-row items-center gap-1">
                         <TuneIcon />
                         <Typography
@@ -653,7 +710,7 @@ const CustomPlayer = ({ videoRef, videoId }) => {
                         component={"span"}
                         className="ml-4"
                       >
-                        Auto 480p
+                        Auto
                       </Typography>
                       <KeyboardArrowRightIcon />
                     </div>

@@ -1,6 +1,0 @@
-{
-  "/page": "app/page.js",
-  "/player/[videoId]/page": "app/player/[videoId]/page.js",
-  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js"
-}

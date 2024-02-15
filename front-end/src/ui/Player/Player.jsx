@@ -6,10 +6,12 @@ import Comments from "./Comments";
 import VideoPlayer from "./VideoPlayer";
 import { Container, Divider } from "@mui/material";
 import Grid3x3Icon from "@mui/icons-material/Grid3x3";
+import { useState } from "react";
 
 const Player = ({ videoId }) => {
   videoId = "output-1920x1080-fd43391273fe76f221e02adeeb3faea8";
-  const videoSrc = `${process.env.NEXT_PUBLIC_VIDEO_SERVER_URL}/${videoId}/hls/master.m3u8`;
+  const [videoQuality, setVideoQuality] = useState("master");
+  const videoSrc = `${process.env.NEXT_PUBLIC_VIDEO_SERVER_URL}/${videoId}/hls/${videoQuality}.m3u8`;
 
   return (
     <>
