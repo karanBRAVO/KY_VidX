@@ -9,6 +9,7 @@ import CssBaseLine from "@mui/material/CssBaseline";
 import { AuthProvider, NavigationBar } from "@/ui/ComponentExporter.js";
 import { getServerSession } from "next-auth";
 import CustomMiniPlayer from "@/ui/Player/CustomMiniPlayer";
+import StoreProvider from "./StoreProvider";
 
 export const metadata = {
   title: "VidX",
@@ -19,20 +20,22 @@ const RootLayout = async ({ children }) => {
   const session = await getServerSession();
 
   return (
-    <html lang="en">
-      <body className="bg-black">
-        <AuthProvider session={session}>
-          <AppRouterCacheProvider>
-            <StyledEngineProvider injectFirst>
-              <CssBaseLine />
-              <NavigationBar />
-              <CustomMiniPlayer />
-              {children}
-            </StyledEngineProvider>
-          </AppRouterCacheProvider>
-        </AuthProvider>
-      </body>
-    </html>
+    <StoreProvider>
+      <html lang="en">
+        <body className="bg-black">
+          <AuthProvider session={session}>
+            <AppRouterCacheProvider>
+              <StyledEngineProvider injectFirst>
+                <CssBaseLine />
+                <NavigationBar />
+                <CustomMiniPlayer />
+                {children}
+              </StyledEngineProvider>
+            </AppRouterCacheProvider>
+          </AuthProvider>
+        </body>
+      </html>
+    </StoreProvider>
   );
 };
 

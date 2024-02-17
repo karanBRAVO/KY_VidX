@@ -41,6 +41,7 @@ const VideoPlayer = ({ src, videoId, videoQuality, setVideoQuality }) => {
             videoRef={videoRef}
             videoId={videoId}
             setVideoQuality={setVideoQuality}
+            videoURL={src}
           />
         </Box>
         <Box margin={"2px"}>

@@ -2,6 +2,12 @@
 
 import { IconButton, Typography, Slider, Tooltip } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  _showMiniVideoPlayer,
+  _hideMiniVideoPlayer,
+} from "@/lib/_store/features/video-player/videoPlayerSlice";
+import { usePathname, useRouter } from "next/navigation";
 
 // icons
 import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
@@ -25,7 +31,17 @@ import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 
-const CustomPlayer = ({ videoRef, videoId, setVideoQuality }) => {
+const CustomPlayer = ({ videoRef, videoId, setVideoQuality, videoURL }) => {
+  // global state variables
+  const miniVideoPlayerState = useSelector((state) => state.miniVideoPlayer);
+  const dispatch = useDispatch();
+
+  // get the current url path
+  const pathname = usePathname();
+
+  // creating a history router
+  const router = useRouter();
+
   const QUALITIES = [
     { name: "1080p", res: "1920x1080" },
     { name: "720p", res: "1280x720" },
@@ -424,7 +440,15 @@ const CustomPlayer = ({ videoRef, videoId, setVideoQuality }) => {
 
   // mini-player
   const showMiniPlayer = (e) => {
-    localStorage.setItem("showMiniPlayer", true);
+    dispatch(
+      _showMiniVideoPlayer({
+        videoSrc: videoURL,
+        pathURL: pathname,
+        startTime: videoRef.current.currentTime,
+        playbackRate: videoRef.current.playbackRate,
+      })
+    );
+    router.back();
     e.stopPropagation();
   };
 
@@ -446,6 +470,11 @@ const CustomPlayer = ({ videoRef, videoId, setVideoQuality }) => {
       !showPlaybackSpeedsBtn
     )
       return;
+
+    // hide mini-player if any
+    if (miniVideoPlayerState.status) {
+      dispatch(_hideMiniVideoPlayer());
+    }
 
     // initially focus the video player
     videoWrapperRef.current.focus();

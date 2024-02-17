@@ -1,6 +1,13 @@
 "use client";
 
+import React, { useEffect, useRef } from "react";
 import { IconButton, Tooltip } from "@mui/material";
+import Hls from "hls.js";
+import { useSelector, useDispatch } from "react-redux";
+import { _hideMiniVideoPlayer } from "@/lib/_store/features/video-player/videoPlayerSlice";
+import { useRouter } from "next/navigation";
+
+// icons
 import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
@@ -8,10 +15,14 @@ import ReplayIcon from "@mui/icons-material/Replay";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
 import CloseIcon from "@mui/icons-material/Close";
 import AspectRatioIcon from "@mui/icons-material/AspectRatio";
-import React, { useEffect, useRef } from "react";
-import Hls from "hls.js";
 
 const CustomMiniPlayer = () => {
+  // global variables
+  const miniVideoPlayerState = useSelector((state) => state.miniVideoPlayer);
+  const dispatch = useDispatch();
+
+  const router = useRouter();
+
   const videoRef = useRef(null);
   const videoContainer = useRef(null);
   const videoOverlay = useRef(null);
@@ -23,22 +34,19 @@ const CustomMiniPlayer = () => {
   const skipPrevBtn = useRef(null);
   const skipNextBtn = useRef(null);
 
-  const videoId = "output-1920x1080-fd43391273fe76f221e02adeeb3faea8";
-  const src = `${process.env.NEXT_PUBLIC_VIDEO_SERVER_URL}/${videoId}/hls/video-output-1920x1080.m3u8`;
-
   const hideMiniPlayer = () => {
-    let showMiniPlayer = localStorage.getItem("showMiniPlayer");
-    if (videoContainer.current && showMiniPlayer) {
-      videoContainer.current.classList.remove("sm:block");
-      videoContainer.current.classList.add("sm:hidden");
-      localStorage.setItem("showMiniPlayer", false);
+    if (videoContainer.current && miniVideoPlayerState.src) {
+      if (videoContainer.current.classList.contains("sm:block")) {
+        videoContainer.current.classList.remove("sm:block");
+        videoContainer.current.classList.add("sm:hidden");
+        dispatch(_hideMiniVideoPlayer());
+      }
     }
   };
 
   useEffect(() => {
-    const showMiniPlayer = localStorage.getItem("showMiniPlayer");
-
-    if (!showMiniPlayer || showMiniPlayer == "false") {
+    if (!miniVideoPlayerState) return;
+    if (!miniVideoPlayerState.status) {
       if (videoContainer.current.classList.contains("sm:block")) {
         videoContainer.current.classList.remove("sm:block");
       }
@@ -52,17 +60,30 @@ const CustomMiniPlayer = () => {
     }
 
     const video = videoRef.current;
+    const src = miniVideoPlayerState.src;
     if (!video && !src && !closeBtn.current) return;
 
     if (Hls.isSupported()) {
       const hls = new Hls();
       hls.loadSource(src);
       hls.attachMedia(video);
+      // Set the current time of the video
+      hls.on(Hls.Events.MANIFEST_PARSED, function () {
+        video.currentTime = miniVideoPlayerState.startTime;
+        videoRef.current.playbackRate = miniVideoPlayerState.playbackRate;
+      });
     } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
       video.src = src;
     } else {
       console.error("HLS is not supported in this browser.");
     }
+
+    // Set the current time of the video
+    videoRef.current.addEventListener("loadedmetadata", function (e) {
+      videoRef.current.currentTime = miniVideoPlayerState.startTime;
+      videoRef.current.playbackRate = miniVideoPlayerState.playbackRate;
+      togglePlay(e);
+    });
 
     // close the mini player
     closeBtn.current.addEventListener("click", hideMiniPlayer);
@@ -71,8 +92,10 @@ const CustomMiniPlayer = () => {
       if (video && video.hls) {
         video.hls.destroy();
       }
+
+      closeBtn.current.removeEventListener("click", hideMiniPlayer);
     };
-  }, [src]);
+  }, [miniVideoPlayerState?.src]);
 
   const togglePlay = (e) => {
     if (videoRef.current) {
@@ -110,6 +133,11 @@ const CustomMiniPlayer = () => {
     }
   };
 
+  const handleVideoExpand = () => {
+    hideMiniPlayer();
+    router.push(miniVideoPlayerState.pathURL);
+  };
+
   return (
     <>
       <div
@@ -128,6 +156,7 @@ const CustomMiniPlayer = () => {
               disableTouchRipple
               disableFocusRipple
               className="text-white font-black p-0 ml-1"
+              onClick={handleVideoExpand}
             >
               <Tooltip ref={expandBtn} arrow title="Expand" placement="top">
                 <AspectRatioIcon className="opacity-70 hover:opacity-100 md:text-4xl text-2xl" />
