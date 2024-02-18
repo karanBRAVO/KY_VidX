@@ -26,6 +26,7 @@ import SearchBox from "./SearchBox.jsx";
 import { useSession } from "next-auth/react";
 import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
 import LoginIcon from "@mui/icons-material/Login";
+import UserAvatarNavigation from "./UserAvatarNavigation.jsx";
 
 const Navbar = () => {
   const { data: session, status } = useSession();
@@ -96,6 +97,11 @@ const Navbar = () => {
   ]);
   const [currentRecommendation, setCurrentRecommendationState] =
     useState("all");
+
+  const [sideDrawerState, setSideDrawerState] = useState(false);
+  const handleSideDrawerStateChange = () => {
+    setSideDrawerState((prev) => !prev);
+  };
 
   return (
     <>
@@ -246,18 +252,30 @@ const Navbar = () => {
                     </IconButton>
                   </Tooltip>
                   {session?.user?.image ? (
-                    <>
+                    <div
+                      className="w-fit cursor-pointer"
+                      onClick={handleSideDrawerStateChange}
+                    >
                       <Avatar
                         src={session?.user?.image}
                         alt="/"
                         className="border-2 border-solid border-white w-11 h-11"
                       />
-                    </>
+                    </div>
                   ) : (
-                    <Avatar className="bg-yellow-500 text-black cursor-pointer">
-                      {session?.user?.name[0]}
-                    </Avatar>
+                    <div
+                      className="w-fit cursor-pointer"
+                      onClick={handleSideDrawerStateChange}
+                    >
+                      <Avatar className="bg-yellow-500 text-black cursor-pointer">
+                        {session?.user?.name[0]}
+                      </Avatar>
+                    </div>
                   )}
+                  <UserAvatarNavigation
+                    showBar={sideDrawerState}
+                    setShowBar={setSideDrawerState}
+                  />
                 </>
               ) : (
                 <>
