@@ -28,6 +28,8 @@ export const POST = async (req, res) => {
 
     // getting the channel details
     const { channelName, tagLine, bgImgUrl, location, dob } = await req.json();
+    if (!channelName || !tagLine || !bgImgUrl || !location || !dob)
+      throw new Error(`All fields are required`);
 
     // creating the channel
     const newChannel = new ChannelModel({

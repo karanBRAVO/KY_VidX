@@ -1,5 +1,5 @@
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { storage } from "./_firebase_config.js";
+import { storage } from "./firebase.config";
 import { v4 as uuidv4 } from "uuid";
 
 export const uploadUserImagesToFirebaseStorage = async (
@@ -13,8 +13,8 @@ export const uploadUserImagesToFirebaseStorage = async (
   if (!image || !image.name)
     throw new Error("A valid image has not been provided.");
 
-  const filePath = `users/${dirname.toLowerCase()}/${userId}/images${
-    image.name + uuidv4()
+  const filePath = `users/${userId}/${dirname.toLowerCase()}/image-${
+    image.name + uuidv4() + userId
   }`;
   const newImageRef = ref(storage, filePath);
 

@@ -1,11 +1,10 @@
 import React from "react";
+import { NewChannel } from "@/ui/ComponentExporter";
 
 const CreateNewChannel = () => {
   return (
     <>
-      <section className="w-full h-full">
-        <h1>Create new Channel</h1>
-      </section>
+      <NewChannel />
     </>
   );
 };

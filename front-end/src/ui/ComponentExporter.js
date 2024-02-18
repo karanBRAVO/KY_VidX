@@ -12,3 +12,4 @@ export { default as AuthProvider } from "./Auth/AuthProvider";
 export { default as OAuth } from "./Auth/OAuth";
 export { default as Wait } from "./Wait/Wait";
 export { default as NotAuthenticated } from "./Wait/NotAuthenticated";
+export { default as NewChannel } from "./you/NewChannel/NewChannel";

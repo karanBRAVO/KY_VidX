@@ -5,7 +5,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route.js";
 import { connectToDB } from "@/lib/db/connect.js";
 import { UserModel } from "@/lib/models/user.model.js";
 
-export const POST = async (req, res) => {
+export const GET = async (req, res) => {
   try {
     // getting the session details
     const token = await getToken({ req });
