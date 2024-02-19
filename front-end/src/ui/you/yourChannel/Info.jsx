@@ -8,9 +8,26 @@ import {
   Divider,
   Box,
 } from "@mui/material";
-import ShareIcon from "@mui/icons-material/Share";
 
-const Info = ({ open, handleClose, contents = [] }) => {
+// icons
+import ShareIcon from "@mui/icons-material/Share";
+import LanguageIcon from "@mui/icons-material/Language";
+import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
+import SlideshowIcon from "@mui/icons-material/Slideshow";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import InfoIcon from "@mui/icons-material/Info";
+import PlaceIcon from "@mui/icons-material/Place";
+
+const Info = ({
+  open,
+  handleClose,
+  contact,
+  views,
+  subscribers,
+  videosCount,
+  joinedOn,
+  location,
+}) => {
   return (
     <>
       <Dialog
@@ -35,22 +52,74 @@ const Info = ({ open, handleClose, contents = [] }) => {
         <Divider className="bg-slate-500" />
         <DialogContent>
           <DialogContentText id="know-more-dialog-description" tabIndex={-1}>
-            {contents.map((item, index) => {
-              return (
-                <Box
-                  key={index}
-                  display={"flex"}
-                  flexDirection={"row"}
-                  alignItems={"center"}
-                  justifyContent={"flex-start"}
-                  gap={"5px"}
-                  marginY={"5px"}
-                >
-                  <item.icon className="text-black" />
-                  <span className="text-slate-800 ml-1">{item.desc}</span>
-                </Box>
-              );
-            })}
+            <Box
+              display={"flex"}
+              flexDirection={"row"}
+              alignItems={"center"}
+              justifyContent={"flex-start"}
+              gap={"5px"}
+              marginY={"5px"}
+            >
+              <LanguageIcon className="text-black" />
+              <span className="text-slate-800 ml-1">Contact 📧 {contact}</span>
+            </Box>
+            <Box
+              display={"flex"}
+              flexDirection={"row"}
+              alignItems={"center"}
+              justifyContent={"flex-start"}
+              gap={"5px"}
+              marginY={"5px"}
+            >
+              <PeopleOutlineIcon className="text-black" />
+              <span className="text-slate-800 ml-1">
+                {subscribers} subscribers
+              </span>
+            </Box>
+            <Box
+              display={"flex"}
+              flexDirection={"row"}
+              alignItems={"center"}
+              justifyContent={"flex-start"}
+              gap={"5px"}
+              marginY={"5px"}
+            >
+              <SlideshowIcon className="text-black" />
+              <span className="text-slate-800 ml-1">{videosCount} videos</span>
+            </Box>
+            <Box
+              display={"flex"}
+              flexDirection={"row"}
+              alignItems={"center"}
+              justifyContent={"flex-start"}
+              gap={"5px"}
+              marginY={"5px"}
+            >
+              <TrendingUpIcon className="text-black" />
+              <span className="text-slate-800 ml-1">{views} views</span>
+            </Box>
+            <Box
+              display={"flex"}
+              flexDirection={"row"}
+              alignItems={"center"}
+              justifyContent={"flex-start"}
+              gap={"5px"}
+              marginY={"5px"}
+            >
+              <InfoIcon className="text-black" />
+              <span className="text-slate-800 ml-1">joined on {joinedOn}</span>
+            </Box>
+            <Box
+              display={"flex"}
+              flexDirection={"row"}
+              alignItems={"center"}
+              justifyContent={"flex-start"}
+              gap={"5px"}
+              marginY={"5px"}
+            >
+              <PlaceIcon className="text-black" />
+              <span className="text-slate-800 ml-1">{location}</span>
+            </Box>
             <Button
               variant="contained"
               endIcon={<ShareIcon />}
