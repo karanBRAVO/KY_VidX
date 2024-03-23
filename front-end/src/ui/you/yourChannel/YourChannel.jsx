@@ -31,6 +31,7 @@ import axios from "axios";
 import { getLocaleTime } from "@/lib/utils/DateConvertor";
 import Link from "next/link";
 import { uploadUserImagesToFirebaseStorage } from "@/lib/_firebase/firebase.storage";
+import HomeTab from "./HomeTab";
 
 const YourChannel = () => {
   const { data: session, status } = useSession();
@@ -369,6 +370,7 @@ const YourChannel = () => {
               </Box>
               <Divider className="bg-slate-400 my-4" />
               <Box>
+                {currentTab === "home" && <HomeTab />}
                 {currentTab === "videos" && <VideoTab />}
                 {currentTab === "announcements" && <AnnouncementTab />}
               </Box>
