@@ -17,16 +17,20 @@ import {
 import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
 import LocationSearchingIcon from "@mui/icons-material/LocationSearching";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import FiberNewIcon from "@mui/icons-material/FiberNew";
+import EditNoteIcon from "@mui/icons-material/EditNote";
 
 import Info from "./Info";
 
 import { useSession } from "next-auth/react";
 import { NotAuthenticated, Wait } from "@/ui/ComponentExporter.js";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import VideoTab from "./VideoTab";
 import AnnouncementTab from "./AnnouncementTab";
 import axios from "axios";
 import { getLocaleTime } from "@/lib/utils/DateConvertor";
+import Link from "next/link";
+import { uploadUserImagesToFirebaseStorage } from "@/lib/_firebase/firebase.storage";
 
 const YourChannel = () => {
   const { data: session, status } = useSession();
@@ -35,7 +39,11 @@ const YourChannel = () => {
   const [currentTab, setCurrentTab] = useState("home");
 
   const [loading, setLoading] = useState(false);
-  const [contents, setContents] = useState({});
+  const [contents, setContents] = useState(undefined);
+
+  const newBannerInputRef = useRef(null);
+  const [bannerImg, setBannerImg] = useState(undefined);
+  const [uploadingStatus, setUploadingStatus] = useState(false);
 
   const getChannelData = async () => {
     if (loading) return;
@@ -47,6 +55,7 @@ const YourChannel = () => {
         setContents(res.data.details);
       } else {
         console.log(res.data.error);
+        setContents(undefined);
       }
     } catch (error) {
       console.error(error);
@@ -67,9 +76,65 @@ const YourChannel = () => {
     setShowInfo((prev) => !prev);
   };
 
+  // upload to firebase
+  const uploadToFirebase = async () => {
+    if (!bannerImg || uploadingStatus) return;
+
+    setUploadingStatus(true);
+    try {
+      const user = await axios.get(`/api/user/get-user-details/get-user-id`);
+
+      if (!user.data.success) throw new Error(user.data.error);
+      const userID = user.data.uid;
+
+      const res = await uploadUserImagesToFirebaseStorage(
+        userID,
+        "channel",
+        bannerImg
+      );
+
+      if (res[0]) {
+        const response = await axios.post(
+          `/api/user/channel/update-channel/banner`,
+          { bgImgUrl: res[1] }
+        );
+        if (response.data.success) {
+          setBannerImg(undefined);
+          contents.bgImg = res[1];
+        } else {
+          console.error(response.data.error);
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setUploadingStatus(false);
+    }
+  };
+
+  // cancel selection
+  const cancelBannerSelection = () => {
+    setBannerImg(undefined);
+  };
+
+  // choose new banner
+  const chooseNewBanner = (e) => {
+    setBannerImg(e.target.files[0]);
+  };
+
+  // open image explorer
+  const openImageExplorer = () => {
+    if (newBannerInputRef.current) {
+      newBannerInputRef.current.click();
+    }
+  };
+
   return (
     <>
-      <Container className="min-h-screen mt-[130px]" maxWidth={false}>
+      <Container
+        className="min-h-screen mt-[130px] text-white"
+        maxWidth={false}
+      >
         {status === "loading" ? (
           <>
             <div className="w-full flex items-center justify-center">
@@ -81,7 +146,7 @@ const YourChannel = () => {
             <div className="w-full h-full p-3 my-5 flex items-center justify-center">
               <CircularProgress className="text-yellow-600" />
             </div>
-          ) : (
+          ) : contents && Object.keys(contents).length != 0 ? (
             <Box>
               <Info
                 open={showInfo}
@@ -100,16 +165,58 @@ const YourChannel = () => {
                 color={"white"}
               >
                 <Box width={"100%"} height={"250px"} marginY={"10px"}>
+                  <input
+                    name="bannerimg"
+                    id="bannerImg"
+                    type="file"
+                    multiple={false}
+                    accept="image/*"
+                    className="hidden"
+                    ref={newBannerInputRef}
+                    onChange={chooseNewBanner}
+                  />
                   <img
                     src={
-                      contents.bgImg ? contents.bgImg : `/defaultThumbnail.jpg`
+                      bannerImg
+                        ? URL.createObjectURL(bannerImg)
+                        : contents.bgImg
+                        ? contents.bgImg
+                        : `/defaultThumbnail.jpg`
                     }
                     alt="banner"
                     width={100}
                     height={100}
                     className="w-full h-full rounded-xl cursor-pointer border-2 border-solid border-black shadow-sm shadow-slate-900"
+                    onClick={openImageExplorer}
                   />
                 </Box>
+                {bannerImg && (
+                  <Box
+                    display="flex"
+                    flexDirection={"row"}
+                    alignItems={"center"}
+                    justifyContent={"flex-end"}
+                    gap={"5px"}
+                    marginY={"3px"}
+                    width={"100%"}
+                  >
+                    <Button
+                      variant="outlined"
+                      className="text-white border-white mx-3"
+                      onClick={cancelBannerSelection}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      variant="contained"
+                      className="bg-white text-black mx-3 border-white"
+                      onClick={uploadToFirebase}
+                      disabled={uploadingStatus}
+                    >
+                      {uploadingStatus ? <>Uploading...</> : <>Upload</>}
+                    </Button>
+                  </Box>
+                )}
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
                   <Box
                     display={"flex"}
@@ -144,18 +251,31 @@ const YourChannel = () => {
                           : session?.user?.name}
                         <Typography
                           variant="subtitle1"
-                          className="text-zinc-300 mx-4 p-[.5px]"
+                          className="text-zinc-300 mx-4 p-[.5px] my-1"
                           component={"span"}
                         >
-                          CHANNEL:{" "}
+                          <Typography
+                            variant="caption"
+                            component={"span"}
+                            className="bg-yellow-500 text-black rounded-full py-1 text-sm px-2 mr-3"
+                          >
+                            CHANNEL:
+                          </Typography>
                           {contents.channelName && contents.channelName}
                         </Typography>
                         <Typography
                           variant="overline"
-                          className="text-zinc-300 mx-4 p-[.5px]"
+                          className="text-zinc-300 mx-4 p-[.5px] my-1"
                           component={"span"}
                         >
-                          UID: {contents.userId && contents.userId}
+                          <Typography
+                            variant="caption"
+                            component={"span"}
+                            className="bg-yellow-500 text-black rounded-full py-1 text-sm px-2 mr-3"
+                          >
+                            UID:
+                          </Typography>
+                          {contents.userId && contents.userId}
                         </Typography>
                       </Typography>
                     </Box>
@@ -252,6 +372,47 @@ const YourChannel = () => {
                 {currentTab === "videos" && <VideoTab />}
                 {currentTab === "announcements" && <AnnouncementTab />}
               </Box>
+            </Box>
+          ) : (
+            <Box
+              display={"flex"}
+              flexDirection={"column"}
+              alignItems={"center"}
+              width={"100%"}
+              padding={"9xl"}
+            >
+              <Box
+                display={"flex"}
+                flexDirection={"row"}
+                alignItems={"center"}
+                justifyContent={"center"}
+                gap={"3px"}
+              >
+                <Typography
+                  variant="h5"
+                  component={"span"}
+                  className="text-white font-semibold"
+                >
+                  Create
+                </Typography>
+                <FiberNewIcon className="text-white text-9xl font-black" />
+                <Typography
+                  variant="h5"
+                  component={"span"}
+                  className="text-white font-semibold"
+                >
+                  Channel
+                </Typography>
+              </Box>
+              <Link href={"/you/create-channel"}>
+                <Button
+                  variant="contained"
+                  className="font-bold capitalize my-6"
+                  startIcon={<EditNoteIcon className="text-3xl" />}
+                >
+                  Create Now
+                </Button>
+              </Link>
             </Box>
           )
         ) : (

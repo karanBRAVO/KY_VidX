@@ -51,7 +51,6 @@ const videoSchema = new mongoose.Schema(
         {
           type: mongoose.Types.ObjectId,
           ref: "user",
-          unique: true,
         },
       ],
       default: [],
@@ -62,7 +61,6 @@ const videoSchema = new mongoose.Schema(
           type: mongoose.Types.ObjectId,
           ref: "user",
           required: [true, "views are required"],
-          unique: [true, "already exists in views array"],
         },
       ],
       default: [],

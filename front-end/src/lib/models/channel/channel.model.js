@@ -27,7 +27,6 @@ const channelSchema = new mongoose.Schema(
         {
           type: mongoose.Types.ObjectId,
           ref: "user",
-          unique: true,
         },
       ],
       default: [],
@@ -37,7 +36,6 @@ const channelSchema = new mongoose.Schema(
         {
           type: mongoose.Types.ObjectId,
           ref: "video",
-          unique: true,
         },
       ],
       default: [],

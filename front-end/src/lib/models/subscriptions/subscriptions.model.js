@@ -13,7 +13,6 @@ const subscriptionSchema = new mongoose.Schema(
         {
           type: mongoose.Types.ObjectId,
           ref: "channel",
-          unique: true,
         },
       ],
       default: [],

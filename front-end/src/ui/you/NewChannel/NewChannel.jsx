@@ -20,6 +20,9 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { countries } from "./Locations";
 
+// icons
+import ColorizeIcon from "@mui/icons-material/Colorize";
+
 const TextFieldStyles = {
   "& .MuiInput-input": {
     color: "white",
@@ -147,6 +150,7 @@ const NewChannel = () => {
           text: "Avatar uploaded successfully.",
         }));
         setFormData((prev) => ({ ...prev, bgImgUrl: res[1] }));
+        setUserImage((prev) => null);
       } else {
         setAlertMessage((prev) => ({
           ...prev,
@@ -307,19 +311,29 @@ const NewChannel = () => {
                 component={"h3"}
                 className="text-blue-600 p-1 my-1"
               >
-                Choose your Avatar
+                Choose your Banner
               </Typography>
               <div className="flex flex-row items-center gap-2 flex-wrap">
-                <Avatar
-                  src={
-                    userImage
-                      ? URL.createObjectURL(userImage)
-                      : formData.bgImgUrl
-                  }
-                  alt="KY"
-                  className="mx-2 cursor-pointer"
+                <Button
                   onClick={handleChooseAvatar}
-                />
+                  className="text-black capitalize bg-white mx-1"
+                  variant="contained"
+                  endIcon={<ColorizeIcon className="text-2xl text-black" />}
+                >
+                  Choose
+                </Button>
+                {userImage ||
+                  (formData.bgImgUrl && (
+                    <img
+                      src={
+                        userImage
+                          ? URL.createObjectURL(userImage)
+                          : formData.bgImgUrl
+                      }
+                      alt="KY"
+                      className="mx-2 cursor-pointer w-72 h-44 aspect-video border-2 border-solid border-white rounded-md shadow-md shadow-white"
+                    />
+                  ))}
                 <input
                   className="hidden"
                   ref={avatarInputRef}
@@ -338,14 +352,16 @@ const NewChannel = () => {
                     Uploading...
                   </Typography>
                 )}
-                <Button
-                  className="mx-2"
-                  variant="outlined"
-                  onClick={handleAvatarUpload}
-                  disabled={uploadStatus}
-                >
-                  Upload to cloud
-                </Button>
+                {userImage && (
+                  <Button
+                    className="mx-2"
+                    variant="outlined"
+                    onClick={handleAvatarUpload}
+                    disabled={uploadStatus}
+                  >
+                    Upload to cloud
+                  </Button>
+                )}
               </div>
               <Button
                 className="bg-yellow-600 my-2 mx-3"
