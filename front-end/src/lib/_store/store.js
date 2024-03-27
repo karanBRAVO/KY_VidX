@@ -1,10 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
-import miniVideoPlayerReducer from "@/lib/_store/features/video-player/videoPlayerSlice.js";
+import {
+  miniVideoPlayerReducer,
+  userReducer,
+} from "./features/FeatureExporter";
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
       miniVideoPlayer: miniVideoPlayerReducer,
+      user: userReducer,
     },
   });
 };

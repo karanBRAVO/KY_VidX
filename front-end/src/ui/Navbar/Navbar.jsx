@@ -17,7 +17,7 @@ import VideoCallIcon from "@mui/icons-material/VideoCall";
 import KeyboardVoiceIcon from "@mui/icons-material/KeyboardVoice";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import { SideBar, RecommendationBar, OAuth } from "../ComponentExporter.js";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import VideoCameraMenu from "./VideoCameraMenu.jsx";
@@ -27,9 +27,30 @@ import { useSession } from "next-auth/react";
 import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
 import LoginIcon from "@mui/icons-material/Login";
 import UserAvatarNavigation from "./UserAvatarNavigation.jsx";
+import { useDispatch } from "react-redux";
+import { _setUserData } from "@/lib/_store/features/user/user";
+import axios from "axios";
 
 const Navbar = () => {
   const { data: session, status } = useSession();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const getUserDetails = async () => {
+      try {
+        const res = await axios.get(`/api/user/get-user-details/get-all`);
+        if (res.data.success) {
+          dispatch(_setUserData(res.data.userData));
+        } else {
+          console.error(res.data.error);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    getUserDetails();
+  }, []);
 
   const [oauthScreenIsOpen, setOauthScreenIsOpen] = useState(false);
   const handleOauthScreenOpen = () => {

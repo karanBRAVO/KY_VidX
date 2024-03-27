@@ -34,8 +34,8 @@ const NotificationMenu = ({ isMenuOpen, handleMenuClose, anchorEl }) => {
         }}
         sx={{
           ".MuiMenu-paper": {
-            bgcolor: "white",
-            color: "black",
+            bgcolor: "rgb(75 85 99)",
+            color: "white",
             maxHeight: "50vh",
           },
         }}
@@ -43,7 +43,7 @@ const NotificationMenu = ({ isMenuOpen, handleMenuClose, anchorEl }) => {
         {menuItems.map((item, index) => (
           <MenuItem
             key={index}
-            className="hover:bg-zinc-300 flex flex-row items-start"
+            className="hover:bg-zinc-700 flex flex-row items-start"
           >
             <Box
               display={"flex"}

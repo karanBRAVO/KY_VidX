@@ -46,16 +46,16 @@ const UserAvatarNavigation = ({ showBar, setShowBar }) => {
           sx={{
             width: "fit-content",
             display: "flex",
-            bgcolor: "gray",
-            color: "black",
+            bgcolor: "rgb(75 85 99)",
+            color: "white",
           }}
         >
           <MenuList>
             <MenuItem>
               <ListItemIcon>
-                <ViewArrayIcon fontSize="small" />
+                <ViewArrayIcon className="text-white" fontSize="small" />
               </ListItemIcon>
-              <ListItemText>Your Channel</ListItemText>
+              <ListItemText className="text-white">Your Channel</ListItemText>
               <Typography variant="body2" color="text.secondary">
                 🫵
               </Typography>

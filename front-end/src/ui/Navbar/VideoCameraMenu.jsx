@@ -18,8 +18,13 @@ import CloseIcon from "@mui/icons-material/Close";
 import CloudCircleIcon from "@mui/icons-material/CloudCircle";
 import { useRef, useState } from "react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
 
 const VideoUploadWindow = ({ isOpen, handleClose }) => {
+  const userState = useSelector((state) => state.user);
+  const router = useRouter();
+
   const [showSnackBar, setShowSnackBar] = useState(false);
   const [snackMsg, setSnackMsg] = useState("Message");
   const fileUploadInputRef = useRef(null);
@@ -30,6 +35,14 @@ const VideoUploadWindow = ({ isOpen, handleClose }) => {
     e.preventDefault();
 
     if (!file || uploading) {
+      return;
+    }
+
+    // checking for if the user has channel
+    if (!userState.hasChannel) {
+      router.replace("/you/profile/your-channel");
+      setFile(null);
+      handleClose();
       return;
     }
 
@@ -50,7 +63,7 @@ const VideoUploadWindow = ({ isOpen, handleClose }) => {
       if (res.data.success) {
         const { videoId, url } = res.data;
         console.log(videoId, url);
-        
+
         setSnackMsg("File uploaded successfully.");
       } else {
         setSnackMsg("Error uploading video.");
@@ -185,27 +198,27 @@ const VideoCameraMenu = ({ isMenuOpen, handleMenuClose, anchorEl }) => {
         }}
         sx={{
           ".MuiMenu-paper": {
-            bgcolor: "white",
+            bgcolor: "rgb(75 85 99)",
             color: "black",
           },
         }}
       >
-        <MenuItem className="hover:bg-zinc-300">
-          <ListItemIcon className="text-black text-xl">
-            <CreateIcon />
+        <MenuItem className="hover:bg-zinc-700">
+          <ListItemIcon className="text-white text-xl">
+            <CreateIcon className="text-white font-black" />
           </ListItemIcon>
-          <Typography className="text-black font-bold text-sm">
+          <Typography className="text-white font-bold text-sm">
             Create Now
           </Typography>
         </MenuItem>
         <MenuItem
-          className="hover:bg-zinc-300"
+          className="hover:bg-zinc-700"
           onClick={() => setVideoUploadWindowOpenState((prev) => !prev)}
         >
-          <ListItemIcon className="text-black text-xl">
-            <UploadIcon />
+          <ListItemIcon className="text-white text-xl">
+            <UploadIcon className="text-white font-black" />
           </ListItemIcon>
-          <Typography className="text-black font-bold text-sm">
+          <Typography className="text-white font-bold text-sm">
             Upload
           </Typography>
         </MenuItem>
