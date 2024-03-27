@@ -46,15 +46,17 @@ const VideoUploadWindow = ({ isOpen, handleClose }) => {
       return;
     }
 
+    // checking if state has user id
+    if (!userState._id) {
+      setFile(null);
+      handleClose();
+      return;
+    }
+
     setUploading(true);
     try {
-      const userData = await axios.get(
-        `/api/user/get-user-details/get-user-id`
-      );
-      if (!userData.data.success) return;
-
       const res = await axios.post(
-        `http://localhost:5599/video-server/upload-new-video/${userData.data.uid}`,
+        `http://localhost:5599/video-server/upload-new-video/${userState._id}`,
         { file },
         {
           headers: { "Content-Type": "multipart/form-data" },
