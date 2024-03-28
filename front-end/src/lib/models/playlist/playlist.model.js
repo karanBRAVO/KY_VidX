@@ -41,4 +41,4 @@ const playlistSchema = new mongoose.Schema(
 );
 
 export const PlaylistModel =
-  mongoose.models["playlist"] || new mongoose.Model("playlist", playlistSchema);
+  mongoose.models["playlist"] || new mongoose.model("playlist", playlistSchema);
