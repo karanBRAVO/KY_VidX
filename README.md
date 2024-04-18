@@ -7,7 +7,7 @@ Others: `express js`, `node js`
 
 ## Preview
 
-Available Soon...
+![image](https://github.com/karanBRAVO/VidX/assets/77043443/b2d47a78-1726-4678-82d1-f0b93f4e351b)
 
 ## Usage
 
