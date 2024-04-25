@@ -122,10 +122,14 @@ const CommentInputBox = () => {
         />
         <Button
           variant="contained"
-          className="rounded-xl sm:rounded-full bg-white text-black"
+          className="rounded-xl sm:rounded-full border-2 border-solid border-white text-white bg-black"
         >
-          <SendIcon />
-          <Typography variant="button" component={"span"} className="mx-2">
+          <SendIcon className="text-white" />
+          <Typography
+            variant="button"
+            component={"span"}
+            className="mx-2 text-white"
+          >
             Send
           </Typography>
         </Button>
