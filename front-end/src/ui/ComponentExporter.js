@@ -15,3 +15,4 @@ export { default as NotAuthenticated } from "./Wait/NotAuthenticated";
 export { default as NewChannel } from "./you/NewChannel/NewChannel";
 export { default as VideoUploader } from "./you/uploadVideo/UploadVideo";
 export { default as VidXStudio } from "./you/studio/Studio";
+export { default as VideoSkeleton } from "./Skeletons/VideoSkeleton";
