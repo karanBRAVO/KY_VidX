@@ -6,12 +6,13 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { VideoSkeleton } from "../ComponentExporter";
 
 import { VIDEOS } from "./fakeData.js";
 
 const Video = () => {
   const [videos, setVideos] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const limitPerRequest = 9;
 
@@ -84,7 +85,9 @@ const Video = () => {
           display={"flex"}
           alignItems={"center"}
           justifyContent={"center"}
+          flexDirection={"column"}
         >
+          {isLoading && <VideoSkeleton />}
           <Button
             variant="outlined"
             disabled={isLoading}
