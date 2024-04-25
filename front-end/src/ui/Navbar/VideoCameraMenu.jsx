@@ -64,7 +64,7 @@ const VideoUploadWindow = ({ isOpen, handleClose }) => {
       );
       if (res.data.success) {
         const { videoId, url } = res.data;
-        console.log(videoId, url);
+        console.log({ videoId, url });
 
         setSnackMsg("File uploaded successfully.");
       } else {

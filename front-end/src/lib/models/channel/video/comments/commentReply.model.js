@@ -33,4 +33,4 @@ const commentReplySchema = new mongoose.Schema(
 
 export const CommentReplyModel =
   mongoose.models["commentreply"] ||
-  new mongoose.model("commentreply", commentReplySchema);
+  mongoose.model("commentreply", commentReplySchema);

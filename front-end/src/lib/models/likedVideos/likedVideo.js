@@ -23,4 +23,4 @@ const likedVideoSchema = new mongoose.Schema(
 
 export const LikedVideoModel =
   mongoose.models["subscription"] ||
-  new mongoose.model("subscription", likedVideoSchema);
+  mongoose.model("subscription", likedVideoSchema);

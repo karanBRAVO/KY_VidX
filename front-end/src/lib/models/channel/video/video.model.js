@@ -77,4 +77,4 @@ const videoSchema = new mongoose.Schema(
 );
 
 export const VideoModel =
-  mongoose.models["video"] || new mongoose.model("video", videoSchema);
+  mongoose.models["video"] || mongoose.model("video", videoSchema);
