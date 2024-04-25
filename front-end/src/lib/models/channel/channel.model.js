@@ -49,4 +49,4 @@ const channelSchema = new mongoose.Schema(
 );
 
 export const ChannelModel =
-  mongoose.models["channel"] || new mongoose.model("channel", channelSchema);
+  mongoose.models["channel"] || mongoose.model("channel", channelSchema);

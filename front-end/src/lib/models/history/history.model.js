@@ -33,4 +33,4 @@ const historySchema = new mongoose.Schema(
 );
 
 export const HistoryModel =
-  mongoose.models["history"] || new mongoose.model("history", historySchema);
+  mongoose.models["history"] || mongoose.model("history", historySchema);

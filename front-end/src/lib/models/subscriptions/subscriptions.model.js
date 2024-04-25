@@ -23,4 +23,4 @@ const subscriptionSchema = new mongoose.Schema(
 
 export const SubscriptionModel =
   mongoose.models["subscription"] ||
-  new mongoose.model("subscription", subscriptionSchema);
+  mongoose.model("subscription", subscriptionSchema);

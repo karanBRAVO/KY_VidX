@@ -44,4 +44,4 @@ const authSchema = new mongoose.Schema(
 );
 
 export const UserModel =
-  mongoose.models["user"] || new mongoose.model("user", authSchema);
+  mongoose.models["user"] || mongoose.model("user", authSchema);

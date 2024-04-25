@@ -21,4 +21,4 @@ const commentSchema = new mongoose.Schema(
 );
 
 export const CommentModel =
-  mongoose.models["comment"] || new mongoose.model("comment", commentSchema);
+  mongoose.models["comment"] || mongoose.model("comment", commentSchema);
