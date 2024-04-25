@@ -95,52 +95,52 @@ const VideoPlayer = ({ src, videoId, videoQuality, setVideoQuality }) => {
           >
             <Button
               variant="contained"
-              className="rounded-full bg-white text-black"
+              className="rounded-full border-2 border-solid border-white bg-black text-white"
             >
-              <ThumbUpIcon />
+              <ThumbUpIcon className="text-white font-black" />
               <Typography
                 variant={"button"}
                 component={"span"}
-                className="mx-1"
+                className="mx-1 text-white"
               >
                 Like
               </Typography>
             </Button>
             <Button
               variant="contained"
-              className="rounded-full bg-white text-black"
+              className="rounded-full border-2 border-solid border-white bg-black text-white"
             >
-              <ThumbDownIcon />
+              <ThumbDownIcon className="text-white font-black" />
               <Typography
                 variant={"button"}
                 component={"span"}
-                className="mx-1"
+                className="mx-1 text-white"
               >
                 Dislike
               </Typography>
             </Button>
             <Button
               variant="contained"
-              className="rounded-full bg-white text-black"
+              className="rounded-full border-2 border-solid border-white bg-black text-white"
             >
-              <ShareIcon />
+              <ShareIcon className="text-white font-black" />
               <Typography
                 variant={"button"}
                 component={"span"}
-                className="mx-1"
+                className="mx-1 text-white"
               >
                 Share
               </Typography>
             </Button>
             <Button
               variant="contained"
-              className="rounded-full bg-white text-black"
+              className="rounded-full border-2 border-solid border-white bg-black text-white"
             >
-              <DownloadIcon />
+              <DownloadIcon className="text-white font-black" />
               <Typography
                 variant={"button"}
                 component={"span"}
-                className="mx-1"
+                className="mx-1 text-white"
               >
                 Download
               </Typography>
