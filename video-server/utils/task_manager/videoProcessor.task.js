@@ -70,7 +70,10 @@ videoProcessorWorker.on("completed", (job, result, prev) => {
   console.log(`Job [${job.name}] completed`);
 });
 
-videoProcessorWorker.on("progress", (job, progess) => {});
+videoProcessorWorker.on("progress", (job, progress) => {
+  console.log(`Job [${job.name}]`);
+  console.log(`[*] Progress: ${progress}`);
+});
 
 videoProcessorWorker.on("failed", (job, err) => {
   console.log(`Job [${job.name}] failed: ${err}`);

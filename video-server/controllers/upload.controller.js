@@ -9,13 +9,13 @@ export const uploadNewVideo = async (req, res) => {
     const { userId } = req.params;
     if (!userId) throw new Error(`User id not provided`);
 
-    const videoId = random();
+    const videoId = userId + "-" + random();
 
     const bb = busboy({ headers: req.headers });
     let filePath;
 
     bb.on("file", (name, file, info) => {
-      const fileName = path.join(`${userId}-${videoId}`);
+      const fileName = path.join(`${videoId}`);
 
       const fileFolderPath = path.resolve(
         process.cwd(),
@@ -42,7 +42,7 @@ export const uploadNewVideo = async (req, res) => {
         videoId,
         url:
           `${req.protocol}://${req.get("host")}` +
-          `/${userId}-${videoId}/hls/master.m3u8`,
+          `/${videoId}/hls/master.m3u8`,
       });
     });
 

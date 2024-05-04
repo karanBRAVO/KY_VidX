@@ -99,7 +99,7 @@ export const createHLSfiles = async (filepath, workdir) => {
 
       packet.on("error", (code) => {
         console.log("HLS file creation failed:", code);
-        resolve();
+        reject(`File creation failed ${code}`);
       });
 
       packet.on("close", resolve);
