@@ -10,6 +10,7 @@ import { AuthProvider, NavigationBar } from "@/ui/ComponentExporter.js";
 import { getServerSession } from "next-auth";
 import CustomMiniPlayer from "@/ui/Player/CustomMiniPlayer";
 import StoreProvider from "./StoreProvider";
+import Notifier from "@/ui/Notifiers/Notifier";
 
 export const metadata = {
   title: "VidX",
@@ -27,6 +28,7 @@ const RootLayout = async ({ children }) => {
             <AppRouterCacheProvider>
               <StyledEngineProvider injectFirst>
                 <CssBaseLine />
+                <Notifier />
                 <NavigationBar />
                 <CustomMiniPlayer />
                 {children}
