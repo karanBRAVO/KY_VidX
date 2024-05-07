@@ -7,26 +7,26 @@ import Button from "@mui/material/Button";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { VideoSkeleton } from "../ComponentExporter";
-
-import { VIDEOS } from "./fakeData.js";
+import axios from "axios";
+import { getFormatedTime, getLocaleTime } from "@/lib/utils/DateConvertor";
 
 const Video = () => {
   const [videos, setVideos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const limitPerRequest = 9;
-
-  const wait = (delay) => {
-    return new Promise((resolve, reject) => {
-      setTimeout(resolve, delay * 1000);
-    });
-  };
-
+  // fetch all videos
   const fetchData = async () => {
     setIsLoading(true);
-    await wait(3);
-    setVideos((prev) => [...prev, ...VIDEOS]);
-    setIsLoading(false);
+    try {
+      const res = await axios.get(`/api/user/get-all-videos`);
+      if (res.data.success) {
+        setVideos((prev) => [...res.data.details]);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -61,21 +61,23 @@ const Video = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{
                   duration: 0.5,
-                  delay: (index % limitPerRequest) * 0.5,
+                  delay: (index % videos.length) * 0.5,
                 }}
                 viewport={{ once: true }}
                 key={index}
                 className="w-full sm:w-[80%] bg-black md:w-[40%] lg:w-[30%] mt-5"
               >
                 <VideoCard
-                  uid={index + 1}
-                  uploader={item.uploader}
-                  thumbnail={item.thumbnail}
-                  name={item.name}
-                  desc={item.desc}
-                  duration={item.duration}
-                  views={item.views}
-                  uploadTime={item.uploadTime}
+                  videoId={item.videoVideoId}
+                  userId={item.userId}
+                  uploader={item.userImage}
+                  channelName={item.channelName}
+                  thumbnail={item.videoThumbnail}
+                  name={item.videoTitle}
+                  desc={item.videoDescription}
+                  duration={getFormatedTime(item.videoDuration)}
+                  views={item.videoViews}
+                  uploadTime={getLocaleTime(item.videoUploadDate)}
                 />
               </motion.div>
             ))}
