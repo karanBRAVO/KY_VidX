@@ -21,6 +21,9 @@ const userSlice = createSlice({
       state.methodOfLogin = action.payload.methodOfLogin;
       state.hasChannel = action.payload.hasChannel;
     },
+    _setChannel: (state, action) => {
+      state.hasChannel = action.payload.hasChannel;
+    },
     _resetUserData: (state, action) => {
       state._id = "";
       state.name = "";
@@ -32,6 +35,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { _setUserData, _resetUserData } = userSlice.actions;
+export const { _setUserData, _resetUserData, _setChannel } = userSlice.actions;
 
 export default userSlice.reducer;
