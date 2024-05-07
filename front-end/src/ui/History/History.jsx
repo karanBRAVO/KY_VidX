@@ -1,12 +1,34 @@
 "use client";
 
-import CommonVideoBox from "../CommonVideoBox";
-import { _HISTORY_ } from "./fakeData";
+import React, { useState } from "react";
+import axios from "axios";
+import { NotAuthenticated, Wait } from "@/ui/ComponentExporter";
 import { useSession } from "next-auth/react";
-import { NotAuthenticated, Wait } from "../ComponentExporter.js";
+import CommonVideoBox from "../CommonVideoBox";
+
+import { _HISTORY_ } from "./fakeData";
 
 const History = () => {
   const { data: session, status } = useSession();
+
+  const [loading, setLoading] = useState(false);
+  const [history, setHistory] = useState([]);
+
+  const getHistory = async () => {
+    setLoading(true);
+
+    try {
+      const res = await axios.get(`/api/user/`);
+      console.log(res.data);
+      if (res.data.success) {
+      } else {
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -22,7 +44,7 @@ const History = () => {
             <h1 className="m-1 text-6xl capitalize leading-1 tracking-wide font-black text-white flex flex-col items-start justify-between">
               History
               <span className="text-xs sm:text-sm text-zinc-400 font-light p-[1px] tracking-tight leading-1 m-1 lowercase">
-                We will use this for your recommendation/suggestions
+                I will use this for your recommendation/suggestions
               </span>
             </h1>
             <div className="w-full gap-3 flex flex-col items-start">
