@@ -1,9 +1,11 @@
 import { Player } from "@/ui/ComponentExporter";
 
 const page = ({ params }) => {
+  const { userId, videoId } = params;
+
   return (
     <>
-      <Player videoId={params.videoId} />
+      <Player userId={userId} videoId={videoId} />
     </>
   );
 };
