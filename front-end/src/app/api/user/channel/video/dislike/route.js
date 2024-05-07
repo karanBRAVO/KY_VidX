@@ -31,20 +31,27 @@ export const POST = async (req, res) => {
     // checking for the video
     const video = await VideoModel.findOne({ videoId });
     if (!video) throw new Error(`Video not found`);
-    if (!video.likes.includes(user._id))
-      throw new Error(`Not liked the video.`);
 
     // checking user logs for likes
     const liked = await LikedVideoModel.findOne({ userId: user._id });
-    if (liked.videoIds.includes(video.videoId)) {
-      throw new Error(`Already liked`);
+
+    // checking if has liked
+    if (!video.likes.includes(user._id)) {
+      if (liked) {
+        for (let i = 0; i < liked.videoIds.length; i++) {
+          if (liked.videoIds[i].videoId === videoId) {
+            throw new Error(`Data mismatch while checking like status.`);
+          }
+        }
+      }
+      throw new Error(`Not liked the video.`);
     }
 
     // adding to the database
     await VideoModel.updateOne({ videoId }, { $pull: { likes: user._id } });
     await LikedVideoModel.updateOne(
       { userId: user._id },
-      { $pull: { videoIds: videoId } }
+      { $pull: { videoIds: { videoId } } }
     );
 
     return NextResponse.json({
