@@ -25,20 +25,39 @@ export const POST = async (req, res) => {
 
     // getting details
     const { category, name, desc } = await req.json();
-    if (!category || !name || !desc) throw new Error(`Invalid values provided`);
+    if (!category || !name || !desc)
+      throw new Error(`All value must be provided`);
 
-    // checking for playlist
-    const playlist = await PlaylistModel.findOne({ name });
-    if (playlist) throw new Error(`Playlist already exists`);
+    // checking for playlist collection
+    const playlist = await PlaylistModel.findOne({ userId: user._id });
 
-    // creating a new playlist
-    const newPlaylist = new PlaylistModel({
-      userId: user._id,
-      category,
-      name,
-      desc,
-    });
-    await newPlaylist.save();
+    if (!playlist) {
+      // creating a new playlist
+      const newPlaylist = new PlaylistModel({
+        userId: user._id,
+        playlists: {
+          category,
+          name,
+          desc,
+        },
+      });
+      await newPlaylist.save();
+    } else {
+      // checking if name is unique
+      for (let i = 0; i < playlist.playlists.length; i++) {
+        if (
+          playlist.playlists[i].category === String(category) &&
+          playlist.playlists[i].name === String(name).toLowerCase()
+        ) {
+          throw new Error(`Playlist name must be unique. | Already taken.`);
+        }
+      }
+      // update the collection
+      await PlaylistModel.updateOne(
+        { userId: user._id },
+        { $push: { playlists: { category, name, desc } } }
+      );
+    }
 
     return NextResponse.json({
       success: true,

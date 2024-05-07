@@ -6,7 +6,7 @@ import { connectToDB } from "@/lib/db/connect.js";
 import { UserModel } from "@/lib/models/user.model.js";
 import { PlaylistModel } from "@/lib/models/playlist/playlist.model.js";
 
-export const POST = async (req, res) => {
+export const GET = async (req, res) => {
   try {
     // getting the session details
     const token = await getToken({ req });
@@ -24,22 +24,22 @@ export const POST = async (req, res) => {
     if (!user) throw new Error(`User not found`);
 
     // getting the details
-    const { category } = await req.json();
+    const category = req.nextUrl.searchParams.get("category");
     if (!category) throw new Error(`Category not provided`);
 
-    // fetching playlists
-    const playlists = await PlaylistModel.find({ userId: user._id });
-    if (!playlists || playlists.length === 0)
-      throw new Error(`No playlists found`);
+    // fetching playlist collection
+    const playlist = await PlaylistModel.findOne({ userId: user._id });
+    if (!playlist) throw new Error(`No playlists found`);
 
     const playlistData = [];
-    playlists.forEach((playlist) => {
-      if (playlist.category === category) {
+    playlist.playlists.forEach((_playlist) => {
+      if (_playlist.category === category) {
         playlistData.push({
-          id: playlist._id,
-          name: playlist.name,
-          desc: playlist.desc,
-          createdAt: playlist.createdAt,
+          id: _playlist._id,
+          name: _playlist.name,
+          desc: _playlist.desc,
+          imgSrc: "",
+          createdAt: _playlist.createdAt,
         });
       }
     });
