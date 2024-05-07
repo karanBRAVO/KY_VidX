@@ -4,6 +4,7 @@ import { UserModel } from "@/lib/models/user.model.js";
 import { ChannelModel } from "@/lib/models/channel/channel.model.js";
 import { VideoModel } from "@/lib/models/channel/video/video.model.js";
 
+// to send videos to the home page
 export const GET = async (req, res) => {
   try {
     // connect to db
@@ -35,21 +36,14 @@ export const GET = async (req, res) => {
           userName: user.name,
           userImage: user.image,
           channelName: channel.channelName,
-          subscribersCount: channel.subscribers.length,
-          videosCount: channel.videos.length,
-          channelLocation: channel.location,
-          videoId: video._id,
+          vId: video._id,
           videoVideoId: video.videoId,
           videoTitle: video.title,
           videoDescription: video.desc,
-          videoData: video.data,
           videoThumbnail: video.thumbnail,
-          videoTags: video.tags,
-          videoLikes: video.likes.length,
-          videoViews: video.view.length,
+          videoViews: video.views.length,
           videoUploadDate: video.createdAt,
-          videoUrl: video.url,
-          videoMetaData: video.metaData,
+          videoDuration: video.metadata.duration,
         };
       })
     );
