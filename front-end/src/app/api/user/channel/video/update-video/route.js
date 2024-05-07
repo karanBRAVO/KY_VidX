@@ -4,7 +4,6 @@ import { getToken } from "next-auth/jwt";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route.js";
 import { connectToDB } from "@/lib/db/connect.js";
 import { UserModel } from "@/lib/models/user.model.js";
-import { ChannelModel } from "@/lib/models/channel/channel.model.js";
 import { VideoModel } from "@/lib/models/channel/video/video.model.js";
 
 export const POST = async (req, res) => {
@@ -24,33 +23,28 @@ export const POST = async (req, res) => {
     });
     if (!user) throw new Error(`User not found`);
 
-    // getting the channel details
-    const channelDetails = await ChannelModel.findOne({ userId: user._id });
-    if (!channelDetails) throw new Error(`Channel not found`);
+    // getting the video id
+    const videoId = req.nextUrl.searchParams.get("videoId");
+    if (!videoId) throw new Error(`Video id must be provided`);
 
-    // getting the details from req
-    const { videoId, url, metadata } = await req.json();
-    if (!videoId || !url || !metadata)
-      throw new Error(`Video Id and URL and Metadata all are required`);
+    // finding the video
+    const video = await VideoModel.findOne({ videoId });
+    if (!video) throw new Error(`Video not found`);
 
-    // saving the video
-    const newVideo = await VideoModel({
-      channelName: channelDetails.channelName,
-      videoId,
-      url,
-      metadata,
-    });
-    await newVideo.save();
+    // getting the updated details
+    const { title, desc, data, thumbnail, tags, visibility } = await req.json();
+    if (!title || !desc || !data || !tags || !visibility)
+      throw new Error(`All fields must be provided`);
 
-    // updating the channel details
-    await ChannelModel.updateOne(
-      { _id: channelDetails._id },
-      { $push: { videos: [videoId] } }
+    // updating the details
+    await VideoModel.updateOne(
+      { videoId },
+      { $set: { title, desc, data, thumbnail, tags, visibility } }
     );
 
     return NextResponse.json({
       success: true,
-      message: "Video uploaded successfully",
+      message: "Video updated successfully",
     });
   } catch (err) {
     return NextResponse.json({
