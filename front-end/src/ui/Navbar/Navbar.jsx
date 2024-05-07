@@ -23,7 +23,7 @@ import Link from "next/link";
 import VideoCameraMenu from "./VideoCameraMenu.jsx";
 import NotificationMenu from "./NotificationMenu.jsx";
 import SearchBox from "./SearchBox.jsx";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
 import LoginIcon from "@mui/icons-material/Login";
 import UserAvatarNavigation from "./UserAvatarNavigation.jsx";
@@ -43,6 +43,7 @@ const Navbar = () => {
           dispatch(_setUserData(res.data.userData));
         } else {
           console.error(res.data.error);
+          await signOut({ redirect: false });
         }
       } catch (e) {
         console.error(e);
