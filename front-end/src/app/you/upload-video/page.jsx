@@ -1,10 +1,10 @@
 import React from "react";
 import { VideoUploader } from "@/ui/ComponentExporter";
 
-const UploadVideo = () => {
+const UploadVideo = ({ params }) => {
   return (
     <>
-      <VideoUploader />
+      <VideoUploader videoId={params.videoId} />
     </>
   );
 };

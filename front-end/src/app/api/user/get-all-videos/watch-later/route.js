@@ -4,9 +4,12 @@ import { getToken } from "next-auth/jwt";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route.js";
 import { connectToDB } from "@/lib/db/connect.js";
 import { UserModel } from "@/lib/models/user.model.js";
+import { ChannelModel } from "@/lib/models/channel/channel.model.js";
 import { VideoModel } from "@/lib/models/channel/video/video.model.js";
+import { SubscriptionModel } from "@/lib/models/subscriptions/subscriptions.model.js";
 
-export const POST = async (req, res) => {
+// to send videos to the home page
+export const GET = async (req, res) => {
   try {
     // getting the session details
     const token = await getToken({ req });
@@ -23,28 +26,16 @@ export const POST = async (req, res) => {
     });
     if (!user) throw new Error(`User not found`);
 
-    // getting the video id
-    const { videoId } = req.params;
-    if (!videoId) throw new Error(`Video id must be provided`);
+    // get the channel name from search query
+    const playlist = req.nextUrl.searchParams.get("playlist");
+    if (!playlist) throw new Error(`Channel name not provided`);
 
-    // finding the video
-    const video = await VideoModel.findOne({ videoId });
-    if (!video) throw new Error(`Video not found`);
-
-    // getting the updated details
-    const { title, desc, data, thumbnail, tags } = await req.json();
-    if (!title || !desc || !data || !tags)
-      throw new Error(`All fields must be provided`);
-
-    // updating the details
-    await VideoModel.updateOne(
-      { videoId },
-      { $set: { title, desc, data, thumbnail, tags } }
-    );
+    let videos = [];
 
     return NextResponse.json({
       success: true,
-      message: "Video updated successfully",
+      message: "Playlist Videos sent.",
+      videos,
     });
   } catch (err) {
     return NextResponse.json({
