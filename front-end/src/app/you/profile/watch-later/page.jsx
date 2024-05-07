@@ -1,5 +1,11 @@
+import {WatchLater} from "@/ui/ComponentExporter";
+
 const page = () => {
-  return <div>Watch Later</div>;
+  return (
+    <>
+      <WatchLater />
+    </>
+  );
 };
 
 export default page;
