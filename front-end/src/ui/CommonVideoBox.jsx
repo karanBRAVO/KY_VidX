@@ -12,19 +12,21 @@ import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 import Link from "next/link";
 
 const CommonVideoBox = ({
-  uid,
+  userId,
+  videoId,
   uploader,
   thumbnail,
-  name,
+  title,
   desc,
   duration,
   views,
-  lastWatchTime,
+  dateTime,
+  visibility = "public",
 }) => {
   return (
     <>
       <Card className="w-full m-2 bg-black text-white flex flex-col sm:flex-row">
-        <Link href={`/player/${uid}`}>
+        <Link href={`/player/${userId}/${videoId}`}>
           <CardActionArea className="w-fit">
             <Box component={"div"} bgcolor={"black"} width={"fit-content"}>
               <CardMedia
@@ -53,6 +55,27 @@ const CommonVideoBox = ({
                   {duration}
                 </Typography>
               </Box>
+              {visibility === "private" && (
+                <Box
+                  component={"div"}
+                  bgcolor={"black"}
+                  display={"flex"}
+                  flexDirection={"column"}
+                  alignItems={"center"}
+                  justifyContent={"center"}
+                  padding={"2px 4px"}
+                  borderRadius={"5px"}
+                  border={"2px solid gray"}
+                  width={"fit-content"}
+                  position={"absolute"}
+                  top={"5px"}
+                  right={"5px"}
+                >
+                  <Typography className="text-white font-light text-xs">
+                    {visibility}
+                  </Typography>
+                </Box>
+              )}
             </Box>
           </CardActionArea>
         </Link>
@@ -60,14 +83,14 @@ const CommonVideoBox = ({
         <CardContent className="bg-black flex flex-col items-start justify-between">
           <Box>
             <Box display={"flex"} flexDirection={"row"} alignItems={"start"}>
-              <Avatar className="bg-amber-700">{uploader}</Avatar>
+              <Avatar className="bg-amber-700" src={uploader} />
               <Typography
                 gutterBottom
                 variant="h6"
                 component="h1"
-                className="text-white mx-2 leading-tight tracking-tight"
+                className="text-white mx-2 leading-tight tracking-tight capitalize"
               >
-                {name}
+                {title}
               </Typography>
             </Box>
             <Box component={"div"} className="my-3 mx-2">
@@ -122,7 +145,7 @@ const CommonVideoBox = ({
                 variant="span"
                 className="text-white text-xs"
               >
-                {lastWatchTime + ` ` + "ago"}
+                {dateTime}
               </Typography>
             </Box>
           </Box>
