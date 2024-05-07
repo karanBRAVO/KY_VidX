@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import {
   miniVideoPlayerReducer,
   userReducer,
+  notifierReducer,
 } from "./features/FeatureExporter";
 
 export const makeStore = () => {
@@ -9,6 +10,7 @@ export const makeStore = () => {
     reducer: {
       miniVideoPlayer: miniVideoPlayerReducer,
       user: userReducer,
+      notifier: notifierReducer,
     },
   });
 };
