@@ -1,13 +1,45 @@
 "use client";
 
-import { Container } from "@mui/material";
+import { Container, Typography } from "@mui/material";
 import CommonVideoBox from "../CommonVideoBox";
-import { _LIKED_ } from "./fakeData";
 import { useSession } from "next-auth/react";
-import { NotAuthenticated, Wait } from "../ComponentExporter.js";
+import { NotAuthenticated, VideoSkeleton, Wait } from "@/ui/ComponentExporter";
+import Image from "next/image";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { _showNotifier } from "@/lib/_store/features/notifier/notifierSlice";
+import { getFormatedTime, getLocaleTime } from "@/lib/utils/DateConvertor";
 
 const LikedVideos = () => {
   const { data: session, status } = useSession();
+  const dispatch = useDispatch();
+
+  // states
+  const [likedVideos, setLikedVideos] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    getLikedVideos();
+  }, []);
+
+  // get all liked videos
+  const getLikedVideos = async () => {
+    setLoading(true);
+
+    try {
+      const res = await axios.get(`/api/user/get-all-videos/liked`);
+      if (res.data.success) {
+        setLikedVideos((prev) => res.data.videos);
+      } else {
+        dispatch(_showNotifier({ msg: `No liked videos` }));
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -28,10 +60,13 @@ const LikedVideos = () => {
             </h1>
             <div className="md:w-[30%] hidden md:flex flex-col rounded-lg bg-gradient-to-b from-slate-800 via-slate-600 to-slate-200">
               <div className="w-full p-3">
-                <img
-                  src="/defaultThumbnail.jpg"
+                <Image
+                  src="/liked.png"
                   alt="image"
-                  className="w-full rounded-lg  shadow-md shadow-slate-400"
+                  width={190}
+                  height={150}
+                  draggable={false}
+                  className="w-full h-[250px] rounded-lg shadow-md shadow-slate-400"
                 />
               </div>
               <h1 className="font-bold text-white text-center m-2">
@@ -43,19 +78,32 @@ const LikedVideos = () => {
             </div>
             <div className={"md:w-[70%] text-white p-2 overflow-auto"}>
               <div className="w-full gap-3 flex flex-col items-start">
-                {_LIKED_.map((item, index) => (
-                  <CommonVideoBox
-                    key={index}
-                    uid={index + 1}
-                    uploader={item.uploader}
-                    thumbnail={`/${item.thumbnail}`}
-                    name={item.name}
-                    desc={item.desc}
-                    duration={item.duration}
-                    views={item.views}
-                    lastWatchTime={item.lastWatchTime}
-                  />
-                ))}
+                {loading ? (
+                  <>
+                    <VideoSkeleton />
+                  </>
+                ) : likedVideos.length === 0 ? (
+                  <>
+                    <Typography variant="subtitle1" className="text-blue-500">
+                      No video found
+                    </Typography>
+                  </>
+                ) : (
+                  likedVideos.map((item, index) => (
+                    <CommonVideoBox
+                      key={index}
+                      userId={item.userId}
+                      videoId={item.videoId}
+                      uploader={item.uploader}
+                      thumbnail={item.thumbnail}
+                      title={item.title}
+                      desc={item.desc}
+                      duration={getFormatedTime(item.duration)}
+                      views={item.views}
+                      dateTime={getLocaleTime(item.dateTime)}
+                    />
+                  ))
+                )}
               </div>
             </div>
           </div>
