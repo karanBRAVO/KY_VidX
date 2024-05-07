@@ -23,7 +23,7 @@ import EditNoteIcon from "@mui/icons-material/EditNote";
 import Info from "./Info";
 
 import { useSession } from "next-auth/react";
-import { NotAuthenticated, Wait } from "@/ui/ComponentExporter.js";
+import { NotAuthenticated, PlaylistTab, Wait } from "@/ui/ComponentExporter.js";
 import { useEffect, useRef, useState } from "react";
 import VideoTab from "./VideoTab";
 import AnnouncementTab from "./AnnouncementTab";
@@ -32,8 +32,10 @@ import { getLocaleTime } from "@/lib/utils/DateConvertor";
 import Link from "next/link";
 import { uploadUserImagesToFirebaseStorage } from "@/lib/_firebase/firebase.storage";
 import HomeTab from "./HomeTab";
+import { useSelector } from "react-redux";
 
 const YourChannel = () => {
+  const userState = useSelector((state) => state.user);
   const { data: session, status } = useSession();
 
   const [showInfo, setShowInfo] = useState(false);
@@ -83,10 +85,8 @@ const YourChannel = () => {
 
     setUploadingStatus(true);
     try {
-      const user = await axios.get(`/api/user/get-user-details/get-user-id`);
-
-      if (!user.data.success) throw new Error(user.data.error);
-      const userID = user.data.uid;
+      const userID = userState._id;
+      if (!userID) throw new Error(`User's id not found`);
 
       const res = await uploadUserImagesToFirebaseStorage(
         userID,
@@ -372,6 +372,7 @@ const YourChannel = () => {
               <Box>
                 {currentTab === "home" && <HomeTab />}
                 {currentTab === "videos" && <VideoTab />}
+                {currentTab === "playlists" && <PlaylistTab />}
                 {currentTab === "announcements" && <AnnouncementTab />}
               </Box>
             </Box>
