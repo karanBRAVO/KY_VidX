@@ -40,7 +40,14 @@ const videoSchema = new mongoose.Schema(
       type: String,
       required: [true, "Thumbnail is required"],
       trim: true,
-      default: "",
+      default:
+        "https://firebasestorage.googleapis.com/v0/b/vidx-484df.appspot.com/o/Logo.png?alt=media&token=3a6f9ba6-1a26-4367-9a0b-5b0dc2bc8280",
+    },
+    visibility: {
+      type: String,
+      enum: ["public", "private"],
+      required: [true, "Visibility is required"],
+      default: "private",
     },
     tags: {
       type: [{ type: String }],
@@ -60,7 +67,6 @@ const videoSchema = new mongoose.Schema(
         {
           type: mongoose.Types.ObjectId,
           ref: "user",
-          required: [true, "views are required"],
         },
       ],
       default: [],
@@ -68,7 +74,10 @@ const videoSchema = new mongoose.Schema(
     metadata: {
       duration: {
         type: Number, // seconds
-        trim: true,
+        default: 0,
+      },
+      size: {
+        type: Number, // bytes
         default: 0,
       },
     },

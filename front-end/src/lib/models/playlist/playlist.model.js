@@ -7,31 +7,34 @@ const playlistSchema = new mongoose.Schema(
       ref: "user",
       required: [true, "Who is creating this playlist?"],
     },
-    category: {
-      type: String,
-      enum: ["watch-later", "channel"],
-      required: [true, "category is required"],
-      lowercase: true,
-      trim: true,
-    },
-    name: {
-      type: String,
-      lowercase: true,
-      trim: true,
-      required: [true, "Playlist name is required"],
-      unique: [true, "name must be unique"],
-    },
-    desc: {
-      type: String,
-      lowercase: true,
-      trim: true,
-      required: [true, "Playlist description is required"],
-    },
-    videoIds: {
+    playlists: {
       type: [
         {
-          type: mongoose.Types.ObjectId,
-          ref: "video",
+          category: {
+            type: String,
+            enum: ["watch-later", "channel"],
+            lowercase: true,
+            trim: true,
+          },
+          name: {
+            type: String,
+            lowercase: true,
+            trim: true,
+          },
+          desc: {
+            type: String,
+            lowercase: true,
+            trim: true,
+          },
+          videoIds: {
+            type: [
+              {
+                videoId: { type: String },
+                time: { type: Date, default: Date.now() },
+              },
+            ],
+            default: [],
+          },
         },
       ],
       default: [],

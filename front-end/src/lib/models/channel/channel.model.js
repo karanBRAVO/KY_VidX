@@ -5,7 +5,7 @@ const channelSchema = new mongoose.Schema(
     userId: {
       type: mongoose.Types.ObjectId,
       required: [true, "User Id is required"],
-      unique: true,
+      unique: [true, "Channel name must be unique"],
       ref: "user",
     },
     channelName: {
@@ -20,7 +20,8 @@ const channelSchema = new mongoose.Schema(
     },
     bgImgUrl: {
       type: String,
-      required: [true, "Background image URL is required"],
+      default:
+        "https://firebasestorage.googleapis.com/v0/b/vidx-484df.appspot.com/o/Logo.png?alt=media&token=3a6f9ba6-1a26-4367-9a0b-5b0dc2bc8280",
     },
     subscribers: {
       type: [
@@ -34,7 +35,7 @@ const channelSchema = new mongoose.Schema(
     videos: {
       type: [
         {
-          type: mongoose.Types.ObjectId,
+          type: String,
           ref: "video",
         },
       ],
