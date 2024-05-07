@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Container,
   Table,
@@ -14,24 +14,38 @@ import {
 } from "@mui/material";
 import { NotAuthenticated, Wait } from "@/ui/ComponentExporter";
 import { useSession } from "next-auth/react";
+import { getLocaleTime } from "@/lib/utils/DateConvertor";
+import Link from "next/link";
+import axios from "axios";
 
 // icons
 import TableChartIcon from "@mui/icons-material/TableChart";
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-];
-
 const Studio = () => {
   const { data: session, status } = useSession();
+
+  const [loading, setLoading] = useState(false);
+  const [videos, setVideos] = useState([]);
+
+  useEffect(() => {
+    getVideos();
+  }, []);
+
+  // fetch the videos
+  const getVideos = async () => {
+    setLoading(true);
+
+    try {
+      const res = await axios.get(`/api/user/studio/get-videos`);
+      if (res.data.success) {
+        setVideos((prev) => [...prev, ...res.data.videos]);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -53,64 +67,102 @@ const Studio = () => {
               Studio
             </Typography>
 
-            <TableContainer
-              component={Paper}
-              className="bg-black border-white border-[1px] border-solid"
-            >
-              <Table
-                sx={{ minWidth: 650 }}
-                size="small"
-                aria-label="a dense table"
-                className="bg-zinc-900 text-white"
-              >
-                <TableHead>
-                  <TableRow>
-                    <TableCell className="text-white">Video ID</TableCell>
-                    <TableCell align="right" className="text-white">
-                      Visibility
-                    </TableCell>
-                    <TableCell align="right" className="text-white">
-                      Views
-                    </TableCell>
-                    <TableCell align="right" className="text-white">
-                      Likes
-                    </TableCell>
-                    <TableCell align="right" className="text-white">
-                      Upload Date
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody className="text-zinc-200">
-                  {rows.map((row) => (
-                    <TableRow
-                      key={row.name}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                      className="text-zinc-200 hover:bg-zinc-950"
-                    >
-                      <TableCell
-                        component="th"
-                        scope="row"
-                        className="text-zinc-300"
-                      >
-                        {row.name}
-                      </TableCell>
-                      <TableCell align="right" className="text-zinc-300">
-                        {row.calories}
-                      </TableCell>
-                      <TableCell align="right" className="text-zinc-300">
-                        {row.fat}
-                      </TableCell>
-                      <TableCell align="right" className="text-zinc-300">
-                        {row.carbs}
-                      </TableCell>
-                      <TableCell align="right" className="text-zinc-300">
-                        {row.protein}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+            {loading ? (
+              <div className="my-2 w-full p-1 flex items-center justify-center animate-bounce">
+                Fetching Videos...
+              </div>
+            ) : (
+              videos.length > 0 && (
+                <TableContainer
+                  component={Paper}
+                  className="bg-black border-white border-[1px] border-solid"
+                >
+                  <Table
+                    sx={{ minWidth: 650 }}
+                    size="small"
+                    aria-label="a dense table"
+                    className="bg-zinc-900 text-white"
+                  >
+                    <TableHead>
+                      <TableRow>
+                        <TableCell className="text-white">Title</TableCell>
+                        <TableCell align="right" className="text-white">
+                          Visibility
+                        </TableCell>
+                        <TableCell align="right" className="text-white">
+                          Likes
+                        </TableCell>
+                        <TableCell align="right" className="text-white">
+                          Views
+                        </TableCell>
+                        <TableCell align="right" className="text-white">
+                          Upload Date
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody className="text-zinc-200">
+                      {videos.map((video, idx) => (
+                        <TableRow
+                          key={video.videoId}
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                          className="text-zinc-200 hover:bg-zinc-950"
+                        >
+                          <Link
+                            href={`/you/studio/update-video/${video.videoId}`}
+                          >
+                            <TableCell
+                              component="th"
+                              scope="row"
+                              className="text-zinc-300 flex flex-col items-start"
+                              title={video.videoId}
+                            >
+                              <div className="flex flex-row items-center w-full gap-2 my-1">
+                                <img
+                                  src={video.thumbnail}
+                                  alt="Image"
+                                  width={100}
+                                  height={100}
+                                  draggable={false}
+                                  className="w-[67px] h-[55px] rounded-sm mx-1 aspect-video border-2 border-solid border-[#000000] shadow-sm shadow-slate-300"
+                                />
+                                <Typography
+                                  variant="h5"
+                                  component={"span"}
+                                  className="text-white font-bold text-base capitalize max-w-sm truncate"
+                                >
+                                  {video.title}
+                                </Typography>
+                              </div>
+                              <Typography
+                                variant="caption"
+                                component={"span"}
+                                className="text-slate-400 font-light text-xs truncate px-3 py-2 max-w-sm"
+                              >
+                                {video.desc}
+                              </Typography>
+                            </TableCell>
+                          </Link>
+                          <TableCell align="right" className="text-zinc-300">
+                            {video.visibility}
+                          </TableCell>
+                          <TableCell align="right" className="text-zinc-300">
+                            {video.likes}
+                          </TableCell>
+                          <TableCell align="right" className="text-zinc-300">
+                            {video.views}
+                          </TableCell>
+                          <TableCell align="right" className="text-zinc-300">
+                            {getLocaleTime(video.uploadDate)}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              )
+            )}
           </>
         ) : (
           <>
