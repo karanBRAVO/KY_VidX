@@ -11,6 +11,7 @@ import {
   Typography,
   Dialog,
 } from "@mui/material";
+import Link from "next/link";
 import { signOut } from "next-auth/react";
 
 // icons
@@ -55,7 +56,9 @@ const UserAvatarNavigation = ({ showBar, setShowBar }) => {
               <ListItemIcon>
                 <ViewArrayIcon className="text-white" fontSize="small" />
               </ListItemIcon>
-              <ListItemText className="text-white">Your Channel</ListItemText>
+              <Link href="/you/profile/your-channel">
+                <ListItemText className="text-white">Your Channel</ListItemText>
+              </Link>
               <Typography variant="body2" color="text.secondary">
                 🫵
               </Typography>

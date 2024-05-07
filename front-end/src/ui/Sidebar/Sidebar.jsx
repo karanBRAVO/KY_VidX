@@ -12,6 +12,7 @@ import {
   Divider,
   Box,
 } from "@mui/material";
+import LockPersonIcon from "@mui/icons-material/LockPerson";
 import MenuIcon from "@mui/icons-material/Menu";
 import HouseIcon from "@mui/icons-material/House";
 import BurstModeIcon from "@mui/icons-material/BurstMode";
@@ -23,6 +24,7 @@ import WatchLaterIcon from "@mui/icons-material/WatchLater";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import Image from "next/image";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 const mainItems = [
   { name: "Home", iconname: HouseIcon, linkto: "/" },
@@ -44,7 +46,7 @@ const personalItems = [
   {
     name: "Your Videos",
     iconname: VideoCameraFrontIcon,
-    linkto: "/you/profile/your-videos",
+    linkto: "/you/studio",
   },
   {
     name: "Watch Later",
@@ -65,6 +67,8 @@ const myItems = [
 ];
 
 const Sidebar = ({ state, setState }) => {
+  const { data: session, status } = useSession();
+
   return (
     <>
       <Drawer
@@ -189,6 +193,15 @@ const Sidebar = ({ state, setState }) => {
                     <item.iconname />
                   </ListItemIcon>
                   <ListItemText primary={item.name} />
+                  {item.name.toLowerCase() === "subscriptions" &&
+                    status !== "authenticated" && (
+                      <sub>
+                        <LockPersonIcon
+                          fontSize="small"
+                          className="text-xs font-black text-gray-300 ml-[3px]"
+                        />
+                      </sub>
+                    )}
                 </ListItemButton>
               </ListItem>
             </Link>
@@ -220,6 +233,14 @@ const Sidebar = ({ state, setState }) => {
                     <item.iconname />
                   </ListItemIcon>
                   <ListItemText primary={item.name} />
+                  {status !== "authenticated" && (
+                    <sub>
+                      <LockPersonIcon
+                        fontSize="small"
+                        className="text-xs font-black text-gray-300 ml-[3px]"
+                      />
+                    </sub>
+                  )}
                 </ListItemButton>
               </ListItem>
             </Link>
