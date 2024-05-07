@@ -31,24 +31,39 @@ export const POST = async (req, res) => {
     // checking for the video
     const video = await VideoModel.findOne({ videoId });
     if (!video) throw new Error(`Video not found`);
-    if (video.likes.includes(user._id))
-      throw new Error(`Already liked the video.`);
 
     // checking user logs for likes
     const liked = await LikedVideoModel.findOne({ userId: user._id });
-    if (!liked) {
-      const newLikes = new LikedVideoModel({ userId: user._id, videoIds: [] });
-      await newLikes.save();
-    } else if (liked.videoIds.includes(video.videoId)) {
-      throw new Error(`Already liked`);
+
+    // checking if already liked
+    if (video.likes.includes(user._id)) {
+      if (liked) {
+        for (let i = 0; i < liked.videoIds.length; i++) {
+          if (String(liked.videoIds[i].videoId) === String(videoId)) {
+            throw new Error(`Already liked the video.`);
+          }
+        }
+      } else {
+        throw new Error(`Data mismatch while checking like status`);
+      }
     }
 
     // adding to the database
-    await VideoModel.updateOne({ videoId }, { $set: { likes: user._id } });
-    await LikedVideoModel.updateOne(
-      { userId: user._id },
-      { $push: { videoIds: videoId } }
-    );
+    await VideoModel.updateOne({ videoId }, { $push: { likes: user._id } });
+
+    // if no collection found
+    if (!liked) {
+      const newLikes = new LikedVideoModel({
+        userId: user._id,
+        videoIds: [{ videoId }],
+      });
+      await newLikes.save();
+    } else {
+      await LikedVideoModel.updateOne(
+        { userId: user._id },
+        { $push: { videoIds: { videoId } } }
+      );
+    }
 
     return NextResponse.json({
       success: true,

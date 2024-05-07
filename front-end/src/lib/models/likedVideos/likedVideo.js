@@ -11,8 +11,8 @@ const likedVideoSchema = new mongoose.Schema(
     videoIds: {
       type: [
         {
-          type: mongoose.Types.ObjectId,
-          ref: "video",
+          videoId: { type: String },
+          time: { type: Date, default: Date.now() },
         },
       ],
       default: [],
@@ -22,5 +22,5 @@ const likedVideoSchema = new mongoose.Schema(
 );
 
 export const LikedVideoModel =
-  mongoose.models["subscription"] ||
-  mongoose.model("subscription", likedVideoSchema);
+  mongoose.models["likedvideo"] ||
+  mongoose.model("likedvideo", likedVideoSchema);
