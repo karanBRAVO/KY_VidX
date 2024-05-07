@@ -8,7 +8,6 @@ import {
   Button,
   Divider,
   TextField,
-  Avatar,
   Alert,
   Backdrop,
   Autocomplete,
@@ -19,9 +18,11 @@ import { uploadUserImagesToFirebaseStorage } from "@/lib/_firebase/firebase.stor
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { countries } from "./Locations";
+import { useDispatch, useSelector } from "react-redux";
 
 // icons
 import ColorizeIcon from "@mui/icons-material/Colorize";
+import { _setChannel } from "@/lib/_store/features/user/user";
 
 const TextFieldStyles = {
   "& .MuiInput-input": {
@@ -43,16 +44,22 @@ const TextFieldStyles = {
 
 const NewChannel = () => {
   const { data: session, status } = useSession();
+  const userStateData = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const router = useRouter();
+
+  // check if has channel
+  if (userStateData.hasChannel) {
+    router.replace("/you/profile/your-channel");
+    return;
+  }
 
   const [formData, setFormData] = useState({
     channelName: "",
     tagLine: "",
-    bgImgUrl: "",
     location: "",
     dob: "",
   });
-  const [uploadStatus, setUploadStatus] = useState(false);
   const [loading, setLoading] = useState(false);
   const [userImage, setUserImage] = useState(null);
   const [alertBoxState, setAlertBoxState] = useState(false);
@@ -72,24 +79,29 @@ const NewChannel = () => {
   };
 
   // input tag reference
-  const avatarInputRef = useRef(null);
+  const bannerInputRef = useRef(null);
 
   // create new channel
   const handleCreateNewChannel = async () => {
-    if (loading || uploadStatus) return;
+    if (loading) return;
 
     setLoading(true);
+
+    // uploading the banner
+    const bgImgUrl = await handleBannerUpload();
+
     try {
-      const res = await axios.post(
-        `/api/user/channel/create-channel`,
-        formData
-      );
+      const res = await axios.post(`/api/user/channel/create-channel`, {
+        ...formData,
+        bgImgUrl,
+      });
       if (res.data.success) {
         setAlertMessage((prev) => ({
           ...prev,
           severity: "success",
           text: "Channel Created successfully",
         }));
+        dispatch(_setChannel({ hasChannel: true }));
         router.replace(`/you/profile/your-channel`);
       } else {
         setAlertMessage((prev) => ({
@@ -121,60 +133,33 @@ const NewChannel = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // choose the new avatar
-  const handleProfileImageChange = (e) => {
+  // choose the new banner
+  const handleBannerImageChange = (e) => {
     setUserImage(e.target.files[0]);
   };
 
-  // upload the avatar to the firebase
-  const handleAvatarUpload = async () => {
-    if (!userImage || uploadStatus) return;
+  // upload the banner to the firebase
+  const handleBannerUpload = async () => {
+    if (formData.bgImgUrl || !userImage || !userStateData._id) return;
 
-    setUploadStatus(true);
     try {
-      const user = await axios.get(`/api/user/get-user-details/get-user-id`);
-
-      if (!user.data.success) throw new Error(user.data.error);
-      const userID = user.data.uid;
-
+      const userID = userStateData._id;
       const res = await uploadUserImagesToFirebaseStorage(
         userID,
         "channel",
         userImage
       );
-
-      if (res[0]) {
-        setAlertMessage((prev) => ({
-          ...prev,
-          severity: "success",
-          text: "Avatar uploaded successfully.",
-        }));
-        setFormData((prev) => ({ ...prev, bgImgUrl: res[1] }));
-        setUserImage((prev) => null);
-      } else {
-        setAlertMessage((prev) => ({
-          ...prev,
-          severity: "error",
-          text: "Something went wrong while uploading",
-        }));
-      }
-      showAlertBox();
+      return res[1];
     } catch (e) {
-      setAlertMessage((prev) => ({
-        ...prev,
-        severity: "error",
-        text: "Internal Server Error",
-      }));
-      showAlertBox();
-    } finally {
-      setUploadStatus(false);
+      console.error(e);
+      return "";
     }
   };
 
-  // show the images in the local system
+  // show the images in the local system (EXPLORER)
   const handleChooseAvatar = () => {
-    if (avatarInputRef.current) {
-      avatarInputRef.current.click();
+    if (bannerInputRef.current) {
+      bannerInputRef.current.click();
     }
   };
 
@@ -190,11 +175,14 @@ const NewChannel = () => {
         ) : status === "authenticated" ? (
           <>
             <Backdrop
-              sx={{ color: "#fff" }}
+              sx={{ color: "#000" }}
               open={alertBoxState}
               onClick={hideAlertBox}
             >
-              <Alert severity={alertMessage.severity}>
+              <Alert
+                sx={{ color: "#000", background: "#8a8301" }}
+                severity={alertMessage.severity}
+              >
                 {alertMessage.text}
               </Alert>
             </Backdrop>
@@ -268,7 +256,7 @@ const NewChannel = () => {
               </Typography>
               <Autocomplete
                 id="country-select"
-                sx={{ width: 300 }}
+                sx={{ width: 300, backgroundColor: "black", color: "white" }}
                 options={countries}
                 autoHighlight
                 onChange={handleLocationInputChange}
@@ -276,7 +264,11 @@ const NewChannel = () => {
                 renderOption={(props, option) => (
                   <Box
                     component="li"
-                    sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                    sx={{
+                      "& > img": { mr: 2, flexShrink: 0 },
+                      color: "blue",
+                      backgroundColor: "black",
+                    }}
                     {...props}
                   >
                     <img
@@ -322,45 +314,24 @@ const NewChannel = () => {
                 >
                   Choose
                 </Button>
-                {userImage ||
-                  (formData.bgImgUrl && (
-                    <img
-                      src={
-                        userImage
-                          ? URL.createObjectURL(userImage)
-                          : formData.bgImgUrl
-                      }
-                      alt="KY"
-                      className="mx-2 cursor-pointer w-72 h-44 aspect-video border-2 border-solid border-white rounded-md shadow-md shadow-white"
-                    />
-                  ))}
-                <input
-                  className="hidden"
-                  ref={avatarInputRef}
-                  type="file"
-                  id="user-image"
-                  multiple={false}
-                  accept="image/*"
-                  onChange={handleProfileImageChange}
-                />
-                {uploadStatus && (
-                  <Typography
-                    variant="subtitle2"
-                    component={"span"}
-                    className="text-yellow-600 mx-2"
-                  >
-                    Uploading...
-                  </Typography>
+                {userImage !== null && (
+                  <img
+                    src={userImage && URL.createObjectURL(userImage)}
+                    alt="KY"
+                    draggable={false}
+                    className="mx-2 cursor-pointer w-72 h-44 aspect-video border-2 border-solid border-white rounded-md shadow-md shadow-white"
+                  />
                 )}
-                {userImage && (
-                  <Button
-                    className="mx-2"
-                    variant="outlined"
-                    onClick={handleAvatarUpload}
-                    disabled={uploadStatus}
-                  >
-                    Upload to cloud
-                  </Button>
+                {!loading && (
+                  <input
+                    className="hidden"
+                    ref={bannerInputRef}
+                    type="file"
+                    id="user-image"
+                    multiple={false}
+                    accept="image/*"
+                    onChange={handleBannerImageChange}
+                  />
                 )}
               </div>
               <Button

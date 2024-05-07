@@ -19,7 +19,9 @@ import ShareIcon from "@mui/icons-material/Share";
 import Link from "next/link";
 
 const VideoCard = ({
-  uid,
+  userId,
+  videoId,
+  channelName,
   uploader,
   thumbnail,
   name,
@@ -31,14 +33,14 @@ const VideoCard = ({
   const actions = [
     { icon: FileCopyIcon, name: "Copy Path" },
     { icon: SaveIcon, name: "Save" },
-    { icon: DownloadIcon, name: "Print" },
+    { icon: DownloadIcon, name: "Download" },
     { icon: ShareIcon, name: "Share" },
   ];
 
   return (
     <>
       <Card className="w-full rounded-lg border-[0.51px] border-solid border-gray-800 text-white bg-black hover:shadow-md hover:shadow-gray-800 hover:rounded-sm hover:border-0 hover:scale-105 transition-all ease-linear duration-150">
-        <Link href={`/player/${uid}`}>
+        <Link href={`/player/${userId}/${videoId}`}>
           <CardActionArea>
             <Box
               component={"div"}
@@ -78,20 +80,26 @@ const VideoCard = ({
 
         <CardContent className="bg-black flex flex-col items-start justify-between">
           <Box display={"flex"} flexDirection={"row"} alignItems={"start"}>
-            <Avatar className="bg-amber-700">{uploader}</Avatar>
+            <Link href={`/other/${userId}`} title={channelName}>
+              <Avatar className="bg-amber-700" src={uploader} />
+            </Link>
             <Typography
               gutterBottom
               variant="h6"
               component="h1"
-              className="text-white mx-2 leading-tight tracking-tight"
+              className="text-white mx-2 leading-tight tracking-tight capitalize"
             >
               {name}
             </Typography>
             <SpeedDial
               ariaLabel="SpeedDial"
-              icon={<MoreVertIcon fontSize="medium" className="text-white" />}
+              icon={
+                <div className="bg-black rounded-full p-2 flex items-center justify-center">
+                  <MoreVertIcon fontSize="small" className="text-black" />
+                </div>
+              }
               direction="down"
-              className="absolute top-2 right-2"
+              className="absolute top-[5px] right-[5px]"
               sx={{
                 ".MuiSpeedDial-actions": {
                   bgcolor: "transparent",
@@ -104,7 +112,7 @@ const VideoCard = ({
                   width: "35px",
                   height: "auto",
                   ":hover": {
-                    bgcolor: "#8080803b",
+                    bgcolor: "#0000008a",
                   },
                 },
               }}
@@ -169,7 +177,7 @@ const VideoCard = ({
                 variant="span"
                 className="text-white text-xs"
               >
-                {uploadTime + ` ` + "ago"}
+                {uploadTime}
               </Typography>
             </Box>
           </Box>
