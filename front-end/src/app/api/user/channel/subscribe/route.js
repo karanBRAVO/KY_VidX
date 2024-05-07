@@ -30,9 +30,30 @@ export const POST = async (req, res) => {
 
     // checks for channel
     const channel = await ChannelModel.findOne({ userId: ownerId });
-    if (!channel) throw new Error(`Channel not found`);
-    if (channel.subscribers.includes(user._id))
-      throw new Error(`Already subscribed to this channel`);
+    if (!channel) throw new Error(`${ownerId}'s Channel not found`);
+
+    // finding the user log of subscriptions
+    const subscription = await SubscriptionModel.findOne({ userId: user._id });
+
+    // checking if already subscribed
+    if (channel.subscribers.includes(user._id)) {
+      if (subscription) {
+        for (let i = 0; i < subscription.subscriptions.length; i++) {
+          if (
+            String(subscription.subscriptions[i].channelId) ===
+            String(channel._id)
+          ) {
+            throw new Error(
+              `Already subscribed to "${channel.channelName}" channel`
+            );
+          }
+        }
+      } else {
+        throw new Error(
+          `Data mismatched while checking for subscribed status.`
+        );
+      }
+    }
 
     // adding the subscription to the owner log
     await ChannelModel.updateOne(
@@ -40,23 +61,19 @@ export const POST = async (req, res) => {
       { $push: { subscribers: user._id } }
     );
 
-    // finding the user log of subscriptions
-    const subscription = await SubscriptionModel.findOne({ userId: user._id });
+    // adding the subscription to the user log
     if (!subscription) {
       const createSubscriptionLog = new SubscriptionModel({
         userId: user._id,
-        subscriptions: [],
+        subscriptions: [{ channelId: channel._id }],
       });
       await createSubscriptionLog.save();
-    } else if (subscription.subscriptions.includes(channel._id)) {
-      throw new Error(`Already Subscribed to ${channel.channelName}`);
+    } else {
+      await SubscriptionModel.updateOne(
+        { userId: user._id },
+        { $push: { subscriptions: { channelId: channel._id } } }
+      );
     }
-
-    // adding the subscription to the user log
-    await SubscriptionModel.updateOne(
-      { userId: user._id },
-      { $push: { subscriptions: channel._id } }
-    );
 
     return NextResponse.json({
       success: true,

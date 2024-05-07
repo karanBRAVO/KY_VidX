@@ -11,8 +11,11 @@ const subscriptionSchema = new mongoose.Schema(
     subscriptions: {
       type: [
         {
-          type: mongoose.Types.ObjectId,
-          ref: "channel",
+          channelId: { type: mongoose.Types.ObjectId, ref: "channel" },
+          time: {
+            type: Date,
+            default: Date.now(),
+          },
         },
       ],
       default: [],
