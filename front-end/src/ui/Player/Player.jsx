@@ -8,18 +8,17 @@ import { Container, Divider } from "@mui/material";
 import Grid3x3Icon from "@mui/icons-material/Grid3x3";
 import { useState } from "react";
 
-const Player = ({ videoId }) => {
-  videoId = "output-1920x1080-fd43391273fe76f221e02adeeb3faea8";
+const Player = ({ userId, videoId }) => {
   const [videoQuality, setVideoQuality] = useState("master");
   const videoSrc = `${process.env.NEXT_PUBLIC_VIDEO_SERVER_URL}/${videoId}/hls/${videoQuality}.m3u8`;
 
   return (
     <>
       <section className="mt-[130px] text-white w-full min-h-screen flex flex-col">
-        <h1 className="flex flex-row items-center gap-1 text-xl font-light text-slate-400 m-1 p-1 lowercase truncate">
+        {/* <h1 className="flex flex-row items-center gap-1 text-xl font-light text-slate-400 m-1 p-1 lowercase truncate">
           <Grid3x3Icon />
           VideoID: {videoId}
-        </h1>
+        </h1> */}
         <VideoPlayer
           src={videoSrc}
           videoId={videoId}
