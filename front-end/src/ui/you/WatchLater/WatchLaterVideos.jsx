@@ -13,6 +13,7 @@ import ListIcon from "@mui/icons-material/List";
 
 const WatchLaterVideos = ({ playlist }) => {
   if (!playlist) return <></>;
+  playlist = decodeURIComponent(playlist);
 
   const { data: session, status } = useSession();
 
@@ -33,7 +34,6 @@ const WatchLaterVideos = ({ playlist }) => {
       const res = await axios.get(
         `/api/user/get-all-videos/watch-later?playlist=${playlist}`
       );
-      console.log(res.data);
       if (res.data.success) {
         setVideos((prev) => res.data.videos);
       } else {

@@ -943,7 +943,7 @@ const CustomPlayer = ({ videoRef, videoId, setVideoQuality, videoURL }) => {
                     title="Full screen (f)"
                     placement="top"
                   >
-                    <FullscreenIcon className="opacity-70 hover:opacity-100 hover:scale-125 transition-all md:text-4xl text-2xl" />
+                    <FullscreenIcon className="opacity-70 hover:opacity-100 hover:scale-125 transition-all ease-linear duration-150 md:text-4xl text-2xl" />
                   </Tooltip>
                   <Tooltip
                     ref={exitFullScreenBtn}
@@ -952,7 +952,7 @@ const CustomPlayer = ({ videoRef, videoId, setVideoQuality, videoURL }) => {
                     title="Full screen (f)"
                     placement="top"
                   >
-                    <FullscreenExitIcon className="opacity-70 hover:opacity-100 hover:scale-75 transition-all md:text-4xl text-2xl" />
+                    <FullscreenExitIcon className="opacity-70 hover:opacity-100 hover:scale-75 transition-all ease-linear duration-150 md:text-4xl text-2xl" />
                   </Tooltip>
                 </IconButton>
               </div>

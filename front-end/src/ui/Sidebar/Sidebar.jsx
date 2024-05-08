@@ -88,6 +88,7 @@ const Sidebar = ({ state, setState }) => {
           sx: {
             backgroundColor: "black",
             color: "white",
+            borderRight: "1px solid gray",
           },
         }}
       >

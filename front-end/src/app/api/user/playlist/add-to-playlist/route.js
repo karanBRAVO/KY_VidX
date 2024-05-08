@@ -30,9 +30,25 @@ export const POST = async (req, res) => {
       throw new Error(`All fields are required`);
 
     // checking for playlist
-    const playlist = await PlaylistModel.findOne({ _id: playlistId });
-    if (!playlist) throw new Error(`Playlist not found`);
-    if (playlist.category != category) throw new Error(`category mismatch`);
+    const playlist = await PlaylistModel.findOne({ userId: user._id });
+    if (!playlist) throw new Error(`Playlist records not found`);
+
+    let hasPlaylist = false;
+    let _playlist = undefined;
+    for (let i = 0; i < playlist.playlists.length; i++) {
+      _playlist = playlist.playlists[i];
+      if (
+        _playlist.category === category &&
+        String(_playlist._id === String(playlistId))
+      ) {
+        hasPlaylist = true;
+        break;
+      }
+    }
+    if (!hasPlaylist)
+      throw new Error(
+        `Playlist not found with category ${category} and id ${playlistId}`
+      );
 
     // checking for the video
     const video = await VideoModel.findOne({ videoId });
@@ -40,8 +56,8 @@ export const POST = async (req, res) => {
 
     // adding to playlist
     await PlaylistModel.updateOne(
-      { _id: playlistId },
-      { $push: { videoIds: videoId } }
+      { _id: playlist._id, "playlists._id": playlistId },
+      { $push: { "playlists.$.videoIds": { videoId: videoId } } }
     );
 
     return NextResponse.json({

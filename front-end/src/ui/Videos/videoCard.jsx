@@ -9,6 +9,13 @@ import {
   SpeedDial,
   SpeedDialAction,
 } from "@mui/material";
+import { useState } from "react";
+import Link from "next/link";
+import { useDispatch } from "react-redux";
+import { _showNotifier } from "@/lib/_store/features/notifier/notifierSlice";
+import { SaveVideoToPlaylist } from "@/ui/ComponentExporter";
+
+// icons
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -16,7 +23,6 @@ import FileCopyIcon from "@mui/icons-material/FileCopyOutlined";
 import SaveIcon from "@mui/icons-material/Save";
 import DownloadIcon from "@mui/icons-material/Download";
 import ShareIcon from "@mui/icons-material/Share";
-import Link from "next/link";
 
 const VideoCard = ({
   userId,
@@ -30,15 +36,65 @@ const VideoCard = ({
   views,
   uploadTime,
 }) => {
+  if (!userId || !videoId) return <></>;
+
+  const dispatch = useDispatch();
+
   const actions = [
-    { icon: FileCopyIcon, name: "Copy Path" },
-    { icon: SaveIcon, name: "Save" },
-    { icon: DownloadIcon, name: "Download" },
-    { icon: ShareIcon, name: "Share" },
+    {
+      icon: FileCopyIcon,
+      name: "Copy Path",
+      clickHandler: () => {
+        handlePathCopy();
+      },
+    },
+    {
+      icon: SaveIcon,
+      name: "Save",
+      clickHandler: () => {
+        handleVideoSave();
+      },
+    },
+    {
+      icon: DownloadIcon,
+      name: "Download",
+      clickHandler: () => {
+        handleDownload();
+      },
+    },
+    { icon: ShareIcon, name: "Share", clickHandler: () => {} },
   ];
+
+  // handle path copy
+  const handlePathCopy = async () => {
+    const path = `${process.env.NEXT_PUBLIC_VIDEO_SERVER_URL}/${videoId}/hls/master.m3u8`;
+    await navigator.clipboard.writeText(path);
+    dispatch(
+      _showNotifier({
+        msg: `Stream Video path copied | Use HLS supported video player`,
+      })
+    );
+  };
+
+  const [videoSaveComponentState, setVideoSaveComponentState] = useState(false);
+
+  // handle video save opens dialog modal
+  const handleVideoSave = async () => {
+    setVideoSaveComponentState(true);
+  };
+
+  // handle download
+  const handleDownload = async () => {};
 
   return (
     <>
+      <SaveVideoToPlaylist
+        category={"watch-later"}
+        open={videoSaveComponentState}
+        setOpen={setVideoSaveComponentState}
+        videoId={videoId}
+      />
+
       <Card className="w-full rounded-lg border-[0.51px] border-solid border-gray-800 text-white bg-black hover:shadow-md hover:shadow-gray-800 hover:rounded-sm hover:border-0 hover:scale-105 transition-all ease-linear duration-150">
         <Link href={`/player/${userId}/${videoId}`}>
           <CardActionArea>
@@ -122,6 +178,7 @@ const VideoCard = ({
                   key={action.name}
                   icon={<action.icon className="text-white" />}
                   tooltipTitle={action.name}
+                  onClick={action.clickHandler}
                   className="bg-zinc-700 shadow-md shadow-slate-700"
                 />
               ))}
