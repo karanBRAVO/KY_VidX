@@ -7,6 +7,7 @@ import { UserModel } from "@/lib/models/user.model.js";
 import { VideoModel } from "@/lib/models/channel/video/video.model.js";
 import { CommentModel } from "@/lib/models/channel/video/comments/comment.model.js";
 
+// save the comment
 export const POST = async (req, res) => {
   try {
     // getting the session details
@@ -34,12 +35,17 @@ export const POST = async (req, res) => {
     if (!video) throw new Error(`Video not found`);
 
     // adding to the database
-    const newComment = await CommentModel({
-      videoId,
+    const newComment = new CommentModel({
       userId: user._id,
       comment,
     });
     await newComment.save();
+
+    // saving to the video collection
+    await VideoModel.updateOne(
+      { videoId },
+      { $push: { comments: newComment._id } }
+    );
 
     return NextResponse.json({
       success: true,
