@@ -71,6 +71,15 @@ const videoSchema = new mongoose.Schema(
       ],
       default: [],
     },
+    comments: {
+      type: [
+        {
+          type: mongoose.Types.ObjectId,
+          ref: "comment",
+        },
+      ],
+      default: [],
+    },
     metadata: {
       duration: {
         type: Number, // seconds
