@@ -5,8 +5,8 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route.js";
 import { connectToDB } from "@/lib/db/connect.js";
 import { UserModel } from "@/lib/models/user.model.js";
 import { CommentModel } from "@/lib/models/channel/video/comments/comment.model.js";
-import { CommentReplyModel } from "@/lib/models/channel/video/comments/commentReply.model.js";
 
+// save the comment reply
 export const POST = async (req, res) => {
   try {
     // getting the session details
@@ -29,38 +29,38 @@ export const POST = async (req, res) => {
     if (!commentId) throw new Error(`Comment Id not provided`);
     if (!comment) throw new Error(`Comment not provided`);
 
-    // checks on comments
-    const com = await CommentModel.findOne({ _id: commentId });
-    if (!com) throw new Error(`Comment not found`);
+    // checking if comment id exists
+    const commentDoc = await CommentModel.findOne({ _id: commentId });
+    if (!commentDoc) throw new Error(`Comment not found`);
 
-    // adding to the database
-    const reply = await CommentReplyModel.findOne({ commentId });
-    if (!reply) {
-      // create a new reply document
-      const newReply = new CommentReplyModel({
-        commentId,
-        reply: {
-          userId: user._id,
-          comment,
-        },
-      });
-      await newReply.save();
-    } else {
-      // push to the reply array
-      await CommentReplyModel.updateOne(
-        { commentId },
-        { $push: { userId: user._id, comment } }
-      );
-    }
-
-    return NextResponse.json({
-      success: true,
-      message: "Replied to comment successfully",
+    // saving the reply
+    const newReply = new CommentModel({
+      userId: user._id,
+      comment,
+      repliedTo: commentDoc._id,
     });
+    await newReply.save();
+
+    // updating the comment document
+    await CommentModel.updateOne(
+      { _id: commentDoc._id },
+      { $push: { replies: newReply._id } }
+    );
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Replied to comment successfully",
+      },
+      { status: 200 }
+    );
   } catch (err) {
-    return NextResponse.json({
-      success: false,
-      error: err.message,
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        error: err.message,
+      },
+      { status: 500 }
+    );
   }
 };
