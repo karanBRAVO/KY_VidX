@@ -38,7 +38,7 @@ const Studio = () => {
     try {
       const res = await axios.get(`/api/user/studio/get-videos`);
       if (res.data.success) {
-        setVideos((prev) => [...prev, ...res.data.videos]);
+        setVideos((prev) => [...res.data.videos]);
       }
     } catch (error) {
       console.error(error);
@@ -109,41 +109,41 @@ const Studio = () => {
                           }}
                           className="text-zinc-200 hover:bg-zinc-950"
                         >
-                          <Link
-                            href={`/you/studio/update-video/${video.videoId}`}
+                          <TableCell
+                            component="th"
+                            scope="row"
+                            className="text-zinc-300 flex flex-col items-start"
+                            title={video.videoId}
                           >
-                            <TableCell
-                              component="th"
-                              scope="row"
-                              className="text-zinc-300 flex flex-col items-start"
-                              title={video.videoId}
-                            >
-                              <div className="flex flex-row items-center w-full gap-2 my-1">
-                                <img
-                                  src={video.thumbnail}
-                                  alt="Image"
-                                  width={100}
-                                  height={100}
-                                  draggable={false}
-                                  className="w-[67px] h-[55px] rounded-sm mx-1 aspect-video border-2 border-solid border-[#000000] shadow-sm shadow-slate-300"
-                                />
+                            <div className="flex flex-row items-center w-full gap-2 my-1">
+                              <img
+                                src={video.thumbnail}
+                                alt="Image"
+                                width={100}
+                                height={100}
+                                draggable={false}
+                                className="w-[67px] h-[55px] rounded-sm mx-1 aspect-video border-2 border-solid border-[#000000] shadow-sm shadow-slate-300"
+                              />
+                              <Link
+                                href={`/you/studio/update-video/${video.videoId}`}
+                              >
                                 <Typography
                                   variant="h5"
                                   component={"span"}
-                                  className="text-white font-bold text-base capitalize max-w-sm truncate"
+                                  className="text-white hover:underline font-bold text-base capitalize max-w-sm truncate"
                                 >
                                   {video.title}
                                 </Typography>
-                              </div>
-                              <Typography
-                                variant="caption"
-                                component={"span"}
-                                className="text-slate-400 font-light text-xs truncate px-3 py-2 max-w-sm"
-                              >
-                                {video.desc}
-                              </Typography>
-                            </TableCell>
-                          </Link>
+                              </Link>
+                            </div>
+                            <Typography
+                              variant="caption"
+                              component={"span"}
+                              className="text-slate-400 font-light text-xs truncate px-3 py-2 max-w-sm"
+                            >
+                              {video.desc}
+                            </Typography>
+                          </TableCell>
                           <TableCell align="right" className="text-zinc-300">
                             {video.visibility}
                           </TableCell>
