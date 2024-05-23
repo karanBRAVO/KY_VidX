@@ -36,8 +36,6 @@ const VideoCard = ({
   views,
   uploadTime,
 }) => {
-  if (!userId || !videoId) return <></>;
-
   const dispatch = useDispatch();
 
   const [shareBoxState, setShareBoxState] = useState(false);

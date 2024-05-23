@@ -24,8 +24,6 @@ import { _showNotifier } from "@/lib/_store/features/notifier/notifierSlice";
 import { ShareBox } from "../ComponentExporter";
 
 const VideoPlayer = ({ src, videoId, videoQuality, setVideoQuality, uid }) => {
-  if (!src || !videoId || !videoQuality || !setVideoQuality) return <></>;
-
   const userState = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const router = useRouter();
@@ -180,6 +178,13 @@ const VideoPlayer = ({ src, videoId, videoQuality, setVideoQuality, uid }) => {
   const handleShare = async () => {
     setShareBoxState((prev) => true);
   };
+
+  // checking the props
+  useEffect(() => {
+    if (!src || !videoId || !videoQuality || !setVideoQuality) {
+      router.replace(`/`);
+    }
+  });
 
   return (
     <>

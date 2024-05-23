@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Container,
   Box,
@@ -23,6 +23,7 @@ import { useDispatch, useSelector } from "react-redux";
 // icons
 import ColorizeIcon from "@mui/icons-material/Colorize";
 import { _setChannel } from "@/lib/_store/features/user/user";
+import { _showNotifier } from "@/lib/_store/features/notifier/notifierSlice";
 
 const TextFieldStyles = {
   "& .MuiInput-input": {
@@ -47,12 +48,6 @@ const NewChannel = () => {
   const userStateData = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const router = useRouter();
-
-  // check if has channel
-  if (userStateData.hasChannel) {
-    router.replace("/you/profile/your-channel");
-    return;
-  }
 
   const [formData, setFormData] = useState({
     channelName: "",
@@ -102,6 +97,11 @@ const NewChannel = () => {
           text: "Channel Created successfully",
         }));
         dispatch(_setChannel({ hasChannel: true }));
+        dispatch(
+          _showNotifier({
+            msg: "Channel Created successfully.",
+          })
+        );
         router.replace(`/you/profile/your-channel`);
       } else {
         setAlertMessage((prev) => ({
@@ -162,6 +162,18 @@ const NewChannel = () => {
       bannerInputRef.current.click();
     }
   };
+
+  // return user to channel page
+  useEffect(() => {
+    if (userStateData.hasChannel) {
+      router.replace("/you/profile/your-channel");
+    }
+  }, [userStateData.hasChannel, router]);
+
+  // check if has channel
+  if (userStateData.hasChannel) {
+    return null;
+  }
 
   return (
     <>
