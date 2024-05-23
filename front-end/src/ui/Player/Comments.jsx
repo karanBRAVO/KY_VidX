@@ -8,6 +8,9 @@ import {
   Button,
   InputBase,
   Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
   Paper,
   IconButton,
   Divider,
@@ -21,6 +24,145 @@ import axios from "axios";
 import { getLocaleTime } from "@/lib/utils/DateConvertor";
 import { _showNotifier } from "@/lib/_store/features/notifier/notifierSlice";
 import Link from "next/link";
+
+const ShowReplies = ({
+  open,
+  setOpen,
+  replies,
+  getReplies,
+  selectReplyId,
+  setReplyWindowState,
+}) => {
+  const handleClose = () => setOpen((prev) => false);
+
+  return (
+    <>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        scroll={"paper"}
+        sx={{
+          ".MuiDialog-paper": {
+            bgcolor: "#4c4d4c",
+            width: "100%",
+          },
+        }}
+      >
+        <DialogTitle id="show-replies-title" className="text-white capitalize">
+          Replies
+        </DialogTitle>
+        <DialogContent dividers>
+          {replies.map((reply, index) => (
+            <Box
+              key={index}
+              bgcolor={"#171717"}
+              padding={"5px"}
+              borderRadius={"5px"}
+              margin={"5px 2px"}
+            >
+              <Box
+                display={"flex"}
+                flexDirection={"row"}
+                alignItems={"center"}
+                justifyContent={"start"}
+                gap={"5px"}
+              >
+                <Avatar
+                  src={reply.commentor_image}
+                  alt="/"
+                  className="w-10 h-10"
+                />
+                <Typography
+                  variant="h3"
+                  component={"h6"}
+                  className="text-white text-lg flex flex-col"
+                >
+                  <Typography
+                    variant="inherit"
+                    component={"span"}
+                    className="capitalize hover:underline"
+                  >
+                    <Link href={`/other/${reply.commentorId}`}>
+                      {reply.commentor}
+                    </Link>
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    component={"span"}
+                    className="text-zinc-200"
+                  >
+                    {getLocaleTime(reply.commentedAt)}
+                  </Typography>
+                </Typography>
+              </Box>
+              <Box padding={"3px 7px"} margin={"2px 5px"}>
+                <Typography
+                  variant="caption"
+                  component={"span"}
+                  className="text-xs md:text-sm"
+                >
+                  {reply.comment}
+                </Typography>
+              </Box>
+              <Box
+                display={"flex"}
+                flexDirection={"row"}
+                gap={"5px"}
+                margin={"4px"}
+                width={"100%"}
+                alignItems={"center"}
+                flexWrap={"wrap"}
+              >
+                <Button
+                  variant="outlined"
+                  className="text-blue-500 capitalize rounded-full"
+                  onClick={() => {
+                    if (reply.totalReplies > 0) {
+                      getReplies(reply.commentId);
+                    }
+                  }}
+                >
+                  {reply.totalReplies} replies
+                </Button>
+                <Button
+                  variant="outlined"
+                  className="text-blue-500 capitalize rounded-full"
+                >
+                  0 Likes
+                </Button>
+                <Button
+                  variant="outlined"
+                  className="text-blue-500 capitalize rounded-full"
+                >
+                  0 Dislikes
+                </Button>
+                <Button
+                  variant="text"
+                  className="text-[#fff] capitalize ml-2 text-sm underline"
+                  onClick={() => {
+                    selectReplyId((prev) => reply.commentId);
+                    setReplyWindowState((prev) => true);
+                  }}
+                >
+                  Reply
+                </Button>
+              </Box>
+            </Box>
+          ))}
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleClose}
+            variant="contained"
+            className="bg-yellow-700 text-white rounded-full border-none"
+          >
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
+};
 
 const ReplyWindow = ({ commentid, isOpen, handleClose }) => {
   const dispatch = useDispatch();
@@ -241,6 +383,8 @@ const CommentBox = ({ videoId }) => {
   const [comments, setComments] = useState([]);
   const [replyWindowOpen, setReplyWindowOpen] = useState(false);
   const [selectedCommentId, setSelectedCommentId] = useState("");
+  const [showReplyState, setShowReplyState] = useState(false); // show-reply window state
+  const [replies, setReplies] = useState([]);
 
   // open the reply window
   const handleReplyWindowOpen = () => {
@@ -275,7 +419,7 @@ const CommentBox = ({ videoId }) => {
     }
   };
 
-  // TODO: to show the replies
+  // get the replies
   const getReplies = async (commentId) => {
     if (!videoId || !commentId) return;
 
@@ -283,8 +427,9 @@ const CommentBox = ({ videoId }) => {
       const res = await axios.get(
         `/api/user/get-all-videos/comments/get-replies?videoId=${videoId}&commentId=${commentId}`
       );
-      console.log(res.data);
       if (res.data.success) {
+        setReplies((prev) => [...res.data.details]);
+        setShowReplyState((prev) => true);
       } else {
       }
     } catch (err) {
@@ -410,7 +555,11 @@ const CommentBox = ({ videoId }) => {
               <Button
                 variant="outlined"
                 className="text-blue-500 capitalize rounded-full"
-                onClick={() => getReplies(comment.commentId)}
+                onClick={() => {
+                  if (comment.totalReplies > 0) {
+                    getReplies(comment.commentId);
+                  }
+                }}
               >
                 {comment.totalReplies} replies
               </Button>
@@ -444,6 +593,14 @@ const CommentBox = ({ videoId }) => {
         commentid={selectedCommentId}
         isOpen={replyWindowOpen}
         handleClose={handleReplyWindowClose}
+      />
+      <ShowReplies
+        open={showReplyState}
+        setOpen={setShowReplyState}
+        replies={replies}
+        getReplies={getReplies}
+        selectReplyId={setSelectedCommentId}
+        setReplyWindowState={setReplyWindowOpen}
       />
     </>
   );

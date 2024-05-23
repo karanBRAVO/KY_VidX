@@ -8,7 +8,7 @@ import { Button, Container, Divider, Typography } from "@mui/material";
 import Grid3x3Icon from "@mui/icons-material/Grid3x3";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { VideoSkeleton } from "../ComponentExporter";
+import { VideoSkeleton } from "@/ui/ComponentExporter";
 import { getFormatedTime, getLocaleTime } from "@/lib/utils/DateConvertor";
 
 const Player = ({ userId, videoId }) => {
@@ -51,6 +51,7 @@ const Player = ({ userId, videoId }) => {
           videoId={videoId}
           videoQuality={videoQuality}
           setVideoQuality={setVideoQuality}
+          uid={userId}
         />
         <Comments videoId={videoId} />
         <Divider className="bg-zinc-400 m-1" />

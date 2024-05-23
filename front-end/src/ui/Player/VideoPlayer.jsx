@@ -21,8 +21,11 @@ import { getLocaleTime } from "@/lib/utils/DateConvertor";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { _showNotifier } from "@/lib/_store/features/notifier/notifierSlice";
+import { ShareBox } from "../ComponentExporter";
 
-const VideoPlayer = ({ src, videoId, videoQuality, setVideoQuality }) => {
+const VideoPlayer = ({ src, videoId, videoQuality, setVideoQuality, uid }) => {
+  if (!src || !videoId || !videoQuality || !setVideoQuality) return <></>;
+
   const userState = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const router = useRouter();
@@ -30,6 +33,8 @@ const VideoPlayer = ({ src, videoId, videoQuality, setVideoQuality }) => {
   const videoRef = useRef(null);
   const [fetching, setFetching] = useState(false);
   const [descLength, setDescLength] = useState(50);
+
+  const [shareBoxState, setShareBoxState] = useState(false);
 
   useEffect(() => {
     getVideoDetails();
@@ -171,8 +176,18 @@ const VideoPlayer = ({ src, videoId, videoQuality, setVideoQuality }) => {
     }
   };
 
+  // handle share
+  const handleShare = async () => {
+    setShareBoxState((prev) => true);
+  };
+
   return (
     <>
+      <ShareBox
+        open={shareBoxState}
+        setOpen={setShareBoxState}
+        url={`${process.env.NEXT_PUBLIC_FRONTEND_SERVER_URL}/player/${uid}/${videoId}`}
+      />
       <Container maxWidth={false} className="py-2 my-2">
         <Box>
           <CustomPlayer
@@ -337,6 +352,7 @@ const VideoPlayer = ({ src, videoId, videoQuality, setVideoQuality }) => {
               <Button
                 variant="contained"
                 className="rounded-full border-2 border-solid border-white bg-black text-white"
+                onClick={handleShare}
               >
                 <ShareIcon className="text-white font-black" />
                 <Typography

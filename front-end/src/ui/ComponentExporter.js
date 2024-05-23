@@ -25,3 +25,4 @@ export { default as CreatePlaylist } from "./you/Playlist/CreatePlaylist";
 export { default as PlayListSkeleton } from "./Skeletons/PlaylistSkeleton";
 export { default as PlaylistTab } from "./you/yourChannel/PlaylistTab";
 export { default as SaveVideoToPlaylist } from "./Videos/SaveVideoToPlaylist";
+export { default as ShareBox } from "./Share/Share";

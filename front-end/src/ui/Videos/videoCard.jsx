@@ -13,7 +13,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
 import { _showNotifier } from "@/lib/_store/features/notifier/notifierSlice";
-import { SaveVideoToPlaylist } from "@/ui/ComponentExporter";
+import { SaveVideoToPlaylist, ShareBox } from "@/ui/ComponentExporter";
 
 // icons
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -40,6 +40,8 @@ const VideoCard = ({
 
   const dispatch = useDispatch();
 
+  const [shareBoxState, setShareBoxState] = useState(false);
+
   const actions = [
     {
       icon: FileCopyIcon,
@@ -62,7 +64,13 @@ const VideoCard = ({
         handleDownload();
       },
     },
-    { icon: ShareIcon, name: "Share", clickHandler: () => {} },
+    {
+      icon: ShareIcon,
+      name: "Share",
+      clickHandler: () => {
+        handleShare();
+      },
+    },
   ];
 
   // handle path copy
@@ -86,8 +94,19 @@ const VideoCard = ({
   // handle download
   const handleDownload = async () => {};
 
+  // handle share
+  const handleShare = async () => {
+    setShareBoxState((prev) => true);
+  };
+
   return (
     <>
+      <ShareBox
+        open={shareBoxState}
+        setOpen={setShareBoxState}
+        url={`${process.env.NEXT_PUBLIC_FRONTEND_SERVER_URL}/player/${userId}/${videoId}`}
+      />
+
       <SaveVideoToPlaylist
         category={"watch-later"}
         open={videoSaveComponentState}
