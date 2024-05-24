@@ -102,6 +102,7 @@ const WatchLater = () => {
                         category="watch-later"
                         open={showCreatePlaylist}
                         setOpen={setShowCreatePlaylist}
+                        getPlaylists={getPlaylists}
                       />
                     </div>
                   ) : (

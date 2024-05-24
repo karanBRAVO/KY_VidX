@@ -61,6 +61,7 @@ const PlaylistTab = () => {
               category="channel"
               open={showCreatePlaylist}
               setOpen={setShowCreatePlaylist}
+              getPlaylists={getPlaylists}
             />
           </div>
         ) : (

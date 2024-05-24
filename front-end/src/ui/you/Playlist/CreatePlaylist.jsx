@@ -17,6 +17,7 @@ const CreatePlaylist = ({
   category = "watch-later" || "channel",
   open,
   setOpen,
+  getPlaylists,
 }) => {
   const dispatch = useDispatch();
 
@@ -52,6 +53,7 @@ const CreatePlaylist = ({
         formData
       );
       if (res.data.success) {
+        getPlaylists();
         handleClose();
       } else {
         dispatch(_showNotifier({ msg: `${res.data.error}` }));

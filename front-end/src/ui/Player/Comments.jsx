@@ -266,7 +266,7 @@ const ReplyWindow = ({ commentid, isOpen, handleClose }) => {
   );
 };
 
-const CommentInputBox = ({ videoId }) => {
+const CommentInputBox = ({ videoId, getComments }) => {
   // global states
   const { data: session, status } = useSession();
   const user = useSelector((state) => state.user);
@@ -276,6 +276,7 @@ const CommentInputBox = ({ videoId }) => {
   // states
   const [inputValue, setInputValue] = useState("");
   const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(false);
 
   // control the comment input
   const handleInputChange = (e) => {
@@ -294,6 +295,7 @@ const CommentInputBox = ({ videoId }) => {
       });
       if (res.data.success) {
         dispatch(_showNotifier({ msg: "Comment posted successfully" }));
+        getComments(setFetching);
       }
     } catch (e) {
       console.error(e);
@@ -374,13 +376,12 @@ const CommentInputBox = ({ videoId }) => {
   );
 };
 
-const CommentBox = ({ videoId }) => {
+const CommentBox = ({ videoId, comments, getComments }) => {
   // global state variables
   const { data: session, status } = useSession();
 
   // states
   const [fetching, setFetching] = useState(false);
-  const [comments, setComments] = useState([]);
   const [replyWindowOpen, setReplyWindowOpen] = useState(false);
   const [selectedCommentId, setSelectedCommentId] = useState("");
   const [showReplyState, setShowReplyState] = useState(false); // show-reply window state
@@ -398,26 +399,8 @@ const CommentBox = ({ videoId }) => {
 
   // getting the comments
   useEffect(() => {
-    getComments();
+    getComments(setFetching);
   }, []);
-
-  const getComments = async () => {
-    setFetching(true);
-
-    try {
-      const res = await axios.get(
-        `/api/user/get-all-videos/comments/get-comments?videoId=${videoId}`
-      );
-      if (res.data.success) {
-        setComments((prev) => [...res.data.details]);
-      } else {
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setFetching(false);
-    }
-  };
 
   // get the replies
   const getReplies = async (commentId) => {
@@ -607,6 +590,26 @@ const CommentBox = ({ videoId }) => {
 };
 
 const Comments = ({ videoId }) => {
+  const [comments, setComments] = useState([]);
+
+  const getComments = async (setFetching) => {
+    setFetching(true);
+
+    try {
+      const res = await axios.get(
+        `/api/user/get-all-videos/comments/get-comments?videoId=${videoId}`
+      );
+      if (res.data.success) {
+        setComments((prev) => [...res.data.details]);
+      } else {
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setFetching(false);
+    }
+  };
+
   return (
     <>
       <Container maxWidth={false} className="my-2 flex flex-col">
@@ -617,8 +620,12 @@ const Comments = ({ videoId }) => {
         >
           Comments
         </Typography>
-        <CommentInputBox videoId={videoId} />
-        <CommentBox videoId={videoId} />
+        <CommentInputBox videoId={videoId} getComments={getComments} />
+        <CommentBox
+          videoId={videoId}
+          comments={comments}
+          getComments={getComments}
+        />
       </Container>
     </>
   );
