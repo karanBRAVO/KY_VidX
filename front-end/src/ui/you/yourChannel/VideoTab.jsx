@@ -19,7 +19,7 @@ const VideoTab = () => {
     try {
       const res = await axios.get(`/api/user/channel/tabs/videos/get-all`);
       if (res.data.success) {
-        setVideos((prev) => [...prev, ...res.data.videos]);
+        setVideos((prev) => [...res.data.videos]);
       }
     } catch (err) {
       console.error(err);
