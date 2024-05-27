@@ -190,6 +190,7 @@ const Navbar = () => {
                     alt="logo"
                     width={100}
                     height={100}
+                    priority
                     className="w-11 h-auto rounded-sm"
                   />
                   <Typography

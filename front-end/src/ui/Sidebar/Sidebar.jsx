@@ -119,6 +119,7 @@ const Sidebar = ({ state, setState }) => {
             >
               <Image
                 src="/Logo.png"
+                priority
                 alt="logo"
                 width={100}
                 height={100}
