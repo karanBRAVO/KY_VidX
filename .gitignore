@@ -10,6 +10,7 @@ coverage
 .env
 *.mkv
 video-server/videos
+todo.txt
 
 # next.js
 .next/
