@@ -32,15 +32,11 @@ export const POST = async (req, res) => {
     if (!video) throw new Error(`Video not found`);
 
     // getting the updated details
-    const { title, desc, data, thumbnail, tags, visibility } = await req.json();
-    if (!title || !desc || !data || !tags || !visibility)
-      throw new Error(`All fields must be provided`);
+    const updatedData = await req.json();
+    if (!updatedData) throw new Error(`No updated data found in the request`);
 
     // updating the details
-    await VideoModel.updateOne(
-      { videoId },
-      { $set: { title, desc, data, thumbnail, tags, visibility } }
-    );
+    await VideoModel.updateOne({ videoId }, { $set: { ...updatedData } });
 
     return NextResponse.json({
       success: true,
