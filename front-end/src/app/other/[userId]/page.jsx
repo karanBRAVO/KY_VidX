@@ -1,16 +1,14 @@
 import React from "react";
+import { OtherProfilePage } from "@/ui/ComponentExporter";
 
-const OtherProfile = ({ params }) => {
+const page = ({ params }) => {
   const { userId } = params;
 
   return (
     <>
-      <div className="mt-[190px]">
-        <h1>Hello World!</h1>
-        <h4>User Id: {userId}</h4>
-      </div>
+      <OtherProfilePage userId={userId} />
     </>
   );
 };
 
-export default OtherProfile;
+export default page;

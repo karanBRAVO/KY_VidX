@@ -26,3 +26,4 @@ export { default as PlayListSkeleton } from "./Skeletons/PlaylistSkeleton";
 export { default as PlaylistTab } from "./you/yourChannel/PlaylistTab";
 export { default as SaveVideoToPlaylist } from "./Videos/SaveVideoToPlaylist";
 export { default as ShareBox } from "./Share/Share";
+export { default as OtherProfilePage } from "./Others/OtherProfile";
