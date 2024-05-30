@@ -22,6 +22,7 @@
     "firebase": "^10.7.2",
     "framer-motion": "^10.18.0",
     "hls.js": "^1.5.2",
+    "kafkajs": "^2.2.4",
     "mongoose": "^8.1.0",
     "next": "14.0.4",
     "next-auth": "^4.24.5",
