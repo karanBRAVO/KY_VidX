@@ -5,7 +5,6 @@ import CommonVideoBox from "../CommonVideoBox";
 import Comments from "./Comments";
 import VideoPlayer from "./VideoPlayer";
 import { Button, Container, Divider, Typography } from "@mui/material";
-import Grid3x3Icon from "@mui/icons-material/Grid3x3";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { VideoSkeleton } from "@/ui/ComponentExporter";

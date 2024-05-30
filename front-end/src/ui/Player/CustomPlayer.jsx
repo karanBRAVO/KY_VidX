@@ -30,9 +30,11 @@ import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
+import axios from "axios";
 
 const CustomPlayer = ({ videoRef, videoId, setVideoQuality, videoURL }) => {
   // global state variables
+  const userState = useSelector((state) => state.user);
   const miniVideoPlayerState = useSelector((state) => state.miniVideoPlayer);
   const dispatch = useDispatch();
 
@@ -547,6 +549,37 @@ const CustomPlayer = ({ videoRef, videoId, setVideoQuality, videoURL }) => {
       changePlaybackSpeed(videoRef.current.playbackRate);
     });
   }, []);
+
+  // (kafka) producer
+  useEffect(() => {
+    if (userState._id && videoRef.current) {
+      const handleTimeUpdate = (e) => {
+        produceMessage("Video time update: " + e.target.currentTime);
+      };
+
+      videoRef.current.addEventListener("timeupdate", handleTimeUpdate);
+
+      return () => {
+        if (videoRef.current) {
+          videoRef.current.removeEventListener("timeupdate", handleTimeUpdate);
+        }
+      };
+    }
+  }, [userState._id]);
+
+  const produceMessage = async (msg) => {
+    if (!msg) return;
+
+    try {
+      const res = await axios.post(`/api/kafka/produce`, {
+        topic_name: "video-views",
+        msg,
+      });
+      // console.log(res.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   // helper functions
   const formatDuration = (durationInSeconds) => {
