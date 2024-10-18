@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "fastdev": "next dev --turbo"
   },
   "dependencies": {
     "@emotion/cache": "^11.11.0",
@@ -24,8 +25,8 @@
     "hls.js": "^1.5.2",
     "kafkajs": "^2.2.4",
     "mongoose": "^8.1.0",
-    "next": "14.0.4",
-    "next-auth": "^4.24.5",
+    "next": "^14.2.15",
+    "next-auth": "^4.24.8",
     "react": "^18",
     "react-dom": "^18",
     "react-intersection-observer": "^9.5.3",
